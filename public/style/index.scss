@@ -1,0 +1,81 @@
+main {
+  //   display: flex;
+  //   justify-content: center;
+  article {
+    display: flex;
+    justify-content: center;
+    .contianer {
+      margin-top: 30px;
+      z-index: 0;
+      border: 1px solid rgba(128, 128, 128, 0.578);
+      width: 480px;
+      //   height: 670px;
+      border-radius: 10px;
+
+      .poster {
+        z-index: 10;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+        display: flex;
+        align-items: center;
+        height: 60px;
+        padding: 0 10px;
+        .poster-header-img {
+          z-index: 20;
+          border-radius: 50%;
+          height: 45px;
+          height: 45px;
+          object-fit: cover;
+          cursor: pointer;
+        }
+        .poster-name {
+          z-index: 20;
+          margin-left: 15px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+      }
+
+      .content {
+        width: 100%;
+        min-height: 270px;
+        max-height: 550px;
+        // border: 1px solid red;
+        .post-img {
+          width: 100%;
+          min-height: 270px;
+          max-height: 550px;
+          object-fit: cover;
+        }
+      }
+
+      .comment {
+        padding: 0 10px 15px 10px;
+        width: 100%;
+        .user-interacte {
+          display: flex;
+          align-items: center;
+          height: 45px;
+          img {
+            height: 30px;
+            margin-right: 20px;
+          }
+        }
+        .user-likes {
+          height: 30px;
+          display: flex;
+          align-items: center;
+          .like-amount {
+            font-weight: bold;
+          }
+        }
+        .poster-message {
+          min-height: 20px;
+          max-height: 40;
+          .poster-name {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main .login,
+main .signup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 80px;
+}
+main .login .login-container,
+main .login .signup-container,
+main .signup .login-container,
+main .signup .signup-container {
+  border: 1px solid rgba(178, 178, 178, 0.712);
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+}
+main .login .login-container .title,
+main .login .signup-container .title,
+main .signup .login-container .title,
+main .signup .signup-container .title {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 40px 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+main .login .login-container input,
+main .login .signup-container input,
+main .signup .login-container input,
+main .signup .signup-container input {
+  width: 250px;
+  height: 40px;
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid rgba(216, 216, 216, 0.578);
+  background-color: rgba(238, 238, 238, 0.578);
+  border-radius: 5px;
+  font-size: 16px;
+}
+main .login .login-container input::-moz-placeholder, main .login .signup-container input::-moz-placeholder, main .signup .login-container input::-moz-placeholder, main .signup .signup-container input::-moz-placeholder {
+  font: 14px sans-serif;
+  color: rgba(91, 91, 91, 0.578);
+  letter-spacing: 1.5px;
+}
+main .login .login-container input:-ms-input-placeholder, main .login .signup-container input:-ms-input-placeholder, main .signup .login-container input:-ms-input-placeholder, main .signup .signup-container input:-ms-input-placeholder {
+  font: 14px sans-serif;
+  color: rgba(91, 91, 91, 0.578);
+  letter-spacing: 1.5px;
+}
+main .login .login-container input,
+main .login .login-container input::placeholder,
+main .login .signup-container input,
+main .login .signup-container input::placeholder,
+main .signup .login-container input,
+main .signup .login-container input::placeholder,
+main .signup .signup-container input,
+main .signup .signup-container input::placeholder {
+  font: 14px sans-serif;
+  color: rgba(91, 91, 91, 0.578);
+  letter-spacing: 1.5px;
+}
+main .login .login-container input,
+main .login .login-container input:focus ~ p,
+main .login .signup-container input,
+main .login .signup-container input:focus ~ p,
+main .signup .login-container input,
+main .signup .login-container input:focus ~ p,
+main .signup .signup-container input,
+main .signup .signup-container input:focus ~ p {
+  color: rgb(0, 0, 0);
+}
+main .login .login-container input:focus,
+main .login .signup-container input:focus,
+main .signup .login-container input:focus,
+main .signup .signup-container input:focus {
+  outline: none !important;
+  border-color: rgba(216, 216, 216, 0.578);
+  box-shadow: 0 0 3px rgba(141, 141, 141, 0.578);
+}
+main .login .login-container button,
+main .login .signup-container button,
+main .signup .login-container button,
+main .signup .signup-container button {
+  margin: 10px 0 20px 0;
+  width: 250px;
+  height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  background-color: rgb(40, 154, 255);
+  color: white;
+}
+main .login .no-account,
+main .login .have-account,
+main .signup .no-account,
+main .signup .have-account {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(178, 178, 178, 0.712);
+  width: 350px;
+  height: 60px;
+  margin-top: 15px;
+}
+main .login .no-account p,
+main .login .have-account p,
+main .signup .no-account p,
+main .signup .have-account p {
+  margin: 5px;
+}
+main .login .no-account .signup-button,
+main .login .no-account .login-button,
+main .login .have-account .signup-button,
+main .login .have-account .login-button,
+main .signup .no-account .signup-button,
+main .signup .no-account .login-button,
+main .signup .have-account .signup-button,
+main .signup .have-account .login-button {
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  color: rgb(27, 53, 255);
+}
+main .signup {
+  display: none;
+}/*# sourceMappingURL=login_page.css.map */

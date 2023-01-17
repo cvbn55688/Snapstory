@@ -1,0 +1,74 @@
+main article {
+  display: flex;
+  justify-content: center;
+}
+main article .contianer {
+  margin-top: 30px;
+  z-index: 0;
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  width: 480px;
+  border-radius: 10px;
+}
+main article .contianer .poster {
+  z-index: 10;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 10px;
+}
+main article .contianer .poster .poster-header-img {
+  z-index: 20;
+  border-radius: 50%;
+  height: 45px;
+  height: 45px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  cursor: pointer;
+}
+main article .contianer .poster .poster-name {
+  z-index: 20;
+  margin-left: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+main article .contianer .content {
+  width: 100%;
+  min-height: 270px;
+  max-height: 550px;
+}
+main article .contianer .content .post-img {
+  width: 100%;
+  min-height: 270px;
+  max-height: 550px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main article .contianer .comment {
+  padding: 0 10px 15px 10px;
+  width: 100%;
+}
+main article .contianer .comment .user-interacte {
+  display: flex;
+  align-items: center;
+  height: 45px;
+}
+main article .contianer .comment .user-interacte img {
+  height: 30px;
+  margin-right: 20px;
+}
+main article .contianer .comment .user-likes {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+main article .contianer .comment .user-likes .like-amount {
+  font-weight: bold;
+}
+main article .contianer .comment .poster-message {
+  min-height: 20px;
+  max-height: 40;
+}
+main article .contianer .comment .poster-message .poster-name {
+  font-weight: bold;
+}/*# sourceMappingURL=index.css.map */
