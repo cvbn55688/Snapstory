@@ -23,6 +23,7 @@ class controller {
       let payload = {
         account: returnStatus.data.account,
         name: returnStatus.data.username,
+        userID: returnStatus.data._id,
       };
       let token = jwt.sign(payload, JWTsecret);
       return { ok: true, status: 200, mes: returnStatus.mes, token: token };
@@ -47,6 +48,17 @@ class controller {
     } else {
       return { ok: false, status: 400, data: "使用者未登入" };
     }
+  }
+
+  async uploadPost(userData, postData) {
+    let userID = userData.userID;
+    let uploadReturn = await Model.uploadPost(
+      userID,
+      postData.base64Img,
+      postData.message
+    );
+    console.log(uploadReturn, "asdasdasd");
+    return uploadReturn;
   }
 }
 

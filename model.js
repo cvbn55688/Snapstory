@@ -1,7 +1,14 @@
-const e = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 let envData = process.env;
+const cloudFront = envData.cloudFront;
+const aws_access_key_id = envData.aws_access_key_id;
+const aws_secret_access_key = envData.aws_secret_access_key;
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({
+  accessKeyId: aws_access_key_id,
+  secretAccessKey: aws_secret_access_key,
+});
 
 mongoose
   .connect(envData.mongodbUrl, {
@@ -31,7 +38,20 @@ const memberSchema = new mongoose.Schema({
   },
 });
 
+const PostSchema = new mongoose.Schema({
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
+  imageUrl: String,
+  content: String,
+  comments: [
+    {
+      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
+      content: String,
+    },
+  ],
+});
+
 const Member = mongoose.model("Member", memberSchema);
+const Post = mongoose.model("Post", PostSchema);
 
 class model {
   async signup(data) {
@@ -85,6 +105,40 @@ class model {
       }
     });
     return result;
+  }
+
+  async uploadPost(userID, base64Img, message) {
+    let time = new Date().getTime();
+    let imageData = base64Img;
+    let imgType = base64Img.split(";")[0].split("/")[1];
+    let imageBuffer = Buffer.from(
+      imageData.replace(/^data:image\/\w+;base64,/, ""),
+      "base64"
+    );
+    await s3.upload({
+      Bucket: "mywebsiteforwehelp",
+      Key: `snapstory/post/${time}`,
+      Body: imageBuffer,
+      ContentEncoding: "base64",
+      ContentType: `image/${imgType}`,
+    });
+    console.log("done");
+    let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
+    const post = new Post({
+      userID: userID,
+      imageUrl: imgUrl,
+      content: message,
+    });
+    return await post
+      .save()
+      .then(() => {
+        console.log("have been saveed into DB");
+        return { ok: true, status: 200 };
+      })
+      .catch((e) => {
+        console.log(e);
+        return { ok: false, status: 500 };
+      });
   }
 }
 
