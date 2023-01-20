@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-let envData = process.env;
+const envData = process.env;
 const cloudFront = envData.cloudFront;
 const aws_access_key_id = envData.aws_access_key_id;
 const aws_secret_access_key = envData.aws_secret_access_key;
@@ -115,14 +115,20 @@ class model {
       imageData.replace(/^data:image\/\w+;base64,/, ""),
       "base64"
     );
-    await s3.upload({
-      Bucket: "mywebsiteforwehelp",
-      Key: `snapstory/post/${time}`,
-      Body: imageBuffer,
-      ContentEncoding: "base64",
-      ContentType: `image/${imgType}`,
-    });
-    console.log("done");
+    await s3.upload(
+      {
+        Bucket: "mywebsiteforwehelp",
+        Key: `snapstory/post/${time}`,
+        Body: imageBuffer,
+        ContentEncoding: "base64",
+        ContentType: `image/${imgType}`,
+      },
+      (error, data) => {
+        if (error) {
+          console.log(error);
+        }
+      }
+    );
     let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
     const post = new Post({
       userID: userID,
@@ -139,6 +145,11 @@ class model {
         console.log(e);
         return { ok: false, status: 500 };
       });
+  }
+
+  async getIndexData() {
+    let result = await Post.find().sort({ _id: -1 }).populate("userID").exec();
+    return result;
   }
 }
 

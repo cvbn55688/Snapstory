@@ -100,15 +100,15 @@ postImageInput.addEventListener("change", (eve) => {
     postNextStep.style.display = "flex";
     postUndo.style.display = "flex";
 
-    postUndo.addEventListener("click", () => {
-      console.log("test");
-      postingArea.style.display = "flex";
-      postCutting.style.display = "none";
-      postPreveiw.src = "";
-      postTitle.textContent = "建立新貼文";
-      postNextStep.style.display = "none";
-      postUndo.style.display = "none";
-    });
+    // postUndo.addEventListener("click", () => {
+    //   console.log("test");
+    //   postingArea.style.display = "flex";
+    //   postCutting.style.display = "none";
+    //   postPreveiw.src = "";
+    //   postTitle.textContent = "建立新貼文";
+    //   postNextStep.style.display = "none";
+    //   postUndo.style.display = "none";
+    // });
 
     postNextStep.addEventListener("click", () => {
       postContainer.style.width = "780px";
@@ -119,8 +119,6 @@ postImageInput.addEventListener("change", (eve) => {
       postMessage.style.display = "flex";
       postNextStep.textContent = "建立";
       postNextStep.addEventListener("click", () => {
-        console.log(postMessageTextarea.value);
-
         fetch(`/uploadPost`, {
           method: "POST",
           body: JSON.stringify({
@@ -135,7 +133,10 @@ postImageInput.addEventListener("change", (eve) => {
             return response.json();
           })
           .then(function (data) {
-            console.log(data);
+            if (data.ok == true) {
+              alert("上傳成功");
+              location.reload();
+            }
           });
       });
     });

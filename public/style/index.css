@@ -2,14 +2,14 @@ main article {
   display: flex;
   justify-content: center;
 }
-main article .contianer {
+main article .container {
   margin-top: 30px;
   z-index: 0;
   border: 1px solid rgba(128, 128, 128, 0.578);
   width: 480px;
   border-radius: 10px;
 }
-main article .contianer .poster {
+main article .container .poster {
   z-index: 10;
   border-bottom: 1px solid rgba(128, 128, 128, 0.578);
   display: flex;
@@ -17,7 +17,7 @@ main article .contianer .poster {
   height: 60px;
   padding: 0 10px;
 }
-main article .contianer .poster .poster-header-img {
+main article .container .poster .poster-header-img {
   z-index: 20;
   border-radius: 50%;
   height: 45px;
@@ -26,49 +26,50 @@ main article .contianer .poster .poster-header-img {
      object-fit: cover;
   cursor: pointer;
 }
-main article .contianer .poster .poster-name {
+main article .container .poster .poster-name {
   z-index: 20;
   margin-left: 15px;
   font-weight: bold;
   cursor: pointer;
 }
-main article .contianer .content {
+main article .container .content {
   width: 100%;
   min-height: 270px;
   max-height: 550px;
 }
-main article .contianer .content .post-img {
+main article .container .content .post-img {
   width: 100%;
   min-height: 270px;
   max-height: 550px;
   -o-object-fit: cover;
      object-fit: cover;
 }
-main article .contianer .comment {
+main article .container .comment {
   padding: 0 10px 15px 10px;
   width: 100%;
 }
-main article .contianer .comment .user-interacte {
+main article .container .comment .user-interacte {
   display: flex;
   align-items: center;
   height: 45px;
 }
-main article .contianer .comment .user-interacte img {
+main article .container .comment .user-interacte img {
   height: 30px;
   margin-right: 20px;
 }
-main article .contianer .comment .user-likes {
+main article .container .comment .user-likes {
   height: 30px;
   display: flex;
   align-items: center;
 }
-main article .contianer .comment .user-likes .like-amount {
+main article .container .comment .user-likes .like-amount {
   font-weight: bold;
 }
-main article .contianer .comment .poster-message {
+main article .container .comment .post-message {
   min-height: 20px;
   max-height: 40;
 }
-main article .contianer .comment .poster-message .poster-name {
+main article .container .comment .post-message .poster-name {
+  margin-right: 10px;
   font-weight: bold;
 }/*# sourceMappingURL=index.css.map */

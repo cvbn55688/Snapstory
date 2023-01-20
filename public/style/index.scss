@@ -4,7 +4,7 @@ main {
   article {
     display: flex;
     justify-content: center;
-    .contianer {
+    .container {
       margin-top: 30px;
       z-index: 0;
       border: 1px solid rgba(128, 128, 128, 0.578);
@@ -68,10 +68,11 @@ main {
             font-weight: bold;
           }
         }
-        .poster-message {
+        .post-message {
           min-height: 20px;
           max-height: 40;
           .poster-name {
+            margin-right: 10px;
             font-weight: bold;
           }
         }

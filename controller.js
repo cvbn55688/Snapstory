@@ -60,6 +60,12 @@ class controller {
     console.log(uploadReturn, "asdasdasd");
     return uploadReturn;
   }
+
+  async getIndexData() {
+    let postData = await Model.getIndexData();
+    console.log(postData);
+    return postData;
+  }
 }
 
 module.exports = controller;
