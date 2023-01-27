@@ -24,6 +24,7 @@ class controller {
         account: returnStatus.data.account,
         name: returnStatus.data.username,
         userID: returnStatus.data._id,
+        headImg: returnStatus.data.headImg,
       };
       let token = jwt.sign(payload, JWTsecret);
       return { ok: true, status: 200, mes: returnStatus.mes, token: token };
@@ -57,14 +58,33 @@ class controller {
       postData.base64Img,
       postData.message
     );
-    console.log(uploadReturn, "asdasdasd");
     return uploadReturn;
   }
 
   async getIndexData() {
     let postData = await Model.getIndexData();
-    console.log(postData);
+    // console.log(postData);
     return postData;
+  }
+
+  async likePost(username, userID, postID) {
+    let likeData = await Model.likePost(username, userID, postID);
+    return likeData;
+  }
+
+  async dislikePost(username, userID, postID) {
+    let likeData = await Model.dislikePost(username, userID, postID);
+    return likeData;
+  }
+
+  async checkUserLike(username, postID) {
+    let checkData = await Model.checkUserLike(username, postID);
+    return checkData;
+  }
+
+  async newComment(postID, userID, newComment) {
+    let commentData = await Model.newComment(postID, userID, newComment);
+    return commentData;
   }
 }
 

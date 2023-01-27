@@ -36,6 +36,11 @@ const memberSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  headImg: {
+    type: String,
+    default:
+      "https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1666857417.png",
+  },
 });
 
 const PostSchema = new mongoose.Schema({
@@ -46,6 +51,12 @@ const PostSchema = new mongoose.Schema({
     {
       userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
       content: String,
+    },
+  ],
+  likes: [
+    {
+      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
+      username: String,
     },
   ],
 });
@@ -97,13 +108,18 @@ class model {
 
     let result = await Member.findOne({
       $and: [{ account: account }, { password: password }],
-    }).then((data) => {
-      if (data != null) {
-        return { ok: true, mes: "登入成功", data: data, status: 200 };
-      } else {
-        return { ok: false, mes: "帳號或密碼錯誤", status: 400 };
-      }
-    });
+    })
+      .then((data) => {
+        if (data != null) {
+          return { ok: true, mes: "登入成功", data: data, status: 200 };
+        } else {
+          return { ok: false, mes: "帳號或密碼錯誤", status: 400 };
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return { ok: false, mes: error, status: 500 };
+      });
     return result;
   }
 
@@ -148,9 +164,120 @@ class model {
   }
 
   async getIndexData() {
-    let result = await Post.find().sort({ _id: -1 }).populate("userID").exec();
+    let result = await Post.find()
+      .sort({ _id: -1 })
+      .populate("userID")
+      .populate("comments.userID")
+      .exec();
     return result;
+  }
+
+  async likePost(username, userID, postID) {
+    let result = Post.updateOne(
+      { _id: postID },
+      {
+        $push: {
+          likes: { userID: userID, username: username },
+        },
+      }
+    )
+      .then((mes) => {
+        return { ok: true, mes: mes, status: 200 };
+      })
+      .catch((err) => {
+        return { ok: false, mes: err, status: 500 };
+      });
+    return result;
+  }
+
+  async dislikePost(username, userID, postID) {
+    let result = Post.updateOne(
+      { _id: postID },
+      {
+        $pull: {
+          likes: { userID: userID },
+        },
+      }
+    )
+      .then((mes) => {
+        return { ok: true, mes: mes, status: 200 };
+      })
+      .catch((err) => {
+        return { ok: false, mes: err, status: 500 };
+      });
+    return result;
+  }
+
+  async checkUserLike(username, postID) {
+    let result = Post.findOne({ _id: postID })
+      .select({
+        likes: {
+          $elemMatch: {
+            username: username,
+          },
+        },
+      })
+      .then((mes) => {
+        return mes.likes.length;
+      });
+    return result;
+  }
+
+  async newComment(postID, userID, newComment) {
+    try {
+      let result = Post.updateOne(
+        { _id: postID },
+        {
+          $push: {
+            comments: {
+              userID: userID,
+              content: newComment,
+            },
+          },
+        }
+      ).then((mes) => {
+        console.log(mes);
+        if (mes.modifiedCount == 1) {
+          return { ok: true, status: 200 };
+        } else {
+          return { ok: false, status: 500 };
+        }
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
   }
 }
 
 module.exports = model;
+
+// Post.find()
+//   .sort({ _id: -1 })
+//   .populate("userID")
+//   .populate({ path: "comments.userID", model: "Member" })
+//   .then((mes) => {
+//     console.log(mes);
+//   });
+
+// Post.findOne({ _id: "63c8a87602bd142311bee613" })
+//   .populate("comments.userID")
+//   .exec((err, post) => {
+//     console.log(post.comments);
+//   });
+
+// Post.updateOne(
+//   { _id: "63c8a87602bd142311bee613" },
+//   {
+//     $set: {
+//       comments: {
+//         _id: "63c8b62eeb0bf5c1a97aebad",
+//         userID: "63c76d88d55533e391061346",
+//         content: "修改後留言",
+//       },
+//     },
+//   }
+// ).then((mes) => {
+//   console.log(mes);
+// });

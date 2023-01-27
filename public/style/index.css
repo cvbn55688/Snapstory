@@ -1,3 +1,6 @@
+main .article-container {
+  margin-bottom: 30px;
+}
 main article {
   display: flex;
   justify-content: center;
@@ -10,6 +13,7 @@ main article .container {
   border-radius: 10px;
 }
 main article .container .poster {
+  position: relative;
   z-index: 10;
   border-bottom: 1px solid rgba(128, 128, 128, 0.578);
   display: flex;
@@ -32,10 +36,21 @@ main article .container .poster .poster-name {
   font-weight: bold;
   cursor: pointer;
 }
+main article .container .poster .post-dots {
+  position: absolute;
+  right: 0;
+  height: 25px;
+  margin-right: 10px;
+  cursor: pointer;
+}
 main article .container .content {
+  position: relative;
   width: 100%;
   min-height: 270px;
   max-height: 550px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 main article .container .content .post-img {
   width: 100%;
@@ -43,6 +58,14 @@ main article .container .content .post-img {
   max-height: 550px;
   -o-object-fit: cover;
      object-fit: cover;
+}
+main article .container .content .post-heart {
+  display: none;
+  position: absolute;
+  -webkit-animation: popup 0.5s;
+          animation: popup 0.5s;
+  z-index: 500;
+  width: 25%;
 }
 main article .container .comment {
   padding: 0 10px 15px 10px;
@@ -56,6 +79,7 @@ main article .container .comment .user-interacte {
 main article .container .comment .user-interacte img {
   height: 30px;
   margin-right: 20px;
+  cursor: pointer;
 }
 main article .container .comment .user-likes {
   height: 30px;
@@ -72,4 +96,49 @@ main article .container .comment .post-message {
 main article .container .comment .post-message .poster-name {
   margin-right: 10px;
   font-weight: bold;
+}
+
+@media screen and (max-width: 500px) {
+  main article .container {
+    border: none;
+    border-radius: 0;
+    margin: 0;
+  }
+  main article .container .poster {
+    border: none;
+  }
+}
+@-webkit-keyframes popup {
+  0% {
+    transform: scale(0);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes popup {
+  0% {
+    transform: scale(0);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }/*# sourceMappingURL=index.css.map */

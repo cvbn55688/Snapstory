@@ -18,6 +18,12 @@ const postNextStep = document.querySelector(".next-step");
 const postUndo = document.querySelector(".undo");
 const postMessage = document.querySelector(".post-message");
 const postMessageTextarea = document.querySelector(".user-message-textarea");
+// const postTextarea = document.querySelector(".")
+// const preveiwImageContainer = document.querySelector(
+//   ".preveiw-image-container"
+// );
+// const previewContainer = document.querySelector(".preview-container");
+// const previewPostImg = document.querySelector(".preview-post-img");
 
 function changeIcon(targetIcon) {
   let icons = ["homePageImg", "inboxPageImg", "heartImg", "postButtonImg"];
@@ -64,7 +70,7 @@ inboxPage.addEventListener("click", () => {
   }
 });
 
-postButtonImg.addEventListener("click", () => {
+postButtonImg.addEventListener("click", (e) => {
   changeIcon("postButtonImg");
   postButtonImg.src = "../image/post2.png";
   showPost.style.display = "flex";
@@ -111,13 +117,22 @@ postImageInput.addEventListener("change", (eve) => {
     // });
 
     postNextStep.addEventListener("click", () => {
-      postContainer.style.width = "780px";
-      postCutting.style.display = "grid";
-      postCutting.style.gridTemplateColumns = "2fr 1fr";
+      // preveiwImageContainer.style.display = "none";
+      // previewContainer.style.display = "flex";
+      // previewPostImg.style.src = base64Img;
+      // postContainer.style.width = "780px";
+      // postCutting.style.display = "grid";
+      // postCutting.style.gridTemplateColumns = "2fr 1fr";
+
+      let newHr = document.createElement("hr");
+      postContainer.appendChild(newHr);
+
       postTitle.textContent = "建立新貼文";
       postCutting.style.padding = "20px";
+      postCutting.style.height = "auto";
       postMessage.style.display = "flex";
       postNextStep.textContent = "建立";
+
       postNextStep.addEventListener("click", () => {
         fetch(`/uploadPost`, {
           method: "POST",

@@ -1,6 +1,9 @@
 main {
   //   display: flex;
   //   justify-content: center;
+  .article-container {
+    margin-bottom: 30px;
+  }
   article {
     display: flex;
     justify-content: center;
@@ -13,6 +16,7 @@ main {
       border-radius: 10px;
 
       .poster {
+        position: relative;
         z-index: 10;
         border-bottom: 1px solid rgba(128, 128, 128, 0.578);
         display: flex;
@@ -33,18 +37,36 @@ main {
           font-weight: bold;
           cursor: pointer;
         }
+        .post-dots {
+          position: absolute;
+          right: 0;
+          height: 25px;
+          margin-right: 10px;
+          cursor: pointer;
+        }
       }
 
       .content {
+        position: relative;
         width: 100%;
         min-height: 270px;
         max-height: 550px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         // border: 1px solid red;
         .post-img {
           width: 100%;
           min-height: 270px;
           max-height: 550px;
           object-fit: cover;
+        }
+        .post-heart {
+          display: none;
+          position: absolute;
+          animation: popup 0.5s;
+          z-index: 500;
+          width: 25%;
         }
       }
 
@@ -58,6 +80,7 @@ main {
           img {
             height: 30px;
             margin-right: 20px;
+            cursor: pointer;
           }
         }
         .user-likes {
@@ -78,5 +101,34 @@ main {
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  main article .container {
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    .poster {
+      border: none;
+    }
+  }
+}
+
+@keyframes popup {
+  0% {
+    transform: scale(0);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
   }
 }

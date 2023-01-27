@@ -32,7 +32,6 @@ app.get("/inbox", (req, res) => {
 
 app.post("/signup", async (req, res) => {
   let signupData = await controller.signup(req.body);
-  console.log(signupData);
   if (signupData.status == 200) {
     res.status(200).json({ ok: true, mes: signupData.mes });
   } else {
@@ -67,8 +66,58 @@ app.post("/uploadPost", async (req, res) => {
   let userData = jwtDecode(req.cookies.JWTtoken);
 
   let uploadData = await controller.uploadPost(userData, req.body);
-  console.log(uploadData);
   res.status(200).json({ ok: true, data: uploadData });
+});
+
+app.post("/likePost", async (req, res) => {
+  let userData = jwtDecode(req.cookies.JWTtoken);
+  let userID = userData.userID;
+  let username = userData.name;
+  let postID = req.body.postID;
+
+  if (req.body.dislike != true) {
+    let likeData = await controller.likePost(username, userID, postID);
+    if (likeData.ok == true) {
+      res.status(200).json({ ok: true, data: username + " like " + postID });
+    } else {
+      res.status(500).json({ ok: false, data: likeData.mes });
+    }
+  } else {
+    let likeData = await controller.dislikePost(username, userID, postID);
+    if (likeData.ok == true) {
+      res.status(200).json({ ok: true, data: username + " dislike " + postID });
+    } else {
+      res.status(500).json({ ok: false, data: likeData.mes });
+    }
+  }
+});
+
+app.post("/checkUserLike", async (req, res) => {
+  let userData = jwtDecode(req.cookies.JWTtoken);
+  let userID = userData.userID;
+  let username = userData.name;
+  let postID = req.body.postID;
+
+  let checkData = await controller.checkUserLike(username, postID);
+  res.status(200).json({ ok: true, data: checkData });
+});
+
+app.post("/newComment", async (req, res) => {
+  let userData = jwtDecode(req.cookies.JWTtoken);
+  let userID = userData.userID;
+  let username = userData.name;
+  let headImg = userData.headImg;
+  let postID = req.body.postID;
+  let newComment = req.body.comment;
+  let commentData = await controller.newComment(postID, userID, newComment);
+
+  if (commentData.ok != false) {
+    res
+      .status(200)
+      .json({ ok: true, data: { username: username, headImg: headImg } });
+  } else {
+    res.status(500).json({ ok: false, data: { error: commentData.mes } });
+  }
 });
 
 app.listen(3000, () => {

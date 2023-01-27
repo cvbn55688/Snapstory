@@ -57,3 +57,13 @@ header {
     }
   }
 }
+
+@media screen and (max-width: 970px) {
+  header {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 10px;
+    .serch-bar {
+      display: none;
+    }
+  }
+}
