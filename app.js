@@ -22,12 +22,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  console.log(req.user);
   res.render("login");
 });
 
 app.get("/inbox", (req, res) => {
   res.render("inbox");
+});
+
+app.get("/personal/:user", (req, res) => {
+  res.render("userPage");
 });
 
 app.post("/signup", async (req, res) => {
@@ -52,8 +55,12 @@ app.put("/signin", async (req, res) => {
 });
 
 app.get("/getData", async (req, res) => {
-  let postData = await controller.getIndexData();
-  res.status(200).json({ ok: true, data: postData });
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let postData = await controller.getIndexData();
+    res.status(200).json({ ok: true, data: postData });
+  }
 });
 
 app.get("/checkLogin", async (req, res) => {
@@ -70,6 +77,10 @@ app.post("/uploadPost", async (req, res) => {
 });
 
 app.post("/likePost", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  }
+
   let userData = jwtDecode(req.cookies.JWTtoken);
   let userID = userData.userID;
   let username = userData.name;
@@ -110,7 +121,6 @@ app.post("/newComment", async (req, res) => {
   let postID = req.body.postID;
   let newComment = req.body.comment;
   let commentData = await controller.newComment(postID, userID, newComment);
-
   if (commentData.ok != false) {
     res
       .status(200)
@@ -118,6 +128,11 @@ app.post("/newComment", async (req, res) => {
   } else {
     res.status(500).json({ ok: false, data: { error: commentData.mes } });
   }
+});
+
+app.get("/getUserPost/:username", async (req, res) => {
+  let userPostData = await controller.getUserPost(req.params.username);
+  res.status(200).json({ ok: true, data: userPostData });
 });
 
 app.listen(3000, () => {

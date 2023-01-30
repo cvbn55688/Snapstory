@@ -6,6 +6,8 @@ const inboxPageImg = document.querySelector(".inbox-page img");
 const postButtonImg = document.querySelector(".post img");
 const heart = document.querySelector(".heart");
 const heartImg = document.querySelector(".heart img");
+const personal = document.querySelector(".personal");
+const personalImg = document.querySelector(".personal img");
 const showPost = document.querySelector(".show-post");
 const postContainer = document.querySelector(".posting");
 const postLeaveButton = document.querySelector(".post-leave-img");
@@ -18,6 +20,14 @@ const postNextStep = document.querySelector(".next-step");
 const postUndo = document.querySelector(".undo");
 const postMessage = document.querySelector(".post-message");
 const postMessageTextarea = document.querySelector(".user-message-textarea");
+const postHeader1 = document.querySelector(".post-header");
+
+const postUndo2 = document.querySelector(".undo-2");
+const postNextStep2 = document.querySelector(".next-step-2");
+const postHr = document.querySelector(".post-hr");
+const postCancel = document.querySelector(".cancel-container");
+const cancelButton = document.querySelector(".cancel-button");
+const notCancelButton = document.querySelector(".ont-cancel-button");
 // const postTextarea = document.querySelector(".")
 // const preveiwImageContainer = document.querySelector(
 //   ".preveiw-image-container"
@@ -77,14 +87,13 @@ postButtonImg.addEventListener("click", (e) => {
 });
 
 postLeaveButton.addEventListener("click", () => {
-  showPost.style.display = "none";
-  if (document.location.pathname == "/") {
-    changeIcon("homePageImg");
-    homePageImg.src = "../image/home2.png";
-  } else {
-    changeIcon("inboxPageImg");
-    inboxPageImg.src = "../image/message2.png";
-  }
+  postCancel.style.display = "flex";
+  cancelButton.addEventListener("click", () => {
+    location.href = location.pathname;
+  });
+  notCancelButton.addEventListener("click", () => {
+    postCancel.style.display = "none";
+  });
 });
 
 heart.addEventListener("click", () => {
@@ -95,7 +104,6 @@ heart.addEventListener("click", () => {
 postImageInput.addEventListener("change", (eve) => {
   let imageFile = eve.target.files[0];
   let reader = new FileReader();
-  console.log("Test");
 
   reader.addEventListener("load", () => {
     let base64Img = reader.result;
@@ -106,34 +114,40 @@ postImageInput.addEventListener("change", (eve) => {
     postNextStep.style.display = "flex";
     postUndo.style.display = "flex";
 
-    // postUndo.addEventListener("click", () => {
-    //   console.log("test");
-    //   postingArea.style.display = "flex";
-    //   postCutting.style.display = "none";
-    //   postPreveiw.src = "";
-    //   postTitle.textContent = "建立新貼文";
-    //   postNextStep.style.display = "none";
-    //   postUndo.style.display = "none";
-    // });
+    postUndo.addEventListener("click", () => {
+      postingArea.style.display = "flex";
+      postCutting.style.display = "none";
+      postPreveiw.src = "";
+      postTitle.textContent = "選擇圖片";
+      postNextStep.style.display = "none";
+      postUndo.style.display = "none";
+    });
 
     postNextStep.addEventListener("click", () => {
-      // preveiwImageContainer.style.display = "none";
-      // previewContainer.style.display = "flex";
-      // previewPostImg.style.src = base64Img;
-      // postContainer.style.width = "780px";
-      // postCutting.style.display = "grid";
-      // postCutting.style.gridTemplateColumns = "2fr 1fr";
+      postUndo.style.display = "none";
+      postUndo2.style.display = "flex";
+      postNextStep.style.display = "none";
+      postNextStep2.style.display = "flex";
 
-      let newHr = document.createElement("hr");
-      postContainer.appendChild(newHr);
+      postUndo2.addEventListener("click", () => {
+        postUndo.style.display = "flex";
+        postUndo2.style.display = "none";
+        postNextStep.style.display = "flex";
+        postNextStep2.style.display = "none";
+        postCutting.style.padding = "none";
+        postCutting.style.height = "580px";
+        postMessage.style.display = "none";
+        postHr.style.display = "none";
+      });
+
+      postHr.style.display = "block";
 
       postTitle.textContent = "建立新貼文";
       postCutting.style.padding = "20px";
       postCutting.style.height = "auto";
       postMessage.style.display = "flex";
-      postNextStep.textContent = "建立";
 
-      postNextStep.addEventListener("click", () => {
+      postNextStep2.addEventListener("click", () => {
         fetch(`/uploadPost`, {
           method: "POST",
           body: JSON.stringify({
@@ -159,3 +173,32 @@ postImageInput.addEventListener("change", (eve) => {
 
   reader.readAsDataURL(imageFile);
 });
+
+async function checkLonin() {
+  return await fetch(`/checkLogin`, {
+    method: "GET",
+  })
+    .then(function (response) {
+      if (response.status == 400) {
+        location.href = "/login";
+        return;
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.ok == false) {
+        return;
+      }
+      data = data.data;
+      personalImg.src = data.headImg;
+      personalImg.addEventListener("click", () => {
+        location.href = `/personal/${data.name}`;
+      });
+      return data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+checkLonin();

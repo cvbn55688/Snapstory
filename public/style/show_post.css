@@ -1,4 +1,22 @@
+@-webkit-keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
 .show-post-blacksreen {
+  -webkit-animation: showTable 0.5s;
+          animation: showTable 0.5s;
   position: relative;
   width: 100%;
   height: 100%;
@@ -141,6 +159,7 @@
 .show-post-blacksreen .post-table .comment-container .post-interact-container .post-interact img {
   height: 25px;
   margin-right: 15px;
+  cursor: pointer;
 }
 .show-post-blacksreen .post-table .comment-container .post-interact-container .post-liker {
   margin-top: 5px;

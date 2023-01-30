@@ -1,7 +1,7 @@
 const articleContainer = document.querySelector(".article-container");
 const postBlacksreen = document.querySelector(".show-post-blacksreen");
 const closePostButton = document.querySelector(".close-post-button");
-
+// console.log(new Date());
 function fetchLikePost(postId, dislike) {
   fetch(`/likePost`, {
     method: "POST",
@@ -44,6 +44,10 @@ function likePost(
     },
   })
     .then(function (response) {
+      if (response.status == 400) {
+        location.href = "/login";
+        return;
+      }
       return response.json();
     })
     .then(function (data) {
@@ -197,11 +201,17 @@ function createPost(
   newPosterHeaderImg.classList.add("poster-header-img");
   newPosterHeaderImg.src = headerImg;
   newPoster.appendChild(newPosterHeaderImg);
+  newPosterHeaderImg.addEventListener("click", () => {
+    location.href = `/personal/${userName}`;
+  });
 
   let posterName = document.createElement("p");
   posterName.classList.add("poster-name");
   posterName.textContent = userName;
   newPoster.appendChild(posterName);
+  posterName.addEventListener("click", () => {
+    location.href = `/personal/${userName}`;
+  });
 
   let postDots = document.createElement("img");
   postDots.classList.add("post-dots");
@@ -271,6 +281,7 @@ function createPost(
   newPosterMessage.textContent = posterMessage;
   newPostMessageDiv.appendChild(newPosterMessage);
 
+  //5454564
   let newPostTable = document.createElement("div");
   newPostTable.classList.add("post-table");
   newPostTable.setAttribute("id", postId);
@@ -396,7 +407,7 @@ function createPost(
 
   submitComment(newUl, postId, newLeaveComment, newSubmitComment);
   createComment(newUl, comments);
-  newPostInteract.addEventListener("click", () => {
+  newMessagePost.addEventListener("click", () => {
     newLeaveComment.focus();
   });
 }
@@ -406,6 +417,10 @@ function getData() {
     method: "GET",
   })
     .then(function (response) {
+      if (response.status == 400) {
+        location.href = "/login";
+        return;
+      }
       if (response.status != 200) {
         alert("讀取失敗");
         return;
@@ -433,21 +448,21 @@ function getData() {
     });
 }
 
-function checkLonin() {
-  fetch(`/checkLogin`, {
-    method: "GET",
-  })
-    .then(function (response) {
-      if (response.status == 400) {
-        location.href = "/login";
-        return;
-      }
-      return response.json();
-    })
-    .then(function (data) {
-      console.log(data);
-    });
-}
+// function checkLonin() {
+//   fetch(`/checkLogin`, {
+//     method: "GET",
+//   })
+//     .then(function (response) {
+//       if (response.status == 400) {
+//         location.href = "/login";
+//         return;
+//       }
+//       return response.json();
+//     })
+//     .then(function (data) {
+//       console.log(data);
+//     });
+// }
 
 function createComment(newUl, comments) {
   comments.forEach((comment) => {
@@ -531,5 +546,10 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
   });
 }
 
-checkLonin();
+async function getUserInfo() {
+  let userInfo = await checkLonin();
+  console.log(userInfo);
+}
+
 getData();
+getUserInfo();

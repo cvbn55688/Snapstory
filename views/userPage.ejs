@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style/base.css" />
+    <link rel="stylesheet" href="/style/user_page.css" />
+
+    <title>Snapstory</title>
+  </head>
+  <body>
+    <% include posting.ejs %><% include showPost.ejs %>
+
+    <header>
+      <div class="tittle">
+        <p onclick="location.href='/'">Snapstory</p>
+      </div>
+      <div class="serch-bar">
+        <input
+          type="text"
+          onclick="this.placeholder='搜尋'"
+          onblur="this.placeholder='      搜尋'"
+          placeholder="      搜尋"
+        />
+      </div>
+      <div class="nav">
+        <li class="home-page"><img src="/image/home.png" alt="" /></li>
+        <li class="inbox-page"><img src="/image/message.png" alt="" /></li>
+        <li class="post"><img src="/image/post.png" alt="" /></li>
+        <li class="heart"><img src="/image/heart.png" alt="" /></li>
+        <li class="personal"><img src="" alt="" /></li>
+      </div>
+    </header>
+
+    <main>
+      <div class="user-info">
+        <section class="user-info-section">
+          <div class="user-info-container">
+            <div class="img-container">
+              <img class="user-info-headImg" src="" alt="" />
+            </div>
+
+            <div class="user-info-content-container">
+              <div class="user-person">
+                <p class="user-account"></p>
+                <div class="user-interaction">
+                  <p class="follow">追隨</p>
+                  <p class="message">發送訊息</p>
+                  <p class="set-user-data">編輯個人檔案</p>
+                </div>
+              </div>
+
+              <div class="user-info-count-container">
+                <div class="post-amount-container">
+                  <li class="post-amount">92</li>
+                  <span>貼文</span>
+                </div>
+
+                <div class="fans-amount-container">
+                  <li class="fans">400</li>
+                  <span>位粉絲</span>
+                </div>
+
+                <div class="following-amount-container">
+                  <li class="following">400</li>
+                  <span>追蹤中</span>
+                </div>
+              </div>
+
+              <div class="user-name-container"><p></p></div>
+
+              <div class="self-introduction">
+                <p>測試測測試測</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="user-posts">
+          <!-- <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1666857417.png"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674210301197"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674239796819"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674240302353"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
+              alt=""
+            />
+          </div>
+          <div class="post-card">
+            <img
+              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
+              alt=""
+            />
+          </div> -->
+        </section>
+      </div>
+    </main>
+  </body>
+  <script src="/JS/base.js"></script>
+  <script src="/JS/userPage.js"></script>
+  <script src="/JS/showPost.js"></script>
+</html>

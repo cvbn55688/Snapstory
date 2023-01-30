@@ -86,6 +86,11 @@ class controller {
     let commentData = await Model.newComment(postID, userID, newComment);
     return commentData;
   }
+
+  async getUserPost(username) {
+    let userPostData = await Model.getUserPost(username);
+    return userPostData;
+  }
 }
 
 module.exports = controller;

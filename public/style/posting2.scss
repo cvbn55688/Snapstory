@@ -1,4 +1,13 @@
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
 .show-post {
+  animation: showTable 0.5s;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -16,6 +25,68 @@
     cursor: pointer;
   }
 
+  .cancel-container {
+    display: none;
+    position: absolute;
+    animation: showTable 0.25s;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.501);
+    z-index: 210;
+    justify-content: center;
+    align-items: center;
+    .cancel-table {
+      width: 330px;
+      height: 180px;
+      background-color: rgb(255, 255, 255);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      // justify-content: center;
+      align-items: center;
+      .cancel-title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 50%;
+        .cancel-main {
+          font-size: 18px;
+          font-weight: bold;
+        }
+        .cancel-second {
+          margin-top: 10px;
+          color: rgb(98, 98, 98);
+        }
+      }
+
+      .ensure-cancel {
+        width: 100%;
+        height: 50%;
+        display: flex;
+        flex-direction: column;
+        // grid-template-rows: 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+        div {
+          width: 100%;
+          height: 50%;
+          text-align: center;
+          border-top: 1px solid rgb(98, 98, 98);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          user-select: none;
+        }
+        .cancel-button {
+          color: red;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
   .posting {
     display: flex;
     flex-direction: column;
@@ -29,6 +100,7 @@
     hr {
       margin: 0 20px;
       width: 95%;
+      display: none;
     }
     .post-header {
       position: relative;
@@ -43,7 +115,9 @@
         font-weight: bold;
       }
       .undo,
-      .next-step {
+      .undo-2,
+      .next-step,
+      .next-step-2 {
         display: none;
         color: rgb(40, 154, 255);
         width: 50px;
@@ -51,11 +125,13 @@
         cursor: pointer;
         user-select: none;
       }
-      .undo {
+      .undo,
+      .undo-2 {
         position: absolute;
         left: 0;
       }
-      .next-step {
+      .next-step,
+      .next-step-2 {
         position: absolute;
         right: 0;
       }

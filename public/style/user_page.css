@@ -1,0 +1,145 @@
+.user-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .user-info-section {
+  width: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-info .user-info-section .user-info-container {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+}
+.user-info .user-info-section .img-container {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .user-info-section .img-container .user-info-headImg {
+  width: 150px;
+  height: 150px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 50%;
+  margin: 0 50px;
+}
+.user-info .user-info-section .user-info-content-container {
+  width: 60%;
+  margin: 10px;
+}
+.user-info .user-info-section .user-info-content-container .user-person {
+  display: flex;
+  align-items: center;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-account {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction {
+  display: flex;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction p {
+  margin-right: 10px;
+  background-color: rgb(128, 128, 128);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.user-info .user-info-section .user-info-count-container {
+  display: flex;
+  margin: 15px 0;
+}
+.user-info .user-info-section .user-info-count-container div {
+  display: flex;
+  margin-right: 20px;
+}
+.user-info .user-info-section .user-info-count-container div li {
+  list-style: none;
+  font-weight: bold;
+}
+.user-info .user-info-section .user-info-count-container div span {
+  display: block;
+}
+.user-info .user-info-section .user-info-count-container .fans,
+.user-info .user-info-section .user-info-count-container .following {
+  cursor: pointer;
+}
+.user-info .user-info-section .user-name-container p {
+  font-weight: bold;
+}
+.user-info .user-posts {
+  margin: 3% 0 5% 0;
+  width: 800px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 15px;
+  border-top: 1px solid rgba(128, 128, 128, 0.578);
+}
+.user-info .user-posts .post-card {
+  width: 240px;
+  height: 240px;
+  position: relative;
+  background-color: rgba(128, 128, 128, 0.578);
+}
+.user-info .user-posts .post-card img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 850px) {
+  .user-info .user-info-section {
+    width: 80%;
+  }
+  .user-info .user-posts {
+    width: 80%;
+    padding: 2%;
+    grid-gap: 2%;
+  }
+  .user-info .user-posts .post-card {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .user-info .user-info-section {
+    width: 100%;
+  }
+  .user-info .user-info-section .user-info-content-container .user-person {
+    display: block;
+  }
+  .user-info .user-info-section .user-info-content-container .user-person .user-interaction {
+    margin-top: 5px;
+  }
+  .user-info .user-info-section .user-info-content-container li {
+    text-align: center;
+  }
+  .user-info .user-info-section .user-info-count-container div {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .user-info .user-posts {
+    width: 100%;
+    grid-gap: 1%;
+  }
+  .user-info .user-posts .post-card {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+  }
+}/*# sourceMappingURL=user_page.css.map */

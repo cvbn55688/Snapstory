@@ -56,6 +56,13 @@ header .nav li {
 header .nav li img {
   width: 25px;
 }
+header .nav .personal img {
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
 
 @media screen and (max-width: 970px) {
   header {

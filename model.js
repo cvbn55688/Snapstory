@@ -39,7 +39,16 @@ const memberSchema = new mongoose.Schema({
   headImg: {
     type: String,
     default:
-      "https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1666857417.png",
+      "https://d1vscilbhjiukl.cloudfront.net/snapstory/profile_picture/user.png",
+  },
+  fans: {
+    type: Number,
+    default: 0,
+  },
+
+  following: {
+    type: Number,
+    default: 0,
   },
 });
 
@@ -244,6 +253,22 @@ class model {
         }
       });
       return result;
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async getUserPost(username) {
+    try {
+      let user = await Member.findOne({ username: username }).exec();
+      let posts = await Post.find({ userID: user._id })
+        .sort({ _id: -1 })
+        .limit(12)
+        .populate("comments.userID")
+        .exec();
+      console.log(posts);
+      return { posts: posts, user: user };
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };

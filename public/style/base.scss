@@ -55,6 +55,12 @@ header {
         width: 25px;
       }
     }
+    .personal img {
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      object-fit: cover;
+    }
   }
 }
 
