@@ -1,3 +1,19 @@
+@-webkit-keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
 .user-info {
   width: 100%;
   display: flex;
@@ -15,6 +31,10 @@
   width: 100%;
   display: flex;
   margin-top: 20px;
+}
+.user-info .user-info-section .user-info-container .fans-amount-container,
+.user-info .user-info-section .user-info-container .following-amount-container {
+  cursor: pointer;
 }
 .user-info .user-info-section .img-container {
   width: 40%;
@@ -48,11 +68,43 @@
 }
 .user-info .user-info-section .user-info-content-container .user-person .user-interaction p {
   margin-right: 10px;
-  background-color: rgb(128, 128, 128);
-  color: white;
+  background-color: rgb(235, 235, 235);
+  color: rgb(0, 0, 0);
   padding: 5px 10px;
+  font-weight: 500;
+  font-size: 14px;
   border-radius: 5px;
   cursor: pointer;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction P:hover {
+  background-color: rgb(201, 201, 201);
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .follow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(59, 137, 255);
+  color: rgb(255, 255, 255);
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .follow img {
+  display: none;
+  height: 15px;
+  margin-left: 10px;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .follow:hover {
+  background-color: rgb(18, 113, 255);
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .isfollowed {
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .isfollowed img {
+  margin-left: 5px;
+  width: 20px;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .set-user-data {
+  display: none;
 }
 .user-info .user-info-section .user-info-count-container {
   display: flex;
@@ -68,10 +120,6 @@
 }
 .user-info .user-info-section .user-info-count-container div span {
   display: block;
-}
-.user-info .user-info-section .user-info-count-container .fans,
-.user-info .user-info-section .user-info-count-container .following {
-  cursor: pointer;
 }
 .user-info .user-info-section .user-name-container p {
   font-weight: bold;
@@ -99,6 +147,20 @@
      object-fit: cover;
   cursor: pointer;
 }
+.user-info .no-post {
+  margin-top: 30px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .no-post img {
+  width: 80px;
+}
+.user-info .no-post p {
+  font-size: 20px;
+  font-weight: bold;
+}
 
 @media screen and (max-width: 850px) {
   .user-info .user-info-section {
@@ -115,6 +177,99 @@
     padding-bottom: 100%;
   }
 }
+.full-screen {
+  -webkit-animation: showTable 0.5s;
+          animation: showTable 0.5s;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 101;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .fans-table,
+.full-screen .following-table {
+  display: none;
+  flex-direction: column;
+  width: 400px;
+  height: 400px;
+  background-color: white;
+  border-radius: 10px;
+}
+.full-screen .fans-table .fans-title,
+.full-screen .fans-table .following-title,
+.full-screen .following-table .fans-title,
+.full-screen .following-table .following-title {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 12%;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+}
+.full-screen .fans-table .fans-title p,
+.full-screen .fans-table .following-title p,
+.full-screen .following-table .fans-title p,
+.full-screen .following-table .following-title p {
+  font-size: 18px;
+}
+.full-screen .fans-table .fans-title .fans-close,
+.full-screen .fans-table .fans-title .following-close,
+.full-screen .fans-table .following-title .fans-close,
+.full-screen .fans-table .following-title .following-close,
+.full-screen .following-table .fans-title .fans-close,
+.full-screen .following-table .fans-title .following-close,
+.full-screen .following-table .following-title .fans-close,
+.full-screen .following-table .following-title .following-close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 15px 15px 0 0;
+  cursor: pointer;
+}
+.full-screen .fans-table ul.fans-ul,
+.full-screen .fans-table .following-ul,
+.full-screen .following-table ul.fans-ul,
+.full-screen .following-table .following-ul {
+  padding-top: 15px;
+  width: 100%;
+  height: 88%;
+  overflow-y: scroll;
+}
+.full-screen .fans-table ul.fans-ul li,
+.full-screen .fans-table .following-ul li,
+.full-screen .following-table ul.fans-ul li,
+.full-screen .following-table .following-ul li {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 10px 10px 10px 20px;
+  cursor: pointer;
+}
+.full-screen .fans-table ul.fans-ul li img,
+.full-screen .fans-table .following-ul li img,
+.full-screen .following-table ul.fans-ul li img,
+.full-screen .following-table .following-ul li img {
+  width: 45px;
+  height: 45px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+.full-screen .fans-table ul.fans-ul li:hover,
+.full-screen .fans-table .following-ul li:hover,
+.full-screen .following-table ul.fans-ul li:hover,
+.full-screen .following-table .following-ul li:hover {
+  background-color: rgba(230, 230, 230, 0.7137254902);
+}
+
 @media screen and (max-width: 500px) {
   .user-info .user-info-section {
     width: 100%;

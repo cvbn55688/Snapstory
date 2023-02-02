@@ -16,6 +16,8 @@ app.set("view engine", "ejs");
 
 const controllerJS = require("./controller");
 const controller = new controllerJS();
+const websocket = require("./websocket.js");
+websocket.start();
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -84,19 +86,36 @@ app.post("/likePost", async (req, res) => {
   let userData = jwtDecode(req.cookies.JWTtoken);
   let userID = userData.userID;
   let username = userData.name;
+  let userHeadImg = userData.headImg;
   let postID = req.body.postID;
 
   if (req.body.dislike != true) {
-    let likeData = await controller.likePost(username, userID, postID);
+    let likeData = await controller.likePost(
+      username,
+      userID,
+      postID,
+      userHeadImg
+    );
     if (likeData.ok == true) {
-      res.status(200).json({ ok: true, data: username + " like " + postID });
+      res.status(200).json({
+        ok: true,
+        like: true,
+        data: {
+          liker: username,
+          likerID: userID,
+          postID: postID,
+          targetUserID: likeData.mes.userID,
+        },
+      });
     } else {
       res.status(500).json({ ok: false, data: likeData.mes });
     }
   } else {
     let likeData = await controller.dislikePost(username, userID, postID);
     if (likeData.ok == true) {
-      res.status(200).json({ ok: true, data: username + " dislike " + postID });
+      res
+        .status(200)
+        .json({ ok: true, like: false, data: username + " dislike " + postID });
     } else {
       res.status(500).json({ ok: false, data: likeData.mes });
     }
@@ -122,17 +141,56 @@ app.post("/newComment", async (req, res) => {
   let newComment = req.body.comment;
   let commentData = await controller.newComment(postID, userID, newComment);
   if (commentData.ok != false) {
-    res
-      .status(200)
-      .json({ ok: true, data: { username: username, headImg: headImg } });
+    res.status(200).json({
+      ok: true,
+      data: {
+        username,
+        userID,
+        headImg,
+        postID,
+        targetUserID: commentData.mes.userID,
+        newComment,
+      },
+    });
   } else {
     res.status(500).json({ ok: false, data: { error: commentData.mes } });
   }
 });
 
 app.get("/getUserPost/:username", async (req, res) => {
-  let userPostData = await controller.getUserPost(req.params.username);
-  res.status(200).json({ ok: true, data: userPostData });
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let fanId = userData.userID;
+    let userPostData = await controller.getUserPost(req.params.username, fanId);
+    res.status(200).json({ ok: true, data: userPostData });
+  }
+});
+
+app.put("/followFans", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let userID = userData.userID;
+    let username = userData.name;
+    let followedUser = req.body.followedUser;
+    console.log(userID, followedUser);
+    let followData = await controller.followFans(userID, followedUser);
+    let fansData = { userID, username };
+    res.status(200).json({ ok: true, status: 200, followData, fansData });
+  }
+});
+
+app.get("/userSearch/:searchValue", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    console.log(req.params.searchValue);
+    let searchData = await controller.userSeacher(req.params.searchValue);
+    res.status(200).json({ ok: true, data: searchData });
+  }
 });
 
 app.listen(3000, () => {

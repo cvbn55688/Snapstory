@@ -1,3 +1,12 @@
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
 .user-info {
   width: 100%;
   display: flex;
@@ -14,8 +23,12 @@
     .user-info-container {
       width: 100%;
       display: flex;
-
       margin-top: 20px;
+
+      .fans-amount-container,
+      .following-amount-container {
+        cursor: pointer;
+      }
     }
     .img-container {
       width: 40%;
@@ -45,11 +58,43 @@
           display: flex;
           p {
             margin-right: 10px;
-            background-color: rgb(128, 128, 128);
-            color: white;
+            background-color: rgb(235, 235, 235);
+            color: rgb(0, 0, 0);
             padding: 5px 10px;
+            font-weight: 500;
+            font-size: 14px;
             border-radius: 5px;
             cursor: pointer;
+          }
+          P:hover {
+            background-color: rgb(201, 201, 201);
+          }
+          .follow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(59, 137, 255);
+            color: rgb(255, 255, 255);
+            img {
+              display: none;
+              height: 15px;
+              margin-left: 10px;
+            }
+          }
+          .follow:hover {
+            background-color: rgb(18, 113, 255);
+          }
+          .isfollowed {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            img {
+              margin-left: 5px;
+              width: 20px;
+            }
+          }
+          .set-user-data {
+            display: none;
           }
         }
       }
@@ -68,11 +113,6 @@
         span {
           display: block;
         }
-      }
-
-      .fans,
-      .following {
-        cursor: pointer;
       }
     }
     .user-name-container {
@@ -107,6 +147,20 @@
       }
     }
   }
+  .no-post {
+    margin-top: 30px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 80px;
+    }
+    p {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
 }
 
 @media screen and (max-width: 850px) {
@@ -122,6 +176,74 @@
         width: 100%;
         height: 0;
         padding-bottom: 100%;
+      }
+    }
+  }
+}
+.full-screen {
+  animation: showTable 0.5s;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 101;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  .fans-table,
+  .following-table {
+    display: none;
+    flex-direction: column;
+    width: 400px;
+    height: 400px;
+    background-color: white;
+    border-radius: 10px;
+    .fans-title,
+    .following-title {
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 12%;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+      p {
+        font-size: 18px;
+      }
+      .fans-close,
+      .following-close {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 15px 15px 0 0;
+        cursor: pointer;
+      }
+    }
+    ul.fans-ul,
+    .following-ul {
+      padding-top: 15px;
+      width: 100%;
+      height: 88%;
+      overflow-y: scroll;
+      li {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        padding: 10px 10px 10px 20px;
+        cursor: pointer;
+        img {
+          width: 45px;
+          height: 45px;
+          object-fit: cover;
+          margin-right: 10px;
+          border-radius: 50%;
+        }
+      }
+      li:hover {
+        background-color: #e6e6e6b6;
       }
     }
   }

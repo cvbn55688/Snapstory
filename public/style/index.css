@@ -83,8 +83,10 @@ main article .container .comment .user-interacte img {
 }
 main article .container .comment .user-likes {
   height: 30px;
+  width: 150px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 main article .container .comment .user-likes .like-amount {
   font-weight: bold;
@@ -96,6 +98,12 @@ main article .container .comment .post-message {
 main article .container .comment .post-message .poster-name {
   margin-right: 10px;
   font-weight: bold;
+}
+main article .container .comment .post-message .post-time {
+  padding-top: 5px;
+  font-size: 14px;
+  color: rgb(105, 105, 105);
+  width: 60px;
 }
 
 @media screen and (max-width: 500px) {

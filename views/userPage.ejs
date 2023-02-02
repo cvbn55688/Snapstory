@@ -10,18 +10,53 @@
   </head>
   <body>
     <% include posting.ejs %><% include showPost.ejs %>
-
+    <div class="full-screen">
+      <div class="fans-table">
+        <div class="fans-title">
+          <p>粉絲</p>
+          <img class="fans-close" src="/image/close.png" alt="" />
+        </div>
+        <ul class="fans-ul"></ul>
+      </div>
+      <div class="following-table">
+        <div class="following-title">
+          <p>追蹤中</p>
+          <img class="following-close" src="/image/close.png" alt="" />
+        </div>
+        <ul class="following-ul"></ul>
+      </div>
+    </div>
     <header>
       <div class="tittle">
         <p onclick="location.href='/'">Snapstory</p>
       </div>
       <div class="serch-bar">
-        <input
-          type="text"
-          onclick="this.placeholder='搜尋'"
-          onblur="this.placeholder='      搜尋'"
-          placeholder="      搜尋"
-        />
+        <div class="search-input">
+          <input
+            type="text"
+            onclick="this.placeholder='搜尋'"
+            onblur="this.placeholder='      搜尋'"
+            placeholder="      搜尋"
+          />
+          <img src="/image/loading.gif" alt="" />
+        </div>
+
+        <div class="search-table">
+          <div class="show-history">
+            <p class="history-p">最近</p>
+            <p class="clear-history">全部清除</p>
+          </div>
+
+          <ul class="search-user"></ul>
+
+          <img
+            class="search-Table-loading-image"
+            src="/image/loading.gif"
+            alt=""
+          />
+          <p class="search-no-data">查無結果。</p>
+          <p class="histiry-no-data">沒有近期搜尋紀錄。</p>
+        </div>
       </div>
       <div class="nav">
         <li class="home-page"><img src="/image/home.png" alt="" /></li>
@@ -44,7 +79,16 @@
               <div class="user-person">
                 <p class="user-account"></p>
                 <div class="user-interaction">
-                  <p class="follow">追隨</p>
+                  <p class="follow">
+                    追隨<img class="loading" src="/image/loading.gif" alt="" />
+                  </p>
+                  <p class="isfollowed">
+                    追隨中<img
+                      class="down-arrow"
+                      src="/image/down-arrow.png"
+                      alt=""
+                    />
+                  </p>
                   <p class="message">發送訊息</p>
                   <p class="set-user-data">編輯個人檔案</p>
                 </div>
@@ -52,17 +96,17 @@
 
               <div class="user-info-count-container">
                 <div class="post-amount-container">
-                  <li class="post-amount">92</li>
+                  <li class="post-amount"></li>
                   <span>貼文</span>
                 </div>
 
                 <div class="fans-amount-container">
-                  <li class="fans">400</li>
+                  <li class="fans"></li>
                   <span>位粉絲</span>
                 </div>
 
                 <div class="following-amount-container">
-                  <li class="following">400</li>
+                  <li class="following"></li>
                   <span>追蹤中</span>
                 </div>
               </div>
@@ -76,56 +120,11 @@
           </div>
         </section>
 
-        <section class="user-posts">
-          <!-- <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1666857417.png"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674210301197"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674239796819"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674240302353"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
-              alt=""
-            />
-          </div>
-          <div class="post-card">
-            <img
-              src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1674492513870"
-              alt=""
-            />
-          </div> -->
-        </section>
+        <section class="user-posts"></section>
+        <div class="no-post">
+          <img class="no-post-img" src="/image/camera.png" alt="" />
+          <p>尚無貼文</p>
+        </div>
       </div>
     </main>
   </body>

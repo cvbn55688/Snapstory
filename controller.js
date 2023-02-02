@@ -67,8 +67,9 @@ class controller {
     return postData;
   }
 
-  async likePost(username, userID, postID) {
-    let likeData = await Model.likePost(username, userID, postID);
+  async likePost(username, userID, postID, userHeadImg) {
+    let likeData = await Model.likePost(username, userID, postID, userHeadImg);
+    console.log(likeData);
     return likeData;
   }
 
@@ -87,9 +88,19 @@ class controller {
     return commentData;
   }
 
-  async getUserPost(username) {
-    let userPostData = await Model.getUserPost(username);
+  async getUserPost(username, fanId) {
+    let userPostData = await Model.getUserPost(username, fanId);
     return userPostData;
+  }
+
+  async followFans(fan, followedUser) {
+    let followData = await Model.followFans(fan, followedUser);
+    return followData;
+  }
+
+  async userSeacher(searchValue) {
+    let searchData = await Model.userSeacher(searchValue);
+    return searchData;
   }
 }
 

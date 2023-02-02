@@ -1,7 +1,13 @@
 const articleContainer = document.querySelector(".article-container");
 const postBlacksreen = document.querySelector(".show-post-blacksreen");
 const closePostButton = document.querySelector(".close-post-button");
-// console.log(new Date());
+
+function rediectToPersonalPage(container, targetName) {
+  container.addEventListener("click", () => {
+    location.href = `/personal/${targetName}`;
+  });
+}
+
 function fetchLikePost(postId, dislike) {
   fetch(`/likePost`, {
     method: "POST",
@@ -18,6 +24,14 @@ function fetchLikePost(postId, dislike) {
     })
     .then(function (data) {
       console.log(data);
+      if (data.like == true) {
+        sendNotice(
+          data.data.liker,
+          data.data.likerID,
+          data.data.liker + "喜歡你的貼文" + data.data.postID,
+          data.data.targetUserID
+        );
+      }
     });
 }
 
@@ -184,8 +198,11 @@ function createPost(
   postImgUrl,
   posterMessage,
   comments,
-  likes
+  likes,
+  time
 ) {
+  let date = new Date(time);
+
   let newArticle = document.createElement("article");
   articleContainer.appendChild(newArticle);
 
@@ -281,6 +298,11 @@ function createPost(
   newPosterMessage.textContent = posterMessage;
   newPostMessageDiv.appendChild(newPosterMessage);
 
+  let newPostTime = document.createElement("p");
+  newPostTime.classList.add("post-time");
+  newPostTime.textContent = timeDifference(date);
+  newPostMessageDiv.appendChild(newPostTime);
+
   //5454564
   let newPostTable = document.createElement("div");
   newPostTable.classList.add("post-table");
@@ -312,6 +334,7 @@ function createPost(
   newPosterHeaderImgPost.classList.add("poster-header-img-post");
   newPosterHeaderImgPost.src = headerImg;
   newPosterTitle.appendChild(newPosterHeaderImgPost);
+  rediectToPersonalPage(newPosterHeaderImgPost, userName);
 
   let newPosterContent = document.createElement("div");
   newPosterContent.classList.add("poster-content");
@@ -321,6 +344,7 @@ function createPost(
   newPosterNameP.classList.add("poster-name");
   newPosterNameP.textContent = userName;
   newPosterContent.appendChild(newPosterNameP);
+  rediectToPersonalPage(newPosterNameP, userName);
 
   let newPosterMessageP = document.createElement("p");
   newPosterMessageP.classList.add("poster-messag");
@@ -371,6 +395,11 @@ function createPost(
   newLikeAmountPost.classList.add("like-amount-post");
   newLikeAmountPost.textContent = "123" + "個讚";
   newPostLiker.appendChild(newLikeAmountPost);
+
+  let newShowPostTime = document.createElement("span");
+  newShowPostTime.classList.add("show-post-time");
+  newShowPostTime.textContent = timeDifference(date);
+  newPostLiker.appendChild(newShowPostTime);
 
   let newLeaveCommentContainerSection = document.createElement("section");
   newLeaveCommentContainerSection.classList.add("leave-comment-container");
@@ -441,7 +470,8 @@ function getData() {
           post.imageUrl,
           post.content,
           post.comments,
-          post.likes
+          post.likes,
+          post.time
         );
         // console.log(post);
       });
@@ -482,6 +512,7 @@ function createComment(newUl, comments) {
     newUserHeaderImg.classList.add("user-headerImg");
     newUserHeaderImg.src = comment.userID.headImg;
     newUserMainContent.appendChild(newUserHeaderImg);
+    rediectToPersonalPage(newUserHeaderImg, comment.userID.username);
 
     let newContentArea = document.createElement("div");
     newContentArea.classList.add("content-area");
@@ -491,6 +522,7 @@ function createComment(newUl, comments) {
     newUserNameContentArea.classList.add("user-name-content-area");
     newUserNameContentArea.textContent = comment.userID.username;
     newContentArea.appendChild(newUserNameContentArea);
+    rediectToPersonalPage(newUserNameContentArea, comment.userID.username);
 
     let newUserCommentContentArea = document.createElement("span");
     newUserCommentContentArea.classList.add("user-comment-content-area");
@@ -538,6 +570,16 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
             },
           ];
           createComment(newUl, comments);
+          sendNotice(
+            data.username,
+            data.userID,
+            data.username +
+              "對你的貼文" +
+              data.postID +
+              "留言：" +
+              commentInput.value,
+            data.targetUserID
+          );
           commentInput.value = "";
         } else {
           alert("上傳失敗");
@@ -546,10 +588,10 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
   });
 }
 
-async function getUserInfo() {
-  let userInfo = await checkLonin();
-  console.log(userInfo);
-}
+// async function getUserInfo() {
+//   let userInfo = await checkLonin();
+//   console.log(userInfo);
+// }
 
 getData();
-getUserInfo();
+// getUserInfo();

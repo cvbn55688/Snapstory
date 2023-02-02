@@ -9,6 +9,7 @@ const s3 = new AWS.S3({
   accessKeyId: aws_access_key_id,
   secretAccessKey: aws_secret_access_key,
 });
+const now = new Date();
 
 mongoose
   .connect(envData.mongodbUrl, {
@@ -41,21 +42,24 @@ const memberSchema = new mongoose.Schema({
     default:
       "https://d1vscilbhjiukl.cloudfront.net/snapstory/profile_picture/user.png",
   },
-  fans: {
-    type: Number,
-    default: 0,
-  },
+  fans: [
+    {
+      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
+    },
+  ],
 
-  following: {
-    type: Number,
-    default: 0,
-  },
+  following: [
+    {
+      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
+    },
+  ],
 });
 
 const PostSchema = new mongoose.Schema({
   userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
   imageUrl: String,
   content: String,
+  time: String,
   comments: [
     {
       userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
@@ -66,6 +70,7 @@ const PostSchema = new mongoose.Schema({
     {
       userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
       username: String,
+      headImg: String,
     },
   ],
 });
@@ -158,6 +163,7 @@ class model {
     const post = new Post({
       userID: userID,
       imageUrl: imgUrl,
+      time: now,
       content: message,
     });
     return await post
@@ -181,16 +187,17 @@ class model {
     return result;
   }
 
-  async likePost(username, userID, postID) {
-    let result = Post.updateOne(
+  async likePost(username, userID, postID, userHeadImg) {
+    let result = Post.findOneAndUpdate(
       { _id: postID },
       {
         $push: {
-          likes: { userID: userID, username: username },
+          likes: { userID: userID, username: username, headImg: userHeadImg },
         },
       }
     )
       .then((mes) => {
+        console.log(mes, "------------------------");
         return { ok: true, mes: mes, status: 200 };
       })
       .catch((err) => {
@@ -234,7 +241,7 @@ class model {
 
   async newComment(postID, userID, newComment) {
     try {
-      let result = Post.updateOne(
+      let result = Post.findOneAndUpdate(
         { _id: postID },
         {
           $push: {
@@ -245,12 +252,7 @@ class model {
           },
         }
       ).then((mes) => {
-        console.log(mes);
-        if (mes.modifiedCount == 1) {
-          return { ok: true, status: 200 };
-        } else {
-          return { ok: false, status: 500 };
-        }
+        return { ok: true, status: 200, mes };
       });
       return result;
     } catch (error) {
@@ -259,20 +261,72 @@ class model {
     }
   }
 
-  async getUserPost(username) {
+  async getUserPost(username, fanId) {
     try {
-      let user = await Member.findOne({ username: username }).exec();
+      let user = await Member.findOne({ username: username })
+        .populate("fans.userID")
+        .populate("following.userID")
+        .exec();
       let posts = await Post.find({ userID: user._id })
         .sort({ _id: -1 })
-        .limit(12)
+        // .limit(12)
         .populate("comments.userID")
         .exec();
-      console.log(posts);
-      return { posts: posts, user: user };
+      let isMatchFan = await Member.findOne({
+        _id: user._id,
+      }).then((member) => {
+        let matchingFan = member.fans.filter((fan) => {
+          return fan.userID == fanId;
+        });
+        return matchingFan;
+      });
+      if (isMatchFan.length == 1) {
+        isMatchFan = true;
+      }
+      return { posts: posts, user: user, isMatchFan };
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };
     }
+  }
+
+  async followFans(fan, followedUser) {
+    try {
+      let pushFans = await Member.findOneAndUpdate(
+        { _id: followedUser },
+        {
+          $push: {
+            fans: { userID: fan },
+          },
+        }
+      ).exec();
+
+      let pushFollower = await Member.findOneAndUpdate(
+        { _id: fan },
+        {
+          $push: {
+            following: { userID: followedUser },
+          },
+        }
+      ).exec();
+      // console.log(pushFans);
+      // if (pushFans.modifiedCount == 1 && pushFollower.modifiedCount == 1) {
+      return { data: pushFans };
+      // } else {
+      // return { ok: false, status: 500 };
+      // }
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async userSeacher(searchValue) {
+    let result = await Member.find({
+      username: { $regex: searchValue },
+    }).exec();
+    console.log(result);
+    return result;
   }
 }
 
@@ -285,6 +339,29 @@ module.exports = model;
 //   .then((mes) => {
 //     console.log(mes);
 //   });
+
+// Member.findOne({ _id: "63c76d88d55533e391061346" }).then((member) => {
+//   let matchingFan = member.fans.filter((fan) => {
+//     return fan.userID == "63ceb9f42bcaf0a79ea85c58";
+//   });
+// });
+
+// Member.find({ _id: "63ceb9f42bcaf0a79ea85c58" }).populate("fans.userID").exec();
+
+// Member.findOne({ _id: "63c76db4a1c5e35742e4195d" }).then((mes) => {
+//   console.log(mes);
+// });
+
+// Member.updateOne(
+//   { _id: "63c76d88d55533e391061346" },
+//   {
+//     $push: {
+//       fans: { userID: "63ceb9f42bcaf0a79ea85c58" },
+//     },
+//   }
+// ).then((mes) => {
+//   console.log(mes);
+// });
 
 // Post.findOne({ _id: "63c8a87602bd142311bee613" })
 //   .populate("comments.userID")
@@ -306,3 +383,10 @@ module.exports = model;
 // ).then((mes) => {
 //   console.log(mes);
 // });
+
+// Post.updateOne(
+//   { _id: "63d72503ed783de92a834985" },
+//   {
+//     $set: { time: "Thu Jan 29 2023 21:34:03 GMT+0800 (台北標準時間)" },
+//   }
+// ).exec();

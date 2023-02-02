@@ -24,9 +24,25 @@ header .tittle {
   font-size: 28px;
 }
 header .serch-bar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+header .serch-bar .search-input {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+header .serch-bar .search-input img {
+  position: absolute;
+  display: none;
+  right: 0;
+  margin-right: 10px;
+  width: 15px;
+  height: 15px;
 }
 header .serch-bar input {
   background-image: url("../image/search.png");
@@ -41,6 +57,86 @@ header .serch-bar input {
   background-color: rgba(230, 230, 230, 0.7137254902);
   border: none;
   border-radius: 5px;
+}
+header .serch-bar .search-table {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 45px;
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(104, 104, 104, 0.6);
+  width: 330px;
+  height: 300px;
+  border-radius: 5px;
+}
+header .serch-bar .search-table ul {
+  padding-top: 10px;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+}
+header .serch-bar .search-table ul li {
+  list-style: none;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+header .serch-bar .search-table ul li img {
+  width: 45px;
+  height: 45px;
+  margin: 0 15px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+header .serch-bar .search-table ul li:hover {
+  background-color: rgba(230, 230, 230, 0.7137254902);
+}
+header .serch-bar .search-table ul::-webkit-scrollbar {
+  width: 4px;
+  background-color: #f5f5f5;
+}
+header .serch-bar .search-table ul::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(180, 180, 180, 0.3);
+  background-color: rgb(98, 98, 98);
+}
+header .serch-bar .search-table .search-Table-loading-image {
+  display: none;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 50%;
+  left: 45%;
+}
+header .serch-bar .search-table .search-no-data,
+header .serch-bar .search-table .histiry-no-data {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  color: #a1a1a1;
+}
+header .serch-bar .search-table .histiry-no-data {
+  left: 30%;
+}
+header .serch-bar .search-table .show-history {
+  display: flex;
+  justify-content: space-between;
+}
+header .serch-bar .search-table .show-history .history-p {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 20px;
+}
+header .serch-bar .search-table .show-history .clear-history {
+  color: rgb(59, 137, 255);
+  font-size: 15px;
+  font-weight: bold;
+  margin: 10px 20px;
+  cursor: pointer;
 }
 header .nav {
   display: flex;

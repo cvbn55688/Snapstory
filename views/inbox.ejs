@@ -7,18 +7,38 @@
     <title>Snapstory</title>
   </head>
   <body>
-    <% include posting.ejs %>
+    <% include posting.ejs %> <% include showPost.ejs %>
     <header>
       <div class="tittle">
         <p onclick="location.href='/'">Snapstory</p>
       </div>
       <div class="serch-bar">
-        <input
-          type="text"
-          onclick="this.placeholder='搜尋'"
-          onblur="this.placeholder='      搜尋'"
-          placeholder="      搜尋"
-        />
+        <div class="search-input">
+          <input
+            type="text"
+            onclick="this.placeholder='搜尋'"
+            onblur="this.placeholder='      搜尋'"
+            placeholder="      搜尋"
+          />
+          <img src="/image/loading.gif" alt="" />
+        </div>
+
+        <div class="search-table">
+          <div class="show-history">
+            <p class="history-p">最近</p>
+            <p class="clear-history">全部清除</p>
+          </div>
+
+          <ul class="search-user"></ul>
+
+          <img
+            class="search-Table-loading-image"
+            src="/image/loading.gif"
+            alt=""
+          />
+          <p class="search-no-data">查無結果。</p>
+          <p class="histiry-no-data">沒有近期搜尋紀錄。</p>
+        </div>
       </div>
       <div class="nav">
         <li class="home-page"><img src="/image/home.png" alt="" /></li>

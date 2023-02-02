@@ -85,8 +85,10 @@ main {
         }
         .user-likes {
           height: 30px;
+          width: 150px;
           display: flex;
           align-items: center;
+          cursor: pointer;
           .like-amount {
             font-weight: bold;
           }
@@ -97,6 +99,12 @@ main {
           .poster-name {
             margin-right: 10px;
             font-weight: bold;
+          }
+          .post-time {
+            padding-top: 5px;
+            font-size: 14px;
+            color: rgb(105, 105, 105);
+            width: 60px;
           }
         }
       }

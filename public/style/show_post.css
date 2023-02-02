@@ -129,6 +129,7 @@
 }
 .show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .user-name-content-area {
   font-weight: bold;
+  cursor: pointer;
 }
 .show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .user-comment-content-area {
   color: rgba(54, 54, 54, 0.979);
@@ -162,11 +163,19 @@
   cursor: pointer;
 }
 .show-post-blacksreen .post-table .comment-container .post-interact-container .post-liker {
+  position: relative;
   margin-top: 5px;
 }
-.show-post-blacksreen .post-table .comment-container .post-interact-container .post-liker span {
+.show-post-blacksreen .post-table .comment-container .post-interact-container .post-liker .like-amount-post {
   font-size: 14px;
   color: rgba(2, 2, 2, 0.775);
+  cursor: pointer;
+}
+.show-post-blacksreen .post-table .comment-container .post-interact-container .post-liker .show-post-time {
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+  color: rgb(105, 105, 105);
 }
 .show-post-blacksreen .post-table .comment-container .leave-comment-container {
   height: 35px;

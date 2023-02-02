@@ -20,6 +20,7 @@
     "jwt-decode": "^3.1.2",
     "mongoose": "^6.8.3",
     "nodemon": "^2.0.20",
-    "nunjucks": "^3.2.3"
+    "nunjucks": "^3.2.3",
+    "ws": "^8.12.0"
   }
 }
