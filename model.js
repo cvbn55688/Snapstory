@@ -53,6 +53,17 @@ const memberSchema = new mongoose.Schema({
       userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
     },
   ],
+  notificationsStatus: String,
+  notifications: [
+    {
+      func: String,
+      senderImg: String,
+      senderName: String,
+      notificationMessage: String,
+      time: String,
+      postImg: String,
+    },
+  ],
 });
 
 const PostSchema = new mongoose.Schema({
@@ -75,8 +86,24 @@ const PostSchema = new mongoose.Schema({
   ],
 });
 
+// const NotificationSchema = new mongoose.Schema({
+//   userID: { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
+//   status: String,
+//   notifications: [
+//     {
+//       func: String,
+//       senderImg: String,
+//       senderName: String,
+//       notificationMessage: String,
+//       time: String,
+//       postImg: String,
+//     },
+//   ],
+// });
+
 const Member = mongoose.model("Member", memberSchema);
 const Post = mongoose.model("Post", PostSchema);
+const Notification = mongoose.model("Notification", NotificationSchema);
 
 class model {
   async signup(data) {
@@ -309,12 +336,33 @@ class model {
           },
         }
       ).exec();
-      // console.log(pushFans);
-      // if (pushFans.modifiedCount == 1 && pushFollower.modifiedCount == 1) {
-      return { data: pushFans };
-      // } else {
-      // return { ok: false, status: 500 };
-      // }
+      return { data: { pushFans, pushFollower } };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async unfollowFans(fan, unfollowedUser) {
+    try {
+      let pullFans = await Member.findOneAndUpdate(
+        { _id: unfollowedUser },
+        {
+          $pull: {
+            fans: { userID: fan },
+          },
+        }
+      ).exec();
+
+      let pullFollower = await Member.findOneAndUpdate(
+        { _id: fan },
+        {
+          $pull: {
+            following: { userID: unfollowedUser },
+          },
+        }
+      ).exec();
+      return { data: pullFans };
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };
@@ -328,6 +376,22 @@ class model {
     console.log(result);
     return result;
   }
+
+  // async uploadNotification(notificationData) {
+  //   try {
+  //     let notification = await Member.findOneAndUpdate(
+  //       { _id: unfollowedUser },
+  //       {
+  //         $pull: {
+  //           fans: { userID: fan },
+  //         },
+  //       }
+  //     ).exec();
+  //   } catch (error) {
+  //     console.log(error);
+  //     return { ok: false, status: 500, mes: error };
+  //   }
+  // }
 }
 
 module.exports = model;

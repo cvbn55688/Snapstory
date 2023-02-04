@@ -23,10 +23,15 @@ function websocketStart() {
       clients.set(userId, socket);
       if (funcChoice == 0) {
         console.log(`已設定${userName}的userID:${userId}`);
-      } else if (funcChoice == 1) {
+      } else {
         sendMessageToClient(
-          JSON.parse(message).name,
+          funcChoice,
+          JSON.parse(message).id,
+          userName,
+          JSON.parse(message).sendUserImg,
+          JSON.parse(message).postImg,
           JSON.parse(message).message,
+          JSON.parse(message).time,
           JSON.parse(message).targetId
         );
       }
@@ -53,11 +58,28 @@ function websocketStart() {
   });
 }
 
-function sendMessageToClient(clientId, message, toUserId) {
+function sendMessageToClient(
+  funcChoice,
+  senderId,
+  sendername,
+  senderImg,
+  postImg,
+  message,
+  time,
+  toUserId
+) {
   const socket = clients.get(toUserId);
+  let data = {
+    funcChoice,
+    senderId,
+    sendername,
+    senderImg,
+    postImg,
+    message,
+    time,
+  };
   if (socket) {
-    // console.log(socket);
-    socket.send(message);
+    socket.send(JSON.stringify(data));
   } else {
     console.log(`Client with id ${toUserId} not found`);
   }

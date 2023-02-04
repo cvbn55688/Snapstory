@@ -216,6 +216,7 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
       })
       .then(function (data) {
         if (data.ok == true) {
+          console.log(data);
           data = data.data;
           let comments = [
             {
@@ -225,15 +226,16 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
           ];
           createComment(newUl, comments);
           sendNotice(
+            "comment",
             data.username,
             data.userID,
-            data.username +
-              "對你的貼文" +
-              data.postID +
-              "留言：" +
-              commentInput.value,
-            data.targetUserID
+            data.headImg,
+            data.newComment,
+            "剛剛",
+            data.targetUserID,
+            data.postImg
           );
+
           commentInput.value = "";
         } else {
           alert("上傳失敗");
@@ -259,12 +261,19 @@ function fetchLikePost(postId, dislike) {
     .then(function (data) {
       console.log(data);
       if (data.like == true) {
-        sendNotice(
-          data.data.liker,
-          data.data.likerID,
-          data.data.liker + "喜歡你的貼文" + data.data.postID,
-          data.data.targetUserID
-        );
+        checkLonin().then(function (senderData) {
+          console.log(senderData);
+          sendNotice(
+            "like",
+            data.data.liker,
+            data.data.likerID,
+            senderData.headImg,
+            null,
+            "剛剛",
+            data.data.targetUserID,
+            data.data.postImg
+          );
+        });
       }
     });
 }

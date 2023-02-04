@@ -105,6 +105,7 @@ app.post("/likePost", async (req, res) => {
           likerID: userID,
           postID: postID,
           targetUserID: likeData.mes.userID,
+          postImg: likeData.mes.imageUrl,
         },
       });
     } else {
@@ -141,6 +142,7 @@ app.post("/newComment", async (req, res) => {
   let newComment = req.body.comment;
   let commentData = await controller.newComment(postID, userID, newComment);
   if (commentData.ok != false) {
+    console.log(commentData);
     res.status(200).json({
       ok: true,
       data: {
@@ -150,6 +152,7 @@ app.post("/newComment", async (req, res) => {
         postID,
         targetUserID: commentData.mes.userID,
         newComment,
+        postImg: commentData.mes.imageUrl,
       },
     });
   } else {
@@ -171,15 +174,30 @@ app.get("/getUserPost/:username", async (req, res) => {
 app.put("/followFans", async (req, res) => {
   if (req.cookies.JWTtoken == undefined) {
     res.status(400).json({ ok: false, data: "使用者未登入" });
+  }
+  let userData = jwtDecode(req.cookies.JWTtoken);
+  let userID = userData.userID;
+  let username = userData.name;
+  let userHeadImg = userData.headImg;
+  let fansData = { userID, username, userHeadImg };
+  if (req.body.follow == true) {
+    let followedUserID = req.body.followedUser;
+    let followData = await controller.followFans(userID, followedUserID);
+    console.log(followData);
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      followData,
+      followedUserID,
+      fansData,
+      follow: true,
+    });
   } else {
-    let userData = jwtDecode(req.cookies.JWTtoken);
-    let userID = userData.userID;
-    let username = userData.name;
-    let followedUser = req.body.followedUser;
-    console.log(userID, followedUser);
-    let followData = await controller.followFans(userID, followedUser);
-    let fansData = { userID, username };
-    res.status(200).json({ ok: true, status: 200, followData, fansData });
+    let unfollowedUser = req.body.followedUser;
+    let unfollowData = await controller.unfollowFans(userID, unfollowedUser);
+    res
+      .status(200)
+      .json({ ok: true, status: 200, unfollowData, fansData, follow: false });
   }
 });
 
@@ -189,6 +207,16 @@ app.get("/userSearch/:searchValue", async (req, res) => {
   } else {
     console.log(req.params.searchValue);
     let searchData = await controller.userSeacher(req.params.searchValue);
+    res.status(200).json({ ok: true, data: searchData });
+  }
+});
+
+app.get("/uploadNotification", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    console.log(req.body);
+    let searchData = await controller.userSeacher(req.body);
     res.status(200).json({ ok: true, data: searchData });
   }
 });

@@ -3,6 +3,7 @@ const userAccount = document.querySelector(".user-account");
 const userPostsSection = document.querySelector(".user-posts");
 const userPostsAmount = document.querySelector(".post-amount");
 const followButton = document.querySelector(".follow");
+const unfollowButton = document.querySelector(".isfollowed");
 const followLoading = document.querySelector(".follow img");
 const sendMessageButton = document.querySelector(".message");
 const setUserData = document.querySelector(".set-user-data");
@@ -120,7 +121,14 @@ function getUserData() {
         });
         followButton.addEventListener("click", () => {
           followLoading.style.display = "flex";
-          follow(userData._id, fansAmount.textContent);
+          follow(userData._id, fansAmount.textContent, true);
+        });
+        unfollowButton.addEventListener("click", () => {
+          let ensureUnfollow = confirm("確定要退追？");
+          if (ensureUnfollow == true) {
+            followLoading.style.display = "flex";
+            follow(userData._id, fansAmount.textContent, false);
+          }
         });
         fansAmountContainer.addEventListener("click", () => {
           let fansArray = userData.fans;
@@ -133,11 +141,11 @@ function getUserData() {
       }
     });
 }
-
-function follow(followedUser, fansAmountText) {
+function follow(followedUser, fansAmountText, followTrue) {
   fetch(`/followFans`, {
     method: "PUT",
     body: JSON.stringify({
+      follow: followTrue,
       followedUser: followedUser,
     }),
     headers: {
@@ -148,18 +156,27 @@ function follow(followedUser, fansAmountText) {
       return response.json();
     })
     .then(function (data) {
-      if (data.ok == true) {
-        console.log(data);
+      console.log(data);
+      if (data.ok == true && data.follow == true) {
         isfollowedButton.style.display = "flex";
         followButton.style.display = "none";
-
+        followLoading.style.display = "none";
         fansAmount.textContent = Number(fansAmountText) + 1;
         sendNotice(
+          "follow",
           data.fansData.username,
           data.fansData.userID,
-          data.fansData.username + "追隨你!!",
-          data.followData.data._id
+          data.fansData.userHeadImg,
+          null,
+          "剛剛",
+          data.followedUserID,
+          null
         );
+      } else if (data.ok == true && data.follow == false) {
+        isfollowedButton.style.display = "none";
+        followButton.style.display = "flex";
+        followLoading.style.display = "none";
+        fansAmount.textContent = Number(fansAmountText) - 1;
       }
     });
 }

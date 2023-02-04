@@ -37,6 +37,8 @@ const searchShowHistory = document.querySelector(".show-history");
 const clearHistory = document.querySelector(".clear-history");
 const searchNoData = document.querySelector(".search-no-data");
 const historyNoData = document.querySelector(".histiry-no-data");
+const notificationTable = document.querySelector(".notification-table");
+const notificationUl = document.querySelector(".notification-ul");
 let historicalSearch = window.localStorage.getItem("historicalSearch");
 
 function websocketConnect() {
@@ -49,29 +51,124 @@ function websocketConnect() {
   });
 
   ws.addEventListener("message", function (e) {
-    console.log(e.data);
+    let data = JSON.parse(e.data);
+    createNotificationLi(
+      data.funcChoice,
+      data.senderImg,
+      data.sendername,
+      data.message,
+      data.time,
+      data.postImg
+    );
+    heartImg.src = "../image/heart5.png";
   });
   return ws;
 }
 
+function createNotificationLi(
+  func,
+  likerHeadImg,
+  likername,
+  likernotificationMes,
+  notificationTime,
+  postImg
+) {
+  let newNotificationLi = document.createElement("li");
+  notificationUl.prepend(newNotificationLi);
+
+  let newNotificationHeadImg = document.createElement("img");
+  newNotificationHeadImg.src = likerHeadImg;
+  newNotificationLi.appendChild(newNotificationHeadImg);
+
+  let newNotificationMesContainer = document.createElement("div");
+  newNotificationMesContainer.classList.add("notification-mes-container");
+  newNotificationLi.appendChild(newNotificationMesContainer);
+
+  let notificationMes;
+  if (func == "comment") {
+    notificationMes = "留言回應了:";
+  } else if (func == "like") {
+    notificationMes = "喜歡你的貼文!";
+  } else if (func == "tag") {
+    notificationMes = "在此貼文標記了你!";
+  } else if (func == "follow") {
+    notificationMes = "追隨了你!";
+  }
+
+  let newNotificationMesMain = document.createElement("p");
+  newNotificationMesMain.classList.add("notification-message-main");
+  newNotificationMesMain.textContent = likername + notificationMes;
+  newNotificationMesContainer.appendChild(newNotificationMesMain);
+
+  let newNotificationMesSecond = document.createElement("p");
+  newNotificationMesSecond.classList.add("notification-message-second");
+  newNotificationMesSecond.textContent = likernotificationMes;
+  newNotificationMesContainer.appendChild(newNotificationMesSecond);
+
+  let newNotificationTime = document.createElement("span");
+  newNotificationTime.classList.add("notification-time");
+  newNotificationTime.textContent = notificationTime;
+  newNotificationMesSecond.appendChild(newNotificationTime);
+
+  let newNotificationImgContainer = document.createElement("div");
+  newNotificationImgContainer.classList.add("notification-img-preview");
+  newNotificationLi.appendChild(newNotificationImgContainer);
+
+  let newNotificationImg = document.createElement("img");
+  newNotificationImg.src = postImg;
+  if (func != "follow") {
+    newNotificationImgContainer.appendChild(newNotificationImg);
+  }
+}
+
 function sendNotice(
   // TargetItem,
+  func,
   sendUserName,
   sendUserId,
+  sendUserImg,
   sendMessage,
-  targetUserId
+  notificationTime,
+  targetUserId,
+  postImg
 ) {
-  // TargetItem.addEventListener("click", () => {
+  if (sendUserId == targetUserId) {
+    return;
+  }
   ws.send(
     JSON.stringify({
-      fuc: 1,
+      fuc: func,
       name: sendUserName,
+      sendUserImg,
       id: sendUserId,
+      postImg: postImg,
       message: sendMessage,
+      time: notificationTime,
       targetId: targetUserId,
     })
   );
-  // });
+
+  fetch(`/uploadNotification`, {
+    method: "POST",
+    body: JSON.stringify({
+      fuc: func,
+      name: sendUserName,
+      sendUserImg,
+      postImg: postImg,
+      message: sendMessage,
+      time: notificationTime,
+      targetId: targetUserId,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+    });
 }
 
 function timeDifference(date) {
@@ -122,6 +219,15 @@ function debounce(func, delay) {
       func.apply(context, args);
     }, delay);
   };
+}
+
+function checkPathIcon() {
+  if (location.pathname == "/") {
+    homePageImg.src = "../image/home2.png";
+  }
+  if (location.pathname == "/inbox") {
+    inboxPageImg.src = "../image/message2.png";
+  }
 }
 
 function changeIcon(targetIcon) {
@@ -295,9 +401,19 @@ function headerIconFuction() {
     });
   });
 
+  let heartCount = 0;
   heart.addEventListener("click", () => {
-    changeIcon("heartImg");
-    heartImg.src = "../image/heart2.png";
+    if (heartCount == 0) {
+      changeIcon("heartImg");
+      heartImg.src = "../image/heart2.png";
+      notificationTable.style.display = "block";
+      heartCount++;
+    } else {
+      checkPathIcon();
+      heartImg.src = "../image/heart.png";
+      notificationTable.style.display = "none";
+      heartCount--;
+    }
   });
 
   postImageInput.addEventListener("change", (eve) => {
@@ -397,15 +513,14 @@ async function checkLonin() {
 
       let userData = { fuc: 0, name: data.name, id: data.userID };
       ws.send(JSON.stringify(userData));
-
       return data;
     })
     .catch((error) => {
       console.log(error);
     });
 }
-
 const ws = websocketConnect();
 checkLonin();
+checkPathIcon();
 searchBarFuction();
 headerIconFuction();

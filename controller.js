@@ -98,9 +98,20 @@ class controller {
     return followData;
   }
 
+  async unfollowFans(fan, unfollowedUser) {
+    let unfollowData = await Model.unfollowFans(fan, unfollowedUser);
+    return unfollowData;
+  }
+
   async userSeacher(searchValue) {
     let searchData = await Model.userSeacher(searchValue);
     return searchData;
+  }
+
+  async uploadNotification(notificationData) {
+    let searchData = await Model.userSeacher(searchValue);
+    console.log(notificationData, "asdasdasdasdasddsoihkdfikhsk");
+    // return searchData;
   }
 }
 
