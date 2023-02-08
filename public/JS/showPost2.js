@@ -229,7 +229,7 @@ function createComment(input, newUl, comments) {
     newOtherFunction.appendChild(newReply);
     newReply.addEventListener("click", () => {
       input.value = `@${comment.userID.username} `;
-      input.focus;
+      input.focus();
     });
   });
 }

@@ -14,6 +14,10 @@
     transform: translate(0, 0) scale(1);
   }
 }
+input,
+textarea {
+  font-family: Arial, sans-serif;
+}
 .show-post {
   animation: showTable 0.5s;
   width: 100%;
@@ -202,6 +206,9 @@
 
       .post-message {
         display: none;
+        position: relative;
+        justify-content: center;
+        z-index: 200;
         margin-left: 15px;
         height: 250px;
         width: 100%;
@@ -209,11 +216,56 @@
           width: 100%;
           //   height: 100%;
           resize: none;
-          padding: 5px;
+          padding: 10px;
           font-size: 16px;
-          font-weight: bold;
-          color: black;
-          // border: none;
+          // color: black;
+          border: 1px solid rgba(128, 128, 128, 0.578);
+          border-radius: 10px;
+        }
+        .user-message-textarea::-webkit-input-placeholder {
+          font-style: italic;
+          letter-spacing: 2px;
+          font-size: 14px;
+        }
+        .user-message-textarea:focus {
+          outline: none;
+        }
+        .post-message-tag {
+          display: none;
+          position: absolute;
+          top: 255px;
+          width: 98%;
+          height: 150px;
+          background-color: #ffffff;
+          box-shadow: 0 0 6px rgba(104, 104, 104, 0.6);
+          ul {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            li {
+              list-style: none;
+              display: flex;
+              align-items: center;
+              cursor: pointer;
+              img {
+                width: 45px;
+                height: 45px;
+                object-fit: cover;
+                border-radius: 50%;
+                margin: 5px 10px;
+              }
+            }
+            li:hover {
+              background-color: rgba(227, 227, 227, 0.773);
+            }
+          }
+          .tag-name-search-loadingImg {
+            display: none;
+            position: absolute;
+            height: 20px;
+            top: 45%;
+            right: 47%;
+          }
         }
       }
       //   .preview-container {
@@ -224,6 +276,97 @@
       //       }
       //     }
       //   }
+    }
+    .post-hashtag {
+      display: none;
+      width: 100%;
+      height: 250px;
+      padding: 2.5%;
+
+      .post-hashtag-div {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 20%;
+        border: 1px solid rgba(128, 128, 128, 0.578);
+        border-radius: 10px;
+
+        .hashImg {
+          height: 25px;
+          margin: 0 10px;
+        }
+        input {
+          width: 100%;
+          height: 40px;
+          border-radius: 10px;
+          border: none;
+          font-size: 16px;
+        }
+        input:focus {
+          outline: none;
+        }
+        input::-webkit-input-placeholder {
+          font-style: italic;
+          letter-spacing: 2px;
+          font-size: 14px;
+        }
+      }
+      .hashtag-container {
+        position: relative;
+        margin-top: 10px;
+        // width: 100%;
+        height: 180px;
+        li {
+          list-style: none;
+          display: inline-block;
+          border: 2px solid rgba(227, 227, 227, 0.773);
+          border-radius: 10px;
+          font-size: 16px;
+          padding: 5px;
+          margin: 5px 5px 0 0;
+          background-color: rgba(227, 227, 227, 0.773);
+          text-align: center;
+          vertical-align: middle;
+          img {
+            margin-left: 5px;
+            height: 20px;
+            vertical-align: middle;
+            cursor: pointer;
+          }
+        }
+        .hashtag-search-talbe {
+          display: none;
+          position: absolute;
+          top: 0;
+          width: 100%;
+          height: 160px;
+          background-color: #ffffff;
+          box-shadow: 0 0 6px rgba(104, 104, 104, 0.6);
+          ul {
+            height: 100%;
+            overflow-y: scroll;
+            li {
+              display: flex;
+              flex-direction: column;
+              align-items: start;
+              margin: 0;
+              width: 100%;
+              border-radius: 0;
+              background-color: white;
+              border: none;
+              padding: 10px;
+              cursor: pointer;
+              .hashtag-post-amount {
+                color: rgba(122, 122, 122, 0.773);
+                font-size: 14px;
+              }
+            }
+            li:hover {
+              background-color: rgba(227, 227, 227, 0.773);
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -84,9 +84,11 @@ app.get("/checkLogin", async (req, res) => {
 
 app.post("/uploadPost", async (req, res) => {
   let userData = jwtDecode(req.cookies.JWTtoken);
-
+  // let userID = userData.userID;
+  let username = userData.name;
+  let userHeadImg = userData.headImg;
   let uploadData = await controller.uploadPost(userData, req.body);
-  res.status(200).json({ ok: true, data: uploadData });
+  res.status(200).json({ ok: true, uploadData, username, userHeadImg });
 });
 
 app.post("/likePost", async (req, res) => {

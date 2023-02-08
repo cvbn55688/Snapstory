@@ -118,9 +118,10 @@ class model {
     });
     return await post
       .save()
-      .then(() => {
+      .then((data) => {
         console.log("have been saveed into DB");
-        return { ok: true, status: 200 };
+        console.log(data);
+        return { ok: true, status: 200, data };
       })
       .catch((e) => {
         console.log(e);

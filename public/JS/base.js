@@ -43,6 +43,14 @@ const historyNoData = document.querySelector(".histiry-no-data");
 const notificationTable = document.querySelector(".notification-table");
 const notificationUl = document.querySelector(".notification-ul");
 const notificationNoData = document.querySelector(".notification-no-data");
+const postHashTag = document.querySelector(".post-hashtag");
+const postHashTagInput = document.querySelector(".post-hashtag-div input");
+const postMessageTagTable = document.querySelector(".post-message-tag");
+const postMessageTagUl = document.querySelector(".post-message-tag ul");
+const postMessageTagLoadimg = document.querySelector(
+  ".tag-name-search-loadingImg"
+);
+
 let historicalSearch = window.localStorage.getItem("historicalSearch");
 let notificationCount = 0;
 
@@ -106,8 +114,12 @@ function getNotification() {
             imageUrl = null;
             post = null;
           } else {
-            imageUrl = notification.postID.imageUrl;
-            post = notification.postID._id;
+            try {
+              imageUrl = notification.postID.imageUrl;
+              post = notification.postID._id;
+            } catch (err) {
+              return;
+            }
           }
 
           createNotificationLi(
@@ -153,9 +165,11 @@ function createNotificationLi(
   } else if (func == "like") {
     notificationMes = "喜歡你的貼文!";
   } else if (func == "tag") {
-    notificationMes = "在此貼文標記了你!";
+    notificationMes = "在此貼文留言標記了你!";
   } else if (func == "follow") {
     notificationMes = "追隨了你!";
+  } else if (func == "postTag") {
+    notificationMes = "在此貼文標記了你!";
   }
 
   let newNotificationMesMain = document.createElement("p");
@@ -441,7 +455,8 @@ async function searchUser(searchValue) {
 function openTagTable(table, ul, loadingImg, input) {
   let closestAt;
   let text;
-  input.addEventListener("input", function checkTagInput() {
+  input.addEventListener("input", checkTagInput);
+  function checkTagInput() {
     table.style.display = "flex";
     loadingImg.style.display = "flex";
     let cursorPos = input.selectionStart;
@@ -460,7 +475,7 @@ function openTagTable(table, ul, loadingImg, input) {
       input.removeEventListener("input", debounceSearchTagName);
       input.removeEventListener("input", checkTagInput);
     }
-  });
+  }
 
   let debounceSearchTagName = debounce(() => {
     searchTagName();
@@ -473,8 +488,6 @@ function openTagTable(table, ul, loadingImg, input) {
     let tagName = text.substring(closestAt).split(" ")[0].replace("@", "");
 
     if (tagName != "") {
-      console.log(closestAt);
-      console.log(tagName);
       searchUser(tagName).then((data) => {
         console.log(data);
         data.data.forEach((user) => {
@@ -497,6 +510,8 @@ function openTagTable(table, ul, loadingImg, input) {
             );
             table.style.display = "none";
             input.focus();
+            input.removeEventListener("input", debounceSearchTagName);
+            input.removeEventListener("input", checkTagInput);
           });
         });
         loadingImg.style.display = "none";
@@ -603,25 +618,41 @@ function headerIconFuction() {
 
     function handelPostNextStep() {
       postPreveiw.style.animation = "postImageMove 0.7s forwards";
+      postHashTag.style.display = "block";
+      postHashTag.style.animation = "showTable 0.8s forwards";
+
       postUndo.style.display = "none";
       postUndo2.style.display = "flex";
       postNextStep.style.display = "none";
       postNextStep2.style.display = "flex";
-
-      postHr.style.display = "block";
 
       postTitle.textContent = "建立新貼文";
       postCutting.style.padding = "20px";
       postCutting.style.height = "330px";
       preveiwImageContainer.style.height = "330px";
       postMessage.style.display = "flex";
-
+      postMessage.style.animation = "showTable 0.8s forwards";
+      postMessageTextarea.addEventListener("input", () => {
+        // console.log(newLeaveComment.value.slice(-1));
+        if (postMessageTextarea.value.slice(-1) == "@") {
+          openTagTable(
+            postMessageTagTable,
+            postMessageTagUl,
+            postMessageTagLoadimg,
+            postMessageTextarea
+          );
+        } else if (postMessageTextarea.value.slice(-1) == " ") {
+          postMessageTagTable.style.display = "none";
+        }
+      });
       postNextStep2.addEventListener("click", uploadPost);
       postUndo2.addEventListener("click", handelPostUndo2);
     }
 
     function handelPostUndo2() {
       postPreveiw.style.animation = "";
+      postHashTag.style.animation = "";
+      postHashTag.style.display = "none";
       postUndo.style.display = "flex";
       postUndo2.style.display = "none";
       postNextStep.style.display = "flex";
@@ -651,6 +682,29 @@ function headerIconFuction() {
         })
         .then(function (data) {
           if (data.ok == true) {
+            console.log(data);
+            let tagNameArr = postMessageTextarea.value.match(/@\w+/g);
+            if (tagNameArr.length != 0) {
+              tagNameArr.forEach((tagName) => {
+                searchUser(tagName.replace(/@/, "")).then((tagData) => {
+                  let tagedUserID = tagData.data[0]._id;
+                  console.log(tagedUserID, tagName);
+                  setTimeout(() => {
+                    sendNotice(
+                      "postTag",
+                      data.username,
+                      data.uploadData.data.userID,
+                      data.userHeadImg,
+                      null,
+                      "剛剛",
+                      tagedUserID,
+                      data.uploadData.data.imageUrl,
+                      data.uploadData.data._id
+                    );
+                  }, 1);
+                });
+              });
+            }
             alert("上傳成功");
             location.reload();
           }
