@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 require("dotenv").config();
 const envData = process.env;
 const cloudFront = envData.cloudFront;
@@ -11,99 +10,11 @@ const s3 = new AWS.S3({
 });
 const now = new Date();
 
-mongoose
-  .connect(envData.mongodbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    maxPoolSize: 10,
-  })
-  .then(() => {
-    console.log("Connect to MongoDB");
-  })
-  .catch((e) => {
-    console.log(e);
-  });
-
-const memberSchema = new mongoose.Schema({
-  account: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  headImg: {
-    type: String,
-    default:
-      "https://d1vscilbhjiukl.cloudfront.net/snapstory/profile_picture/user.png",
-  },
-  fans: [
-    {
-      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
-    },
-  ],
-
-  following: [
-    {
-      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
-    },
-  ],
-  notificationsStatus: String,
-  notifications: [
-    {
-      func: String,
-      senderImg: String,
-      senderName: String,
-      notificationMessage: String,
-      time: String,
-      postImg: String,
-    },
-  ],
-});
-
-const PostSchema = new mongoose.Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
-  imageUrl: String,
-  content: String,
-  time: String,
-  comments: [
-    {
-      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
-      content: String,
-    },
-  ],
-  likes: [
-    {
-      userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
-      username: String,
-      headImg: String,
-    },
-  ],
-});
-
-// const NotificationSchema = new mongoose.Schema({
-//   userID: { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
-//   status: String,
-//   notifications: [
-//     {
-//       func: String,
-//       senderImg: String,
-//       senderName: String,
-//       notificationMessage: String,
-//       time: String,
-//       postImg: String,
-//     },
-//   ],
-// });
-
-const Member = mongoose.model("Member", memberSchema);
-const Post = mongoose.model("Post", PostSchema);
-const Notification = mongoose.model("Notification", NotificationSchema);
+const { Member, Post, Notification } = require("./schema.js");
+// const schema = require("./schema.js");
+// const Member = schema.Member;
+// const Post = schema.Post;
+// const Notification = schema.Notification;
 
 class model {
   async signup(data) {
@@ -114,30 +25,42 @@ class model {
     let username = data.username;
     let password = data.password;
 
-    let result = await Member.findOne({ account: account }).then((data) => {
-      if (data == null) {
-        const member = new Member({
-          account: account,
-          username: username,
-          password: password,
-        });
-
-        return member
-          .save()
-          .then(() => {
-            console.log("have been saveed into DB");
-            return { ok: true, mes: "註冊成功", status: 200 };
-          })
-          .catch((e) => {
-            console.log(e);
-            return { ok: false, mes: e, status: 500 };
+    try {
+      let result = await Member.findOne({ account: account }).then((data) => {
+        if (data == null) {
+          const member = new Member({
+            account: account,
+            username: username,
+            password: password,
           });
-      } else {
-        return { ok: false, mes: "此帳號已被註冊", status: 400 };
-      }
-    });
-    console.log(result);
-    return result;
+
+          return member
+            .save()
+            .then((mes) => {
+              console.log("have been saveed into DB");
+              let notification = new Notification({
+                userID: mes._id,
+                status: "0",
+                notifications: [],
+              });
+              notification.save().then((mes) => {
+                console.log(mes);
+              });
+              return { ok: true, mes: "註冊成功", status: 200 };
+            })
+            .catch((e) => {
+              console.log(e);
+              return { ok: false, mes: e, status: 500 };
+            });
+        } else {
+          return { ok: false, mes: "此帳號已被註冊", status: 400 };
+        }
+      });
+      console.log(result);
+      return result;
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
   }
 
   async signin(data) {
@@ -205,11 +128,33 @@ class model {
       });
   }
 
-  async getIndexData() {
-    let result = await Post.find()
-      .sort({ _id: -1 })
-      .populate("userID")
-      .populate("comments.userID")
+  async getIndexData(page) {
+    try {
+      let nextPage;
+      let result = await Post.find()
+        .sort({ _id: -1 })
+        .skip(6 * Number(page))
+        .limit(7)
+        .populate("userID")
+        .populate("comments.userID")
+        .exec();
+      if (result.length == 7) {
+        nextPage = Number(page) + 1;
+        result.pop();
+      } else {
+        nextPage = null;
+      }
+      return { ok: true, nextPage, data: result };
+    } catch (err) {
+      return { ok: false, mes: err };
+    }
+  }
+
+  async getParticularPost(postID) {
+    let result = await Post.findOne({ _id: postID })
+      .populate({ path: "userID", select: "-password" })
+      .populate({ path: "comments.userID", select: "-password" })
+      .populate({ path: "likes.userID", select: "-password" })
       .exec();
     return result;
   }
@@ -223,6 +168,7 @@ class model {
         },
       }
     )
+      .populate("likes.userID")
       .then((mes) => {
         console.log(mes, "------------------------");
         return { ok: true, mes: mes, status: 200 };
@@ -268,6 +214,7 @@ class model {
 
   async newComment(postID, userID, newComment) {
     try {
+      let time = new Date();
       let result = Post.findOneAndUpdate(
         { _id: postID },
         {
@@ -275,6 +222,7 @@ class model {
             comments: {
               userID: userID,
               content: newComment,
+              time,
             },
           },
         }
@@ -370,43 +318,103 @@ class model {
   }
 
   async userSeacher(searchValue) {
-    let result = await Member.find({
-      username: { $regex: searchValue },
-    }).exec();
-    console.log(result);
+    let result = await Member.find(
+      {
+        username: { $regex: searchValue },
+      },
+      { password: 0 }
+    ).exec();
     return result;
   }
 
-  // async uploadNotification(notificationData) {
-  //   try {
-  //     let notification = await Member.findOneAndUpdate(
-  //       { _id: unfollowedUser },
-  //       {
-  //         $pull: {
-  //           fans: { userID: fan },
-  //         },
-  //       }
-  //     ).exec();
-  //   } catch (error) {
-  //     console.log(error);
-  //     return { ok: false, status: 500, mes: error };
-  //   }
-  // }
+  async uploadNotification(notificationData) {
+    try {
+      let time = new Date().getTime();
+      let notification = await Notification.updateOne(
+        { userID: notificationData.targetId },
+        {
+          $set: { status: "1" },
+          $push: {
+            notifications: {
+              func: notificationData.fuc,
+              sendUserId: notificationData.sendUserId,
+              notificationMessage: notificationData.message,
+              time: time,
+              postImg: notificationData.postImg,
+              postID: notificationData.postID,
+            },
+          },
+        }
+      ).exec();
+      return { ok: true, status: 200, mes: "upload success" };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async getNotification(userID) {
+    try {
+      let result = await Notification.findOne({
+        userID: userID,
+      })
+        .populate("notifications.sendUserId")
+        .populate("notifications.postID")
+        .exec();
+      if (result.notifications.length == 20) {
+        Notification.updateOne(
+          { userID: userID },
+          {
+            $pop: { notifications: -1 },
+          }
+        ).then((mes) => {
+          console.log(mes);
+        });
+      }
+      return { ok: true, status: 200, data: result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, data: error };
+    }
+  }
+
+  async changeNotificationStatus(userID) {
+    try {
+      let result = await Notification.updateOne(
+        {
+          userID: userID,
+        },
+        { status: "0" }
+      ).exec();
+      console.log(result);
+      return { ok: true, status: 200, data: result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, data: error };
+    }
+  }
 }
 
 module.exports = model;
 
-// Post.find()
-//   .sort({ _id: -1 })
-//   .populate("userID")
-//   .populate({ path: "comments.userID", model: "Member" })
-//   .then((mes) => {
-//     console.log(mes);
-//   });
+Post.find({ _id: "63df3b6883f9f1265b5fc875" }).then((posts) => {
+  console.log(posts);
+});
 
-// Member.findOne({ _id: "63c76d88d55533e391061346" }).then((member) => {
-//   let matchingFan = member.fans.filter((fan) => {
-//     return fan.userID == "63ceb9f42bcaf0a79ea85c58";
+// Notification.updateOne(
+//   { userID: "63ceb9f42bcaf0a79ea85c58" },
+//   {
+//     $pop: { notifications: -1 },
+//   }
+// ).then((mes) => {
+//   console.log(mes);
+// });
+
+// Notification.find().then((mes) => {
+//   mes.forEach((notice) => {
+//     console.log(notice);
+//     notice.notifications = [];
+//     notice.save();
 //   });
 // });
 

@@ -231,6 +231,12 @@ header {
         background-color: #e6e6e6b6;
       }
     }
+    .notification-no-data {
+      display: none;
+      position: absolute;
+      right: 33%;
+      top: 48%;
+    }
   }
 }
 

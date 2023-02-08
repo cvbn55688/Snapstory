@@ -32,7 +32,8 @@ function websocketStart() {
           JSON.parse(message).postImg,
           JSON.parse(message).message,
           JSON.parse(message).time,
-          JSON.parse(message).targetId
+          JSON.parse(message).targetId,
+          JSON.parse(message).postID
         );
       }
     });
@@ -66,7 +67,8 @@ function sendMessageToClient(
   postImg,
   message,
   time,
-  toUserId
+  toUserId,
+  postID
 ) {
   const socket = clients.get(toUserId);
   let data = {
@@ -77,6 +79,7 @@ function sendMessageToClient(
     postImg,
     message,
     time,
+    postID,
   };
   if (socket) {
     socket.send(JSON.stringify(data));

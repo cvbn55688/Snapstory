@@ -57,9 +57,10 @@ function createFansFollowingLi(dataArray, table, ul) {
     newName.textContent = fanName;
     newLi.appendChild(newName);
 
-    newLi.addEventListener("click", () => {
-      location.href = `/personal/${fanName}`;
-    });
+    // newLi.addEventListener("click", () => {
+    //   location.href = `/personal/${fanName}`;
+    // });
+    rediectToPersonalPage(newLi, fanName);
   });
 }
 
@@ -74,17 +75,9 @@ function loadPostImg(postArray, userData) {
     newPostCardImg.src = post.imageUrl;
     newPostCard.appendChild(newPostCardImg);
 
-    createPostShow(
-      post._id,
-      post.imageUrl,
-      userData.headImg,
-      userData.username,
-      post.content,
-      post.comments,
-      post.likes,
-      newPostCard,
-      post.time
-    );
+    newPostCard.addEventListener("click", () => {
+      createParticularPost(post._id);
+    });
   });
 }
 
@@ -170,6 +163,7 @@ function follow(followedUser, fansAmountText, followTrue) {
           null,
           "剛剛",
           data.followedUserID,
+          null,
           null
         );
       } else if (data.ok == true && data.follow == false) {

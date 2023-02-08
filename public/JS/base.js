@@ -16,6 +16,9 @@ const postLeaveButton = document.querySelector(".post-leave-img");
 const postImageInput = document.querySelector(".post-image");
 const postingArea = document.querySelector(".posting-area");
 const postCutting = document.querySelector(".cutting");
+const preveiwImageContainer = document.querySelector(
+  ".preveiw-image-container"
+);
 const postPreveiw = document.querySelector(".preveiw");
 const postTitle = document.querySelector(".post-title");
 const postNextStep = document.querySelector(".next-step");
@@ -39,12 +42,19 @@ const searchNoData = document.querySelector(".search-no-data");
 const historyNoData = document.querySelector(".histiry-no-data");
 const notificationTable = document.querySelector(".notification-table");
 const notificationUl = document.querySelector(".notification-ul");
+const notificationNoData = document.querySelector(".notification-no-data");
 let historicalSearch = window.localStorage.getItem("historicalSearch");
+let notificationCount = 0;
+
+function rediectToPersonalPage(container, targetName) {
+  container.addEventListener("click", () => {
+    location.href = `/personal/${targetName}`;
+  });
+}
 
 function websocketConnect() {
   let url = "ws://localhost:8000";
   let ws = new WebSocket(url);
-  console.log(ws);
 
   ws.addEventListener("open", function () {
     console.log("連結建立成功。");
@@ -52,17 +62,66 @@ function websocketConnect() {
 
   ws.addEventListener("message", function (e) {
     let data = JSON.parse(e.data);
+    let time = new Date().getTime();
     createNotificationLi(
       data.funcChoice,
       data.senderImg,
       data.sendername,
       data.message,
-      data.time,
-      data.postImg
+      time,
+      data.postImg,
+      data.postID
     );
     heartImg.src = "../image/heart5.png";
+    notificationCount = 0;
+    notificationNoData.style.display = "none";
   });
   return ws;
+}
+
+function getNotification() {
+  fetch(`/getNotification`, {
+    method: "GET",
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.ok == true) {
+        data = data.data;
+        notifications = data.notifications;
+        if (data.status == "1") {
+          heartImg.src = "../image/heart5.png";
+        } else {
+          notificationCount++;
+        }
+        if (notifications.length == 0) {
+          notificationNoData.style.display = "flex";
+        }
+        notifications.forEach((notification) => {
+          let imageUrl;
+          let post;
+          console.log(notification);
+          if (notification.func == "follow") {
+            imageUrl = null;
+            post = null;
+          } else {
+            imageUrl = notification.postID.imageUrl;
+            post = notification.postID._id;
+          }
+
+          createNotificationLi(
+            notification.func,
+            notification.sendUserId.headImg,
+            notification.sendUserId.username,
+            notification.notificationMessage,
+            notification.time,
+            imageUrl,
+            post
+          );
+        });
+      }
+    });
 }
 
 function createNotificationLi(
@@ -71,7 +130,8 @@ function createNotificationLi(
   likername,
   likernotificationMes,
   notificationTime,
-  postImg
+  postImg,
+  postID
 ) {
   let newNotificationLi = document.createElement("li");
   notificationUl.prepend(newNotificationLi);
@@ -79,6 +139,9 @@ function createNotificationLi(
   let newNotificationHeadImg = document.createElement("img");
   newNotificationHeadImg.src = likerHeadImg;
   newNotificationLi.appendChild(newNotificationHeadImg);
+  newNotificationHeadImg.addEventListener("mousedown", () => {
+    rediectToPersonalPage(newNotificationHeadImg, likername);
+  });
 
   let newNotificationMesContainer = document.createElement("div");
   newNotificationMesContainer.classList.add("notification-mes-container");
@@ -107,7 +170,7 @@ function createNotificationLi(
 
   let newNotificationTime = document.createElement("span");
   newNotificationTime.classList.add("notification-time");
-  newNotificationTime.textContent = notificationTime;
+  newNotificationTime.textContent = timeDifference(notificationTime);
   newNotificationMesSecond.appendChild(newNotificationTime);
 
   let newNotificationImgContainer = document.createElement("div");
@@ -115,9 +178,12 @@ function createNotificationLi(
   newNotificationLi.appendChild(newNotificationImgContainer);
 
   let newNotificationImg = document.createElement("img");
-  newNotificationImg.src = postImg;
   if (func != "follow") {
+    newNotificationImg.src = postImg;
     newNotificationImgContainer.appendChild(newNotificationImg);
+    newNotificationLi.addEventListener("click", () => {
+      createParticularPost(postID);
+    });
   }
 }
 
@@ -130,7 +196,8 @@ function sendNotice(
   sendMessage,
   notificationTime,
   targetUserId,
-  postImg
+  postImg,
+  postID
 ) {
   if (sendUserId == targetUserId) {
     return;
@@ -145,6 +212,7 @@ function sendNotice(
       message: sendMessage,
       time: notificationTime,
       targetId: targetUserId,
+      postID,
     })
   );
 
@@ -152,12 +220,12 @@ function sendNotice(
     method: "POST",
     body: JSON.stringify({
       fuc: func,
-      name: sendUserName,
-      sendUserImg,
+      sendUserId,
       postImg: postImg,
       message: sendMessage,
       time: notificationTime,
       targetId: targetUserId,
+      postID,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -337,31 +405,104 @@ function searchBarFuction() {
         getHistoricalData();
         return;
       }
-      fetch(`/userSearch/${searchBar.value}`, {
-        method: "GET",
-      })
-        .then(function (response) {
-          if (response.status == 400) {
-            location.href = "/login";
-            return;
-          }
-          return response.json();
-        })
-        .then(function (data) {
-          let searchDataArray = data.data;
-          if (searchDataArray.length == 0) {
-            searchBarLoadingImg.style.display = "none";
-            searchTableLoadImg.style.display = "none";
-            searchNoData.style.display = "flex";
-          }
-          searchDataArray.forEach((userData) => {
-            createSearchLi(userData.headImg, userData.username);
-            searchBarLoadingImg.style.display = "none";
-            searchTableLoadImg.style.display = "none";
-          });
+      searchUser(searchBar.value).then((data) => {
+        let searchDataArray = data.data;
+        if (searchDataArray.length == 0) {
+          searchBarLoadingImg.style.display = "none";
+          searchTableLoadImg.style.display = "none";
+          searchNoData.style.display = "flex";
+        }
+        searchDataArray.forEach((userData) => {
+          createSearchLi(userData.headImg, userData.username);
+          searchBarLoadingImg.style.display = "none";
+          searchTableLoadImg.style.display = "none";
         });
+      });
     }, 1500)
   );
+}
+
+async function searchUser(searchValue) {
+  return fetch(`/userSearch/${searchValue}`, {
+    method: "GET",
+  })
+    .then(function (response) {
+      if (response.status == 400) {
+        location.href = "/login";
+        return;
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      return data;
+    });
+}
+
+function openTagTable(table, ul, loadingImg, input) {
+  let closestAt;
+  let text;
+  input.addEventListener("input", function checkTagInput() {
+    table.style.display = "flex";
+    loadingImg.style.display = "flex";
+    let cursorPos = input.selectionStart;
+    text = input.value;
+    closestAt = text.lastIndexOf("@", cursorPos - 1);
+    ul.childNodes.forEach((li) => {
+      li.remove();
+    });
+    if (
+      text.slice(-1) == " " ||
+      text.slice(-1) == "@" ||
+      text == "" ||
+      closestAt == -1
+    ) {
+      table.style.display = "none";
+      input.removeEventListener("input", debounceSearchTagName);
+      input.removeEventListener("input", checkTagInput);
+    }
+  });
+
+  let debounceSearchTagName = debounce(() => {
+    searchTagName();
+  }, 200);
+  input.addEventListener("input", debounceSearchTagName);
+  function searchTagName() {
+    ul.childNodes.forEach((li) => {
+      li.remove();
+    });
+    let tagName = text.substring(closestAt).split(" ")[0].replace("@", "");
+
+    if (tagName != "") {
+      console.log(closestAt);
+      console.log(tagName);
+      searchUser(tagName).then((data) => {
+        console.log(data);
+        data.data.forEach((user) => {
+          console.log(user);
+          let newSearchLi = document.createElement("li");
+          ul.appendChild(newSearchLi);
+
+          let newsearchUserImage = document.createElement("img");
+          newsearchUserImage.src = user.headImg;
+          newSearchLi.appendChild(newsearchUserImage);
+
+          let newSearchName = document.createElement("span");
+          newSearchName.textContent = user.username;
+          newSearchLi.appendChild(newSearchName);
+
+          newSearchLi.addEventListener("click", () => {
+            input.value = input.value.replace(
+              `@${tagName}`,
+              `@${user.username} `
+            );
+            table.style.display = "none";
+            input.focus();
+          });
+        });
+        loadingImg.style.display = "none";
+      });
+    }
+  }
 }
 
 function headerIconFuction() {
@@ -408,6 +549,18 @@ function headerIconFuction() {
       heartImg.src = "../image/heart2.png";
       notificationTable.style.display = "block";
       heartCount++;
+      if (notificationCount == 0) {
+        fetch(`/changeNotificationStatus`, {
+          method: "POST",
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            console.log(data);
+            notificationCount++;
+          });
+      }
     } else {
       checkPathIcon();
       heartImg.src = "../image/heart.png";
@@ -419,74 +572,90 @@ function headerIconFuction() {
   postImageInput.addEventListener("change", (eve) => {
     let imageFile = eve.target.files[0];
     let reader = new FileReader();
-
+    console.log(postImageInput.value);
+    setTimeout(() => {
+      postImageInput.value = "";
+    }, 100);
+    let base64Img;
+    reader.readAsDataURL(imageFile);
     reader.addEventListener("load", () => {
-      let base64Img = reader.result;
+      base64Img = reader.result;
       postingArea.style.display = "none";
       postCutting.style.display = "flex";
       postPreveiw.src = base64Img;
-      postTitle.textContent = "裁切";
+      postTitle.textContent = "預覽";
       postNextStep.style.display = "flex";
       postUndo.style.display = "flex";
-
-      postUndo.addEventListener("click", () => {
-        postingArea.style.display = "flex";
-        postCutting.style.display = "none";
-        postPreveiw.src = "";
-        postTitle.textContent = "選擇圖片";
-        postNextStep.style.display = "none";
-        postUndo.style.display = "none";
-      });
-
-      postNextStep.addEventListener("click", () => {
-        postUndo.style.display = "none";
-        postUndo2.style.display = "flex";
-        postNextStep.style.display = "none";
-        postNextStep2.style.display = "flex";
-
-        postUndo2.addEventListener("click", () => {
-          postUndo.style.display = "flex";
-          postUndo2.style.display = "none";
-          postNextStep.style.display = "flex";
-          postNextStep2.style.display = "none";
-          postCutting.style.padding = "none";
-          postCutting.style.height = "580px";
-          postMessage.style.display = "none";
-          postHr.style.display = "none";
-        });
-
-        postHr.style.display = "block";
-
-        postTitle.textContent = "建立新貼文";
-        postCutting.style.padding = "20px";
-        postCutting.style.height = "auto";
-        postMessage.style.display = "flex";
-
-        postNextStep2.addEventListener("click", () => {
-          fetch(`/uploadPost`, {
-            method: "POST",
-            body: JSON.stringify({
-              base64Img: base64Img,
-              message: postMessageTextarea.value,
-            }),
-            headers: {
-              "Content-type": "application/json; charset=UTF-8",
-            },
-          })
-            .then(function (response) {
-              return response.json();
-            })
-            .then(function (data) {
-              if (data.ok == true) {
-                alert("上傳成功");
-                location.reload();
-              }
-            });
-        });
-      });
+      postUndo.addEventListener("click", handelPostUndo);
+      postNextStep.addEventListener("click", handelPostNextStep);
     });
 
-    reader.readAsDataURL(imageFile);
+    function handelPostUndo() {
+      postingArea.style.display = "flex";
+      postCutting.style.display = "none";
+      postPreveiw.src = "";
+      postTitle.textContent = "選擇圖片";
+      postNextStep.style.display = "none";
+      postUndo.style.display = "none";
+      postUndo.removeEventListener("click", handelPostUndo);
+      postNextStep.removeEventListener("click", handelPostNextStep);
+    }
+
+    function handelPostNextStep() {
+      postPreveiw.style.animation = "postImageMove 0.7s forwards";
+      postUndo.style.display = "none";
+      postUndo2.style.display = "flex";
+      postNextStep.style.display = "none";
+      postNextStep2.style.display = "flex";
+
+      postHr.style.display = "block";
+
+      postTitle.textContent = "建立新貼文";
+      postCutting.style.padding = "20px";
+      postCutting.style.height = "330px";
+      preveiwImageContainer.style.height = "330px";
+      postMessage.style.display = "flex";
+
+      postNextStep2.addEventListener("click", uploadPost);
+      postUndo2.addEventListener("click", handelPostUndo2);
+    }
+
+    function handelPostUndo2() {
+      postPreveiw.style.animation = "";
+      postUndo.style.display = "flex";
+      postUndo2.style.display = "none";
+      postNextStep.style.display = "flex";
+      postNextStep2.style.display = "none";
+      postCutting.style.padding = "none";
+      postCutting.style.height = "580px";
+      preveiwImageContainer.style.height = "550px";
+      postMessage.style.display = "none";
+      postHr.style.display = "none";
+      postNextStep2.removeEventListener("click", uploadPost);
+      postUndo2.removeEventListener("click", handelPostUndo2);
+    }
+
+    function uploadPost() {
+      fetch(`/uploadPost`, {
+        method: "POST",
+        body: JSON.stringify({
+          base64Img: base64Img,
+          message: postMessageTextarea.value,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          if (data.ok == true) {
+            alert("上傳成功");
+            location.reload();
+          }
+        });
+    }
   });
 }
 
@@ -524,3 +693,9 @@ checkLonin();
 checkPathIcon();
 searchBarFuction();
 headerIconFuction();
+getNotification();
+
+function test(val, val2) {
+  console.log(val, val2);
+}
+test(12);

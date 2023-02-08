@@ -33,7 +33,6 @@ main .signup .signup-container .title {
   margin: 40px 0;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 main .login .login-container input,
@@ -50,11 +49,6 @@ main .signup .signup-container input {
   font-size: 16px;
 }
 main .login .login-container input::-moz-placeholder, main .login .signup-container input::-moz-placeholder, main .signup .login-container input::-moz-placeholder, main .signup .signup-container input::-moz-placeholder {
-  font: 14px sans-serif;
-  color: rgba(91, 91, 91, 0.578);
-  letter-spacing: 1.5px;
-}
-main .login .login-container input:-ms-input-placeholder, main .login .signup-container input:-ms-input-placeholder, main .signup .login-container input:-ms-input-placeholder, main .signup .signup-container input:-ms-input-placeholder {
   font: 14px sans-serif;
   color: rgba(91, 91, 91, 0.578);
   letter-spacing: 1.5px;
@@ -132,7 +126,6 @@ main .signup .have-account .login-button {
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
   color: rgb(27, 53, 255);
 }

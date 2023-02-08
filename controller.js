@@ -61,9 +61,17 @@ class controller {
     return uploadReturn;
   }
 
-  async getIndexData() {
-    let postData = await Model.getIndexData();
-    // console.log(postData);
+  async getIndexData(page) {
+    let postData = await Model.getIndexData(page);
+    if (postData.ok) {
+      return { ok: true, nextPage: postData.nextPage, data: postData.data };
+    } else {
+      return { ok: false, error: postData.mes };
+    }
+  }
+
+  async getParticularPost(postID) {
+    let postData = await Model.getParticularPost(postID);
     return postData;
   }
 
@@ -108,10 +116,19 @@ class controller {
     return searchData;
   }
 
-  async uploadNotification(notificationData) {
-    let searchData = await Model.userSeacher(searchValue);
-    console.log(notificationData, "asdasdasdasdasddsoihkdfikhsk");
-    // return searchData;
+  async uploadNotification(notification) {
+    let notificationData = await Model.uploadNotification(notification);
+    return notificationData;
+  }
+
+  async getNotification(userID) {
+    let notificationData = await Model.getNotification(userID);
+    return notificationData;
+  }
+
+  async changeNotificationStatus(userID) {
+    let notificationStatus = await Model.changeNotificationStatus(userID);
+    return notificationStatus;
   }
 }
 

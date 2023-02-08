@@ -1,11 +1,3 @@
-@-webkit-keyframes showTable {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 100%;
-  }
-}
 @keyframes showTable {
   0% {
     opacity: 0;
@@ -14,9 +6,16 @@
     opacity: 100%;
   }
 }
+@keyframes postImageMove {
+  0% {
+    transform: translate(150px, 124px) scale(1.8);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
 .show-post {
-  -webkit-animation: showTable 0.5s;
-          animation: showTable 0.5s;
+  animation: showTable 0.5s;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -37,8 +36,7 @@
 .show-post .cancel-container {
   display: none;
   position: absolute;
-  -webkit-animation: showTable 0.25s;
-          animation: showTable 0.25s;
+  animation: showTable 0.25s;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.501);
@@ -89,7 +87,6 @@
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 .show-post .cancel-container .cancel-table .ensure-cancel .cancel-button {
@@ -136,7 +133,6 @@
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 .show-post .posting .post-header .undo,
@@ -193,14 +189,13 @@
   justify-content: center;
   align-items: center;
   width: 480px;
-  min-height: 270px;
-  max-height: 550px;
+  height: 550px;
 }
 .show-post .posting .cutting .preveiw-image-container .preveiw {
   width: 100%;
-  max-height: 550px;
-  -o-object-fit: cover;
-     object-fit: cover;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
   padding: 5px;
 }
 .show-post .posting .cutting .post-message {
@@ -216,7 +211,6 @@
   font-size: 16px;
   font-weight: bold;
   color: black;
-  border: none;
 }
 
 @media screen and (max-width: 650px) {

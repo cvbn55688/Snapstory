@@ -60,8 +60,19 @@ app.get("/getData", async (req, res) => {
   if (req.cookies.JWTtoken == undefined) {
     res.status(400).json({ ok: false, data: "使用者未登入" });
   } else {
-    let postData = await controller.getIndexData();
-    res.status(200).json({ ok: true, data: postData });
+    let page = req.query.page;
+    let postData = await controller.getIndexData(page);
+    res.status(200).json({ postData });
+  }
+});
+
+app.get("/getParticularPost", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let postID = req.query.postID;
+    let postData = await controller.getParticularPost(postID);
+    res.status(200).json({ postData });
   }
 });
 
@@ -107,6 +118,7 @@ app.post("/likePost", async (req, res) => {
           targetUserID: likeData.mes.userID,
           postImg: likeData.mes.imageUrl,
         },
+        likeData,
       });
     } else {
       res.status(500).json({ ok: false, data: likeData.mes });
@@ -142,7 +154,7 @@ app.post("/newComment", async (req, res) => {
   let newComment = req.body.comment;
   let commentData = await controller.newComment(postID, userID, newComment);
   if (commentData.ok != false) {
-    console.log(commentData);
+    console.log(commentData, "留言回傳資訊");
     res.status(200).json({
       ok: true,
       data: {
@@ -154,6 +166,7 @@ app.post("/newComment", async (req, res) => {
         newComment,
         postImg: commentData.mes.imageUrl,
       },
+      commentData,
     });
   } else {
     res.status(500).json({ ok: false, data: { error: commentData.mes } });
@@ -205,19 +218,44 @@ app.get("/userSearch/:searchValue", async (req, res) => {
   if (req.cookies.JWTtoken == undefined) {
     res.status(400).json({ ok: false, data: "使用者未登入" });
   } else {
-    console.log(req.params.searchValue);
-    let searchData = await controller.userSeacher(req.params.searchValue);
-    res.status(200).json({ ok: true, data: searchData });
+    if (req.params.searchValue == "") {
+      res.status(200).json({ ok: true, data: null });
+    } else {
+      let searchData = await controller.userSeacher(req.params.searchValue);
+      console.log(searchData);
+      res.status(200).json({ ok: true, data: searchData });
+    }
   }
 });
 
-app.get("/uploadNotification", async (req, res) => {
+app.post("/uploadNotification", async (req, res) => {
   if (req.cookies.JWTtoken == undefined) {
     res.status(400).json({ ok: false, data: "使用者未登入" });
   } else {
-    console.log(req.body);
-    let searchData = await controller.userSeacher(req.body);
-    res.status(200).json({ ok: true, data: searchData });
+    let notificationData = await controller.uploadNotification(req.body);
+    res.status(200).json({ ok: true, data: notificationData });
+  }
+});
+
+app.get("/getNotification", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let userID = userData.userID;
+    let notificationData = await controller.getNotification(userID);
+    res.status(200).json(notificationData);
+  }
+});
+
+app.post("/changeNotificationStatus", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let userID = userData.userID;
+    let notificationData = await controller.changeNotificationStatus(userID);
+    res.status(200).json(notificationData);
   }
 });
 

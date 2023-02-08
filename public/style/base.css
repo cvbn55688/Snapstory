@@ -16,7 +16,6 @@ ul::-webkit-scrollbar-thumb {
 }
 
 header {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -238,6 +237,12 @@ header .notification-table .notification-ul li .notification-img-preview img {
 }
 header .notification-table .notification-ul li:hover {
   background-color: rgba(230, 230, 230, 0.7137254902);
+}
+header .notification-table .notification-no-data {
+  display: none;
+  position: absolute;
+  right: 33%;
+  top: 48%;
 }
 
 @media screen and (max-width: 970px) {
