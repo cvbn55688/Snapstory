@@ -332,6 +332,7 @@ textarea {
   box-shadow: 0 0 6px rgba(104, 104, 104, 0.6);
 }
 .show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul {
+  width: 100%;
   height: 100%;
   overflow-y: scroll;
 }
@@ -353,6 +354,13 @@ textarea {
 }
 .show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul li:hover {
   background-color: rgba(227, 227, 227, 0.773);
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe .hashtag-search-loadingImg {
+  display: none;
+  height: 30px;
+  position: absolute;
+  top: 45%;
+  right: 50%;
 }
 
 @media screen and (max-width: 650px) {

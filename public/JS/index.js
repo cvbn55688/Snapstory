@@ -44,7 +44,8 @@ function getData() {
           post.content,
           post.comments,
           post.likes,
-          post.time
+          post.time,
+          post.hashtags
         );
         // console.log(post);
       });

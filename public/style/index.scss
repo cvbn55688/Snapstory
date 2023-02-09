@@ -162,6 +162,26 @@
             margin-right: 15px;
             cursor: pointer;
           }
+          .hashtag-container-post {
+            display: flex;
+            width: 100%;
+            ul {
+              width: 100%;
+              li {
+                list-style: none;
+                display: inline-block;
+                border: 2px solid rgba(227, 227, 227, 0.773);
+                border-radius: 5px;
+                padding: 0 5px;
+                margin-left: 10px;
+                font-size: 16px;
+                background-color: rgba(227, 227, 227, 0.773);
+                text-align: center;
+                vertical-align: middle;
+                cursor: pointer;
+              }
+            }
+          }
         }
         .post-liker {
           position: relative;

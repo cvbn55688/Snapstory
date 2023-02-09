@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style/base.css" />
+    <link rel="stylesheet" href="/style/tags_page.css" />
+
+    <title>Snapstory</title>
+  </head>
+  <body>
+    <% include header.ejs %>
+    <main>
+      <div class="tags-info">
+        <section class="tags-info-section">
+          <div class="tags-info-container">
+            <div class="img-container">
+              <img class="tags-info-headImg" src="" alt="" />
+            </div>
+
+            <div class="tags-info-content-container">
+              <div class="tags-person">
+                <p class="tags-name"></p>
+                <div class="tags-interaction">
+                  <p class="follow">
+                    追隨標籤<img
+                      class="loading"
+                      src="/image/loading.gif"
+                      alt=""
+                    />
+                  </p>
+                  <p class="isfollowed">
+                    追隨中<img
+                      class="down-arrow"
+                      src="/image/down-arrow.png"
+                      alt=""
+                    />
+                  </p>
+                </div>
+              </div>
+
+              <div class="tags-info-count-container">
+                <div class="post-amount-container">
+                  <li class="post-amount"></li>
+                  <span>篇貼文</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tags-posts"></section>
+        <div class="no-post">
+          <img class="no-post-img" src="/image/camera.png" alt="" />
+          <p>尚無貼文</p>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script src="/JS/base.js"></script>
+  <script src="/JS/tagsPage.js"></script>
+  <!-- <script src="/JS/showPost2.js"></script> -->
+</html>

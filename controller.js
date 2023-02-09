@@ -56,9 +56,15 @@ class controller {
     let uploadReturn = await Model.uploadPost(
       userID,
       postData.base64Img,
-      postData.message
+      postData.message,
+      postData.hashtagArr
     );
     return uploadReturn;
+  }
+
+  async uploadHashtag(hashtagName, postID) {
+    let hashtagData = await Model.uploadHashtag(hashtagName, postID);
+    return hashtagData;
   }
 
   async getIndexData(page) {
@@ -101,6 +107,11 @@ class controller {
     return userPostData;
   }
 
+  async getTagsPost(tagsname) {
+    let userPostData = await Model.getTagsPost(tagsname);
+    return userPostData;
+  }
+
   async followFans(fan, followedUser) {
     let followData = await Model.followFans(fan, followedUser);
     return followData;
@@ -113,6 +124,11 @@ class controller {
 
   async userSeacher(searchValue) {
     let searchData = await Model.userSeacher(searchValue);
+    return searchData;
+  }
+
+  async tagSeacher(searchValue) {
+    let searchData = await Model.tagSeacher(searchValue);
     return searchData;
   }
 

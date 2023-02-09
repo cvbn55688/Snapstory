@@ -45,6 +45,12 @@ const notificationUl = document.querySelector(".notification-ul");
 const notificationNoData = document.querySelector(".notification-no-data");
 const postHashTag = document.querySelector(".post-hashtag");
 const postHashTagInput = document.querySelector(".post-hashtag-div input");
+const postHashTagTable = document.querySelector(".hashtag-search-talbe");
+const postHashTagUl = document.querySelector(".hashtag-search-talbe ul");
+const postHashTagLodingImg = document.querySelector(
+  ".hashtag-search-loadingImg"
+);
+const hashTagContainer = document.querySelector(".hashtag-container");
 const postMessageTagTable = document.querySelector(".post-message-tag");
 const postMessageTagUl = document.querySelector(".post-message-tag ul");
 const postMessageTagLoadimg = document.querySelector(
@@ -282,7 +288,12 @@ function getHistoricalData() {
       let searchHistorical = search.split(";");
       let searchHistoricalName = searchHistorical[0];
       let searchHistoricalImg = searchHistorical[1];
-      createSearchLi(searchHistoricalImg, searchHistoricalName);
+      let searchHistoricalFunc = searchHistorical[2];
+      createSearchLi(
+        searchHistoricalFunc,
+        searchHistoricalImg,
+        searchHistoricalName
+      );
     });
   } catch {
     historyNoData.style.display = "flex";
@@ -327,7 +338,7 @@ function changeIcon(targetIcon) {
   });
 }
 
-function createSearchLi(headImg, username) {
+function createSearchLi(func, headImg, searchValue) {
   let searchUserLi = document.createElement("li");
   searchTableUl.appendChild(searchUserLi);
 
@@ -336,12 +347,15 @@ function createSearchLi(headImg, username) {
   searchUserLi.appendChild(searchUserHeadImg);
 
   let searchUsername = document.createElement("span");
-  searchUsername.textContent = username;
+  searchUsername.textContent = searchValue;
   searchUserLi.appendChild(searchUsername);
 
   searchUserLi.addEventListener("mousedown", () => {
     if (historicalSearch == null) {
-      window.localStorage.setItem("historicalSearch", username + ";" + headImg);
+      window.localStorage.setItem(
+        "historicalSearch",
+        searchValue + ";" + headImg + ";" + func
+      );
     } else {
       let historicalSearchArray = historicalSearch.split(",");
       Array.prototype.remove = function (value) {
@@ -351,14 +365,18 @@ function createSearchLi(headImg, username) {
         }
       };
 
-      historicalSearchArray.remove(username + ";" + headImg);
+      historicalSearchArray.remove(searchValue + ";" + headImg + ";" + func);
 
       window.localStorage.setItem(
         "historicalSearch",
-        username + ";" + headImg + "," + historicalSearchArray
+        searchValue + ";" + headImg + ";" + func + "," + historicalSearchArray
       );
     }
-    location.href = `/personal/${username}`;
+    if (func == "personal") {
+      location.href = `/personal/${searchValue}`;
+    } else if (func == "hashtag") {
+      location.href = `/tags/${searchValue}`;
+    }
   });
 }
 
@@ -419,25 +437,72 @@ function searchBarFuction() {
         getHistoricalData();
         return;
       }
-      searchUser(searchBar.value).then((data) => {
-        let searchDataArray = data.data;
-        if (searchDataArray.length == 0) {
-          searchBarLoadingImg.style.display = "none";
-          searchTableLoadImg.style.display = "none";
-          searchNoData.style.display = "flex";
-        }
-        searchDataArray.forEach((userData) => {
-          createSearchLi(userData.headImg, userData.username);
-          searchBarLoadingImg.style.display = "none";
-          searchTableLoadImg.style.display = "none";
+      if (searchBar.value.slice(0, 1) != "#") {
+        searchUser(searchBar.value).then((data) => {
+          let searchDataArray = data.data;
+          if (searchDataArray.length == 0) {
+            searchBarLoadingImg.style.display = "none";
+            searchTableLoadImg.style.display = "none";
+            searchNoData.style.display = "flex";
+          }
+          searchDataArray.forEach((userData) => {
+            createSearchLi("personal", userData.headImg, userData.username);
+            searchBarLoadingImg.style.display = "none";
+            searchTableLoadImg.style.display = "none";
+          });
         });
-      });
+      } else {
+        if (searchBar.value.replace("#", "") == "") {
+          searchShowHistory.style.display = "flex";
+          searchBarLoadingImg.style.display = "none";
+          searchTableLoadImg.style.display = "none";
+          getHistoricalData();
+          return;
+        }
+        searchTags(searchBar.value.replace("#", "")).then((data) => {
+          let searchDataArray = data.data;
+          console.log(searchDataArray);
+          if (searchDataArray.length == 0) {
+            searchBarLoadingImg.style.display = "none";
+            searchTableLoadImg.style.display = "none";
+            searchNoData.style.display = "flex";
+          } else {
+            searchDataArray.forEach((tagData) => {
+              searchBarLoadingImg.style.display = "none";
+              searchTableLoadImg.style.display = "none";
+
+              let tagName = tagData.tagName;
+              let tagAmount = tagData.posts.length;
+              let tagImg = "/image/hashtag2.png";
+              createSearchLi("hashtag", tagImg, tagName);
+              console.log(tagName, tagAmount);
+            });
+          }
+        });
+      }
     }, 1500)
   );
 }
 
 async function searchUser(searchValue) {
   return fetch(`/userSearch/${searchValue}`, {
+    method: "GET",
+  })
+    .then(function (response) {
+      if (response.status == 400) {
+        location.href = "/login";
+        return;
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      return data;
+    });
+}
+
+async function searchTags(searchValue) {
+  console.log(searchValue);
+  return fetch(`/tagSearch/${searchValue}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -491,7 +556,7 @@ function openTagTable(table, ul, loadingImg, input) {
       searchUser(tagName).then((data) => {
         console.log(data);
         data.data.forEach((user) => {
-          console.log(user);
+          // console.log(user);
           let newSearchLi = document.createElement("li");
           ul.appendChild(newSearchLi);
 
@@ -504,20 +569,103 @@ function openTagTable(table, ul, loadingImg, input) {
           newSearchLi.appendChild(newSearchName);
 
           newSearchLi.addEventListener("click", () => {
-            input.value = input.value.replace(
-              `@${tagName}`,
-              `@${user.username} `
-            );
+            cursorPos = input.selectionStart;
+            console.log(closestAt, cursorPos);
+
+            input.value =
+              input.value.slice(0, closestAt) +
+              `@${user.username} ` +
+              input.value.slice(cursorPos);
             table.style.display = "none";
             input.focus();
             input.removeEventListener("input", debounceSearchTagName);
             input.removeEventListener("input", checkTagInput);
+            if (cursorPos == closestAt + 1) {
+              input.addEventListener("input", checkTagInput);
+            }
           });
         });
         loadingImg.style.display = "none";
       });
     }
   }
+}
+
+// function openHashtagTable() {
+// }
+postHashTagInput.addEventListener("input", () => {
+  postHashTagUl.childNodes.forEach((li) => {
+    li.remove();
+  });
+  postHashTagTable.style.display = "flex";
+  postHashTagLodingImg.style.display = "flex";
+  if (postHashTagInput.value == "") {
+    postHashTagTable.style.display = "none";
+  }
+});
+postHashTagInput.addEventListener(
+  "input",
+  debounce(() => {
+    let searchValue = postHashTagInput.value.replace("#", "");
+    if (searchValue != "") {
+      searchTags(searchValue).then((data) => {
+        console.log(data);
+
+        if (data.data.length == 0) {
+          let newHashtagLi = document.createElement("li");
+          newHashtagLi.textContent = "#" + searchValue;
+          postHashTagUl.appendChild(newHashtagLi);
+
+          let newHashtagSpan = document.createElement("span");
+          newHashtagSpan.classList.add("hashtag-post-amount");
+          newHashtagSpan.textContent = "創建此標籤";
+          newHashtagLi.appendChild(newHashtagSpan);
+
+          newHashtagLi.addEventListener("click", () => {
+            createHashtagLi(searchValue);
+            postHashTagTable.style.display = "none";
+          });
+        } else {
+          let hashTagArr = data.data;
+          hashTagArr.forEach((hashtagData) => {
+            console.log(hashtagData);
+
+            let newHashtagLi = document.createElement("li");
+            newHashtagLi.textContent = "#" + hashtagData.tagName;
+            postHashTagUl.appendChild(newHashtagLi);
+
+            let newHashtagSpan = document.createElement("span");
+            newHashtagSpan.classList.add("hashtag-post-amount");
+            newHashtagSpan.textContent =
+              "共" + hashtagData.posts.length + "篇文章";
+            newHashtagLi.appendChild(newHashtagSpan);
+
+            newHashtagLi.addEventListener("click", () => {
+              createHashtagLi(hashtagData.tagName);
+              postHashTagTable.style.display = "none";
+            });
+          });
+        }
+      });
+    }
+
+    postHashTagLodingImg.style.display = "none";
+  }, 1500)
+);
+
+function createHashtagLi(hashtagName) {
+  let newhashtagLi = document.createElement("li");
+  newhashtagLi.classList.add("hashtags-li");
+  newhashtagLi.textContent = "#" + hashtagName;
+  hashTagContainer.appendChild(newhashtagLi);
+
+  let newhashtagCloseImg = document.createElement("img");
+  newhashtagCloseImg.src = "/image/close2.png";
+  newhashtagLi.appendChild(newhashtagCloseImg);
+
+  newhashtagCloseImg.addEventListener("click", () => {
+    newhashtagLi.remove();
+  });
 }
 
 function headerIconFuction() {
@@ -587,7 +735,6 @@ function headerIconFuction() {
   postImageInput.addEventListener("change", (eve) => {
     let imageFile = eve.target.files[0];
     let reader = new FileReader();
-    console.log(postImageInput.value);
     setTimeout(() => {
       postImageInput.value = "";
     }, 100);
@@ -667,11 +814,17 @@ function headerIconFuction() {
     }
 
     function uploadPost() {
+      let postHashtag = document.querySelectorAll(".hashtags-li");
+      let postHashtagArr = [];
+      postHashtag.forEach((hashtag) => {
+        postHashtagArr.push(hashtag.innerText.replace("#", ""));
+      });
       fetch(`/uploadPost`, {
         method: "POST",
         body: JSON.stringify({
           base64Img: base64Img,
           message: postMessageTextarea.value,
+          hashtagArr: postHashtagArr,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -684,7 +837,7 @@ function headerIconFuction() {
           if (data.ok == true) {
             console.log(data);
             let tagNameArr = postMessageTextarea.value.match(/@\w+/g);
-            if (tagNameArr.length != 0) {
+            if (tagNameArr != null) {
               tagNameArr.forEach((tagName) => {
                 searchUser(tagName.replace(/@/, "")).then((tagData) => {
                   let tagedUserID = tagData.data[0]._id;
@@ -705,12 +858,36 @@ function headerIconFuction() {
                 });
               });
             }
+            postHashtagArr.forEach((hashtagName) => {
+              console.log(hashtagName);
+              uploadHashtag(hashtagName, data.uploadData.data._id);
+            });
+
             alert("上傳成功");
             location.reload();
           }
         });
     }
   });
+}
+
+function uploadHashtag(hashtagName, postID) {
+  fetch(`/uploadHashtag`, {
+    method: "PUT",
+    body: JSON.stringify({
+      hashtagName,
+      postID,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+    });
 }
 
 async function checkLonin() {

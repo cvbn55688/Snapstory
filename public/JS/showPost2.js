@@ -16,7 +16,7 @@ function createParticularPost(postID) {
     .then(function (data) {
       postBlacksreen.style.display = "flex";
       data = data.postData;
-      console.log(data);
+      // console.log(data);
 
       let time = data.time;
       let date = new Date(time);
@@ -26,6 +26,7 @@ function createParticularPost(postID) {
       let posterMessage = data.content;
       let likes = data.likes;
       let comments = data.comments;
+      let hashtagArr = data.hashtags;
 
       let newPostTable = document.createElement("div");
       newPostTable.classList.add("post-table");
@@ -109,6 +110,23 @@ function createParticularPost(postID) {
       newSharePost.src = "/image/share.png";
       newSharePost.classList.add("share-post");
       newPostInteract.appendChild(newSharePost);
+
+      let newHashtagContainer = document.createElement("div");
+      newHashtagContainer.classList.add("hashtag-container-post");
+      newPostInteract.appendChild(newHashtagContainer);
+
+      let newHashtagUl = document.createElement("ul");
+      newHashtagContainer.appendChild(newHashtagUl);
+
+      hashtagArr.forEach((hashtag) => {
+        let newHashtagLi = document.createElement("li");
+        newHashtagLi.textContent = "#" + hashtag;
+        newHashtagUl.appendChild(newHashtagLi);
+
+        newHashtagLi.addEventListener("click", () => {
+          location.href = `/tags/${hashtag}`;
+        });
+      });
 
       let newPostLiker = document.createElement("div");
       newPostLiker.classList.add("post-liker");

@@ -10,7 +10,7 @@ const s3 = new AWS.S3({
 });
 const now = new Date();
 
-const { Member, Post, Notification } = require("./schema.js");
+const { Member, Post, Notification, Tag } = require("./schema.js");
 // const schema = require("./schema.js");
 // const Member = schema.Member;
 // const Post = schema.Post;
@@ -87,7 +87,7 @@ class model {
     return result;
   }
 
-  async uploadPost(userID, base64Img, message) {
+  async uploadPost(userID, base64Img, message, hashtagArr) {
     let time = new Date().getTime();
     let imageData = base64Img;
     let imgType = base64Img.split(";")[0].split("/")[1];
@@ -115,6 +115,7 @@ class model {
       imageUrl: imgUrl,
       time: now,
       content: message,
+      hashtags: hashtagArr,
     });
     return await post
       .save()
@@ -127,6 +128,15 @@ class model {
         console.log(e);
         return { ok: false, status: 500 };
       });
+  }
+
+  async uploadHashtag(hashtagName, postID) {
+    let result = await Tag.updateOne(
+      { tagName: hashtagName },
+      { $push: { posts: { postID: postID } } },
+      { upsert: true }
+    ).exec();
+    return result;
   }
 
   async getIndexData(page) {
@@ -266,6 +276,34 @@ class model {
     }
   }
 
+  async getTagsPost(tagsname) {
+    let posts = await Tag.findOne({ tagName: tagsname })
+      .populate("posts.postID")
+      .exec();
+    return posts;
+    //   let posts = await Tag.find({ userID: user._id })
+    //     .sort({ _id: -1 })
+    //     // .limit(12)
+    //     .populate("comments.userID")
+    //     .exec();
+    //   let isMatchFan = await Member.findOne({
+    //     _id: user._id,
+    //   }).then((member) => {
+    //     let matchingFan = member.fans.filter((fan) => {
+    //       return fan.userID == fanId;
+    //     });
+    //     return matchingFan;
+    //   });
+    //   if (isMatchFan.length == 1) {
+    //     isMatchFan = true;
+    //   }
+    //   return { posts: posts, user: user, isMatchFan };
+    // } catch (error) {
+    //   console.log(error);
+    //   return { ok: false, status: 500, mes: error };
+    // }
+  }
+
   async followFans(fan, followedUser) {
     try {
       let pushFans = await Member.findOneAndUpdate(
@@ -325,6 +363,13 @@ class model {
       },
       { password: 0 }
     ).exec();
+    return result;
+  }
+
+  async tagSeacher(searchValue) {
+    let result = await Tag.find({ tagName: { $regex: searchValue } })
+      .populate("posts.postID")
+      .exec();
     return result;
   }
 
@@ -398,9 +443,23 @@ class model {
 
 module.exports = model;
 
-Post.find({ _id: "63df3b6883f9f1265b5fc875" }).then((posts) => {
-  console.log(posts);
-});
+// Post.find({ _id: "63df3b6883f9f1265b5fc875" }).then((posts) => {
+//   console.log(posts);
+// });
+
+// Tag.updateOne(
+//   { tagName: "anime" },
+//   { $push: { posts: { postID: "63cae12e8d7e4f7cf4d273b3" } } },
+//   { upsert: true }
+// ).then((res) => {
+//   console.log(res);
+// });
+
+// Tag.findOne({ tagName: "anime" })
+//   .populate("posts.postID")
+//   .then((data) => {
+//     console.log(data.posts[0]);
+//   });
 
 // Notification.updateOne(
 //   { userID: "63ceb9f42bcaf0a79ea85c58" },

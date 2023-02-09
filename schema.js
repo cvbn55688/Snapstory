@@ -65,6 +65,7 @@ const PostSchema = new mongoose.Schema({
       headImg: String,
     },
   ],
+  hashtags: [String],
 });
 
 const NotificationSchema = new mongoose.Schema({
@@ -82,12 +83,23 @@ const NotificationSchema = new mongoose.Schema({
   ],
 });
 
+const TagsSchema = new mongoose.Schema({
+  tagName: String,
+  posts: [
+    {
+      postID: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
+    },
+  ],
+});
+
 const Member = mongoose.model("Member", memberSchema);
 const Post = mongoose.model("Post", PostSchema);
 const Notification = mongoose.model("Notification", NotificationSchema);
+const Tag = mongoose.model("Tag", TagsSchema);
 
 module.exports = {
   Member,
   Post,
   Notification,
+  Tag,
 };

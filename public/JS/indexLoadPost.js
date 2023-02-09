@@ -14,7 +14,8 @@ function createPost(
   posterMessage,
   comments,
   likes,
-  time
+  time,
+  hashtagArr
 ) {
   let date = new Date(time);
   let newArticle = document.createElement("article");
@@ -200,6 +201,23 @@ function createPost(
   newSharePost.src = "/image/share.png";
   newSharePost.classList.add("share-post");
   newPostInteract.appendChild(newSharePost);
+
+  let newHashtagContainer = document.createElement("div");
+  newHashtagContainer.classList.add("hashtag-container-post");
+  newPostInteract.appendChild(newHashtagContainer);
+
+  let newHashtagUl = document.createElement("ul");
+  newHashtagContainer.appendChild(newHashtagUl);
+
+  hashtagArr.forEach((hashtag) => {
+    let newHashtagLi = document.createElement("li");
+    newHashtagLi.textContent = "#" + hashtag;
+    newHashtagUl.appendChild(newHashtagLi);
+
+    newHashtagLi.addEventListener("click", () => {
+      location.href = `/tags/${hashtag}`;
+    });
+  });
 
   let newPostLiker = document.createElement("div");
   newPostLiker.classList.add("post-liker");

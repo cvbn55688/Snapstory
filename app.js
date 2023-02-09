@@ -35,6 +35,10 @@ app.get("/personal/:user", (req, res) => {
   res.render("userPage");
 });
 
+app.get("/tags/:tagsName", (req, res) => {
+  res.render("tagsPage");
+});
+
 app.post("/signup", async (req, res) => {
   let signupData = await controller.signup(req.body);
   if (signupData.status == 200) {
@@ -89,6 +93,17 @@ app.post("/uploadPost", async (req, res) => {
   let userHeadImg = userData.headImg;
   let uploadData = await controller.uploadPost(userData, req.body);
   res.status(200).json({ ok: true, uploadData, username, userHeadImg });
+});
+
+app.put("/uploadHashtag", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  }
+  let hashtagName = req.body.hashtagName;
+  let postID = req.body.postID;
+  console.log(hashtagName, postID);
+  let uploadData = await controller.uploadHashtag(hashtagName, postID);
+  res.status(200).json({ ok: true, uploadData });
 });
 
 app.post("/likePost", async (req, res) => {
@@ -186,6 +201,16 @@ app.get("/getUserPost/:username", async (req, res) => {
   }
 });
 
+app.get("/getTagsPost/:tags", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let tagPostID = await controller.getTagsPost(req.params.tags);
+    res.status(200).json({ ok: true, data: tagPostID });
+  }
+});
+
 app.put("/followFans", async (req, res) => {
   if (req.cookies.JWTtoken == undefined) {
     res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -224,6 +249,21 @@ app.get("/userSearch/:searchValue", async (req, res) => {
       res.status(200).json({ ok: true, data: null });
     } else {
       let searchData = await controller.userSeacher(req.params.searchValue);
+      console.log(searchData);
+      res.status(200).json({ ok: true, data: searchData });
+    }
+  }
+});
+
+app.get("/tagSearch/:searchValue", async (req, res) => {
+  if (req.cookies.JWTtoken == undefined) {
+    res.status(400).json({ ok: false, data: "使用者未登入" });
+  } else {
+    if (req.params.searchValue == "") {
+      console.log("test");
+      res.status(200).json({ ok: true, data: null });
+    } else {
+      let searchData = await controller.tagSeacher(req.params.searchValue);
       console.log(searchData);
       res.status(200).json({ ok: true, data: searchData });
     }

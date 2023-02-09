@@ -7,20 +7,20 @@
   }
 }
 
-.user-info {
+.tags-info {
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  .user-info-section {
+  .tags-info-section {
     // width: 60%;
     width: 800px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    .user-info-container {
+    .tags-info-container {
       width: 100%;
       display: flex;
       margin-top: 20px;
@@ -35,7 +35,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      .user-info-headImg {
+      .tags-info-headImg {
         width: 150px;
         height: 150px;
         object-fit: cover;
@@ -43,18 +43,18 @@
         margin: 0 50px;
       }
     }
-    .user-info-content-container {
+    .tags-info-content-container {
       width: 60%;
       margin: 10px;
-      .user-person {
+      .tags-person {
         display: flex;
         align-items: center;
-        .user-account {
+        .tags-name {
           font-size: 18px;
           font-weight: bold;
           margin-right: 15px;
         }
-        .user-interaction {
+        .tags-interaction {
           display: flex;
           p {
             margin-right: 10px;
@@ -93,13 +93,13 @@
               width: 20px;
             }
           }
-          .set-user-data {
+          .set-tags-data {
             display: none;
           }
         }
       }
     }
-    .user-info-count-container {
+    .tags-info-count-container {
       display: flex;
       margin: 15px 0;
       div {
@@ -115,14 +115,14 @@
         }
       }
     }
-    .user-name-container {
+    .tags-name-container {
       p {
         font-weight: bold;
       }
     }
   }
 
-  .user-posts {
+  .tags-posts {
     margin: 3% 0 5% 0;
     // width: 60%;
     width: 800px;
@@ -164,11 +164,11 @@
 }
 
 @media screen and (max-width: 850px) {
-  .user-info {
-    .user-info-section {
+  .tags-info {
+    .tags-info-section {
       width: 80%;
     }
-    .user-posts {
+    .tags-posts {
       width: 80%;
       padding: 2%;
       grid-gap: 2%;
@@ -180,83 +180,15 @@
     }
   }
 }
-.full-screen {
-  animation: showTable 0.5s;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  z-index: 101;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  .fans-table,
-  .following-table {
-    display: none;
-    flex-direction: column;
-    width: 400px;
-    height: 400px;
-    background-color: white;
-    border-radius: 10px;
-    .fans-title,
-    .following-title {
-      position: relative;
-      display: flex;
-      width: 100%;
-      height: 12%;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(128, 128, 128, 0.578);
-      p {
-        font-size: 18px;
-      }
-      .fans-close,
-      .following-close {
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        right: 0;
-        top: 0;
-        margin: 15px 15px 0 0;
-        cursor: pointer;
-      }
-    }
-    ul.fans-ul,
-    .following-ul {
-      padding-top: 15px;
-      width: 100%;
-      height: 88%;
-      overflow-y: scroll;
-      li {
-        display: flex;
-        align-items: center;
-        list-style: none;
-        padding: 10px 10px 10px 20px;
-        cursor: pointer;
-        img {
-          width: 45px;
-          height: 45px;
-          object-fit: cover;
-          margin-right: 10px;
-          border-radius: 50%;
-        }
-      }
-      li:hover {
-        background-color: #e6e6e6b6;
-      }
-    }
-  }
-}
 
 @media screen and (max-width: 500px) {
-  .user-info {
-    .user-info-section {
+  .tags-info {
+    .tags-info-section {
       width: 100%;
-      .user-info-content-container {
-        .user-person {
+      .tags-info-content-container {
+        .tags-person {
           display: block;
-          .user-interaction {
+          .tags-interaction {
             margin-top: 5px;
           }
         }
@@ -266,7 +198,7 @@
         }
       }
 
-      .user-info-count-container {
+      .tags-info-count-container {
         div {
           flex-direction: column;
           justify-content: center;
@@ -274,7 +206,7 @@
         }
       }
     }
-    .user-posts {
+    .tags-posts {
       width: 100%;
       grid-gap: 1%;
       .post-card {
