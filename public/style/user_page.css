@@ -231,7 +231,7 @@
   padding-top: 15px;
   width: 100%;
   height: 88%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .full-screen .fans-table ul.fans-ul li,
 .full-screen .fans-table .following-ul li,

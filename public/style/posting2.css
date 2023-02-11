@@ -240,7 +240,7 @@ textarea {
 .show-post .posting .cutting .post-message .post-message-tag ul {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .show-post .posting .cutting .post-message .post-message-tag ul li {
   list-style: none;
@@ -334,7 +334,7 @@ textarea {
 .show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul li {
   display: flex;

@@ -1,6 +1,8 @@
 const searchBar = document.querySelector(".serch-bar input");
+const searchBarContainer = document.querySelector(".serch-bar");
 const searchTable = document.querySelector(".search-table");
 const searchTableUl = document.querySelector(".search-user");
+const searchImg = document.querySelector(".search-header");
 const homePage = document.querySelector(".home-page");
 const homePageImg = document.querySelector(".home-page img");
 const inboxPage = document.querySelector(".inbox-page");
@@ -59,6 +61,20 @@ const postMessageTagLoadimg = document.querySelector(
 
 let historicalSearch = window.localStorage.getItem("historicalSearch");
 let notificationCount = 0;
+
+searchImg.addEventListener("click", () => {
+  console.log("test");
+  setTimeout(() => {
+    searchBar.focus();
+    searchBar.setAttribute("placeholder", "搜尋");
+  }, 1);
+
+  searchBarContainer.style.display = "flex";
+
+  searchBar.addEventListener("blur", () => {
+    searchBarContainer.style.display = "none";
+  });
+});
 
 function rediectToPersonalPage(container, targetName) {
   container.addEventListener("click", () => {
@@ -912,7 +928,10 @@ async function checkLonin() {
       });
 
       let userData = { fuc: 0, name: data.name, id: data.userID };
-      ws.send(JSON.stringify(userData));
+      setTimeout(() => {
+        ws.send(JSON.stringify(userData));
+      }, 3000);
+
       return data;
     })
     .catch((error) => {

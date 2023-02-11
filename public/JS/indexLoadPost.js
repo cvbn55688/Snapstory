@@ -383,23 +383,25 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
             },
           ];
           let tagNameArr = commentInput.value.match(/@\w+/g);
-          tagNameArr.forEach((tagName) => {
-            searchUser(tagName.replace(/@/, "")).then((tagData) => {
-              console.log(tagData);
-              let tagedUserID = tagData.data[0]._id;
-              sendNotice(
-                "tag",
-                data.username,
-                data.userID,
-                data.headImg,
-                data.newComment,
-                "剛剛",
-                tagedUserID,
-                data.postImg,
-                postId
-              );
+          if (tagNameArr != null) {
+            tagNameArr.forEach((tagName) => {
+              searchUser(tagName.replace(/@/, "")).then((tagData) => {
+                console.log(tagData);
+                let tagedUserID = tagData.data[0]._id;
+                sendNotice(
+                  "tag",
+                  data.username,
+                  data.userID,
+                  data.headImg,
+                  data.newComment,
+                  "剛剛",
+                  tagedUserID,
+                  data.postImg,
+                  postId
+                );
+              });
             });
-          });
+          }
 
           createComment(commentInput, newUl, comments);
           sendNotice(
