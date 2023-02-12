@@ -135,7 +135,6 @@ function getNotification() {
           notificationNoData.style.display = "flex";
         }
         notifications.forEach((notification) => {
-          console.log(notification);
           let imageUrl;
           let post;
           if (notification.func == "follow") {
@@ -950,8 +949,3 @@ checkPathIcon();
 searchBarFuction();
 headerIconFuction();
 getNotification();
-
-function test(val, val2) {
-  console.log(val, val2);
-}
-test(12);
