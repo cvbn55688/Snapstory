@@ -16,7 +16,6 @@ function createParticularPost(postID) {
     .then(function (data) {
       postBlacksreen.style.display = "flex";
       data = data.postData;
-      // console.log(data);
 
       let time = data.time;
       let date = new Date(time);
@@ -332,22 +331,23 @@ function fetchLikePost(postId, dislike) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
-      if (data.like == true) {
-        checkLonin().then(function (senderData) {
-          console.log(senderData);
-          sendNotice(
-            "like",
-            data.data.liker,
-            data.data.likerID,
-            senderData.headImg,
-            null,
-            "剛剛",
-            data.data.targetUserID,
-            data.data.postImg,
-            postId
-          );
-        });
+      if (data.ok) {
+        if (data.like == true) {
+          checkLonin().then(function (senderData) {
+            console.log(senderData);
+            sendNotice(
+              "like",
+              data.data.liker,
+              data.data.likerID,
+              senderData.headImg,
+              null,
+              "剛剛",
+              data.data.targetUserID,
+              data.data.postImg,
+              postId
+            );
+          });
+        }
       }
     });
 }
@@ -368,6 +368,7 @@ function likePost(postId, newHeartPost, likesAmount, newLikeAmountPost) {
       return response.json();
     })
     .then(function (data) {
+      console.log(data);
       if (data.data != 0) {
         isLike = 1;
         newHeartPost.src = "/image/heart3.png";

@@ -81,13 +81,19 @@ function rediectToPersonalPage(container, targetName) {
     location.href = `/personal/${targetName}`;
   });
 }
-
+// console.log(location.hostname);
 function websocketConnect() {
-  let url = "ws://localhost:8000";
+  let url = "ws://" + location.hostname + ":8000";
   let ws = new WebSocket(url);
 
   ws.addEventListener("open", function () {
     console.log("連結建立成功。");
+    window.addEventListener("click", () => {
+      console.log(ws.readyState);
+      if (ws.readyState != 1) {
+        websocketConnect();
+      }
+    });
   });
 
   ws.addEventListener("message", function (e) {
@@ -129,9 +135,9 @@ function getNotification() {
           notificationNoData.style.display = "flex";
         }
         notifications.forEach((notification) => {
+          console.log(notification);
           let imageUrl;
           let post;
-          console.log(notification);
           if (notification.func == "follow") {
             imageUrl = null;
             post = null;
@@ -862,13 +868,13 @@ function headerIconFuction() {
                     sendNotice(
                       "postTag",
                       data.username,
-                      data.uploadData.data.userID,
+                      data.result.userID,
                       data.userHeadImg,
                       null,
                       "剛剛",
                       tagedUserID,
-                      data.uploadData.data.imageUrl,
-                      data.uploadData.data._id
+                      data.result.imageUrl,
+                      data.result._id
                     );
                   }, 1);
                 });
@@ -876,7 +882,7 @@ function headerIconFuction() {
             }
             postHashtagArr.forEach((hashtagName) => {
               console.log(hashtagName);
-              uploadHashtag(hashtagName, data.uploadData.data._id);
+              uploadHashtag(hashtagName, data.result._id);
             });
 
             alert("上傳成功");
@@ -921,7 +927,7 @@ async function checkLonin() {
       if (data.ok == false) {
         return;
       }
-      data = data.data;
+      data = data.decoded;
       personalImg.src = data.headImg;
       personalImg.addEventListener("click", () => {
         location.href = `/personal/${data.name}`;

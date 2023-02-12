@@ -41,7 +41,6 @@ function createFansFollowingLi(dataArray, table, ul) {
   });
   fullBlackScreen.style.display = "flex";
   table.style.display = "flex";
-
   dataArray.forEach((userData) => {
     let fanName = userData.userID.username;
     let fanHeadImg = userData.userID.headImg;
@@ -157,9 +156,9 @@ function follow(followedUser, fansAmountText, followTrue) {
         fansAmount.textContent = Number(fansAmountText) + 1;
         sendNotice(
           "follow",
-          data.fansData.username,
-          data.fansData.userID,
-          data.fansData.userHeadImg,
+          data.fansData.fanname,
+          data.fansData.fanID,
+          data.fansData.fanHeadImg,
           null,
           "剛剛",
           data.followedUserID,

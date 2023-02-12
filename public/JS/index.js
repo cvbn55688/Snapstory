@@ -30,11 +30,11 @@ function getData() {
       return response.json();
     })
     .then(function (data) {
-      if (data.postData.ok != true) {
+      if (data.ok != true) {
         console.log("讀取失敗");
         return;
       }
-      let postsDataArray = data.postData.data;
+      let postsDataArray = data.data;
       postsDataArray.forEach((post) => {
         createPost(
           post._id,
@@ -49,7 +49,7 @@ function getData() {
         );
         // console.log(post);
       });
-      page = data.postData.nextPage;
+      page = data.nextPage;
       observer.observe(target);
     });
 }

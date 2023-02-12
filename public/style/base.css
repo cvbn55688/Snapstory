@@ -258,9 +258,8 @@ header .notification-table .notification-no-data {
   header .serch-bar {
     display: none;
     position: absolute;
-    right: 0;
-    margin-right: 5px;
-    width: 235px;
+    right: 2.5%;
+    width: 95vw;
   }
   header .serch-bar .search-input {
     width: 100%;
@@ -271,9 +270,9 @@ header .notification-table .notification-no-data {
     border: 1px solid rgba(128, 128, 128, 0.578);
   }
   header .serch-bar .search-table {
-    width: 330px;
+    width: 100%;
     position: absolute;
-    right: 10%;
+    right: 0;
   }
   header .nav li {
     margin-left: 20px;

@@ -64,10 +64,10 @@ signupSubmitButton.addEventListener("click", () => {
     .then(function (data) {
       console.log(data);
       if (data.ok == false) {
-        createErrorMes(data.error, signupContainer, "signup-error");
+        createErrorMes(data.mes, signupContainer, "signup-error");
       } else {
         alert("註冊成功");
-        location.reload();
+        login(signupAccountInput.value, sugnupPasswordInput.value);
       }
     });
 });
@@ -81,11 +81,15 @@ loginSubmitButton.addEventListener("click", () => {
     createErrorMes("帳號、密碼不可空白", loginContainer, "login-error");
     return;
   }
+  login(loginAccountInput.value, loginPasswordInput.value);
+});
+
+function login(account, password) {
   fetch(`/signin`, {
     method: "PUT",
     body: JSON.stringify({
-      account: loginAccountInput.value,
-      password: loginPasswordInput.value,
+      account: account,
+      password: password,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -95,11 +99,11 @@ loginSubmitButton.addEventListener("click", () => {
       return response.json();
     })
     .then(function (data) {
+      console.log(data);
       if (data.ok == false) {
-        createErrorMes(data.error, loginContainer, "login-error");
+        createErrorMes(data.mes, loginContainer, "login-error");
       } else {
-        alert("登入成功");
         location.href = "/";
       }
     });
-});
+}

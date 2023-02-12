@@ -8,13 +8,7 @@ const s3 = new AWS.S3({
   accessKeyId: aws_access_key_id,
   secretAccessKey: aws_secret_access_key,
 });
-const now = new Date();
-
 const { Member, Post, Notification, Tag } = require("./schema.js");
-// const schema = require("./schema.js");
-// const Member = schema.Member;
-// const Post = schema.Post;
-// const Notification = schema.Notification;
 
 class model {
   async signup(data) {
@@ -63,26 +57,20 @@ class model {
     }
   }
 
-  async signin(data) {
-    if (data.account == "" || data.password == "") {
-      return { ok: false, mes: "帳號、密碼不可空白", status: 400 };
-    }
-    let account = data.account;
-    let password = data.password;
-
+  async signin(account, password) {
     let result = await Member.findOne({
       $and: [{ account: account }, { password: password }],
     })
       .then((data) => {
         if (data != null) {
-          return { ok: true, mes: "登入成功", data: data, status: 200 };
+          return { ok: true, status: 200, mes: "登入成功", data };
         } else {
-          return { ok: false, mes: "帳號或密碼錯誤", status: 400 };
+          return { ok: false, status: 400, mes: "帳號或密碼錯誤" };
         }
       })
       .catch((error) => {
         console.log(error);
-        return { ok: false, mes: error, status: 500 };
+        return { ok: false, status: 500, mes: error };
       });
     return result;
   }
@@ -113,7 +101,7 @@ class model {
     const post = new Post({
       userID: userID,
       imageUrl: imgUrl,
-      time: now,
+      time: new Date(),
       content: message,
       hashtags: hashtagArr,
     });
@@ -126,17 +114,21 @@ class model {
       })
       .catch((e) => {
         console.log(e);
-        return { ok: false, status: 500 };
+        return { ok: false, mes: e, status: 500 };
       });
   }
 
   async uploadHashtag(hashtagName, postID) {
-    let result = await Tag.updateOne(
-      { tagName: hashtagName },
-      { $push: { posts: { postID: postID } } },
-      { upsert: true }
-    ).exec();
-    return result;
+    try {
+      let result = await Tag.updateOne(
+        { tagName: hashtagName },
+        { $push: { posts: { postID: postID } } },
+        { upsert: true }
+      ).exec();
+      return { ok: true, status: 200, result };
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
   }
 
   async getIndexData(page) {
@@ -155,19 +147,23 @@ class model {
       } else {
         nextPage = null;
       }
-      return { ok: true, nextPage, data: result };
-    } catch (err) {
-      return { ok: false, mes: err };
+      return { ok: true, nextPage, result };
+    } catch (error) {
+      return { ok: false, mes: error };
     }
   }
 
   async getParticularPost(postID) {
-    let result = await Post.findOne({ _id: postID })
-      .populate({ path: "userID", select: "-password" })
-      .populate({ path: "comments.userID", select: "-password" })
-      .populate({ path: "likes.userID", select: "-password" })
-      .exec();
-    return result;
+    try {
+      let result = await Post.findOne({ _id: postID })
+        .populate({ path: "userID", select: "-password" })
+        .populate({ path: "comments.userID", select: "-password" })
+        .populate({ path: "likes.userID", select: "-password" })
+        .exec();
+      return { ok: true, result };
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
   }
 
   async likePost(username, userID, postID, userHeadImg) {
@@ -175,14 +171,13 @@ class model {
       { _id: postID },
       {
         $push: {
-          likes: { userID: userID, username: username, headImg: userHeadImg },
+          likes: { userID, username, headImg: userHeadImg },
         },
       }
     )
       .populate("likes.userID")
       .then((mes) => {
-        console.log(mes, "------------------------");
-        return { ok: true, mes: mes, status: 200 };
+        return { ok: true, mes, status: 200 };
       })
       .catch((err) => {
         return { ok: false, mes: err, status: 500 };
@@ -200,7 +195,7 @@ class model {
       }
     )
       .then((mes) => {
-        return { ok: true, mes: mes, status: 200 };
+        return { ok: true, mes, status: 200 };
       })
       .catch((err) => {
         return { ok: false, mes: err, status: 500 };
@@ -209,18 +204,22 @@ class model {
   }
 
   async checkUserLike(username, postID) {
-    let result = Post.findOne({ _id: postID })
-      .select({
-        likes: {
-          $elemMatch: {
-            username: username,
+    try {
+      let result = await Post.findOne({ _id: postID })
+        .select({
+          likes: {
+            $elemMatch: {
+              username: username,
+            },
           },
-        },
-      })
-      .then((mes) => {
-        return mes.likes.length;
-      });
-    return result;
+        })
+        .then((mes) => {
+          return mes.likes.length;
+        });
+      return { ok: true, result };
+    } catch (error) {
+      return { ok: false, mes: error };
+    }
   }
 
   async newComment(postID, userID, newComment) {
@@ -269,7 +268,7 @@ class model {
       if (isMatchFan.length == 1) {
         isMatchFan = true;
       }
-      return { posts: posts, user: user, isMatchFan };
+      return { ok: true, posts, user, isMatchFan };
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };
@@ -277,31 +276,14 @@ class model {
   }
 
   async getTagsPost(tagsname) {
-    let posts = await Tag.findOne({ tagName: tagsname })
-      .populate("posts.postID")
-      .exec();
-    return posts;
-    //   let posts = await Tag.find({ userID: user._id })
-    //     .sort({ _id: -1 })
-    //     // .limit(12)
-    //     .populate("comments.userID")
-    //     .exec();
-    //   let isMatchFan = await Member.findOne({
-    //     _id: user._id,
-    //   }).then((member) => {
-    //     let matchingFan = member.fans.filter((fan) => {
-    //       return fan.userID == fanId;
-    //     });
-    //     return matchingFan;
-    //   });
-    //   if (isMatchFan.length == 1) {
-    //     isMatchFan = true;
-    //   }
-    //   return { posts: posts, user: user, isMatchFan };
-    // } catch (error) {
-    //   console.log(error);
-    //   return { ok: false, status: 500, mes: error };
-    // }
+    try {
+      let posts = await Tag.findOne({ tagName: tagsname })
+        .populate("posts.postID")
+        .exec();
+      return { ok: true, posts };
+    } catch (error) {
+      return { ok: false, mes: error };
+    }
   }
 
   async followFans(fan, followedUser) {
@@ -323,7 +305,7 @@ class model {
           },
         }
       ).exec();
-      return { data: { pushFans, pushFollower } };
+      return { ok: true, data: { pushFans, pushFollower } };
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };
@@ -349,7 +331,7 @@ class model {
           },
         }
       ).exec();
-      return { data: pullFans };
+      return { ok: true, data: pullFans };
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };
@@ -357,20 +339,28 @@ class model {
   }
 
   async userSeacher(searchValue) {
-    let result = await Member.find(
-      {
-        username: { $regex: searchValue },
-      },
-      { password: 0 }
-    ).exec();
-    return result;
+    try {
+      let result = await Member.find(
+        {
+          username: { $regex: searchValue },
+        },
+        { password: 0 }
+      ).exec();
+      return { ok: true, result };
+    } catch (error) {
+      return { ok: false, status: 500, mes: error };
+    }
   }
 
   async tagSeacher(searchValue) {
-    let result = await Tag.find({ tagName: { $regex: searchValue } })
-      .populate("posts.postID")
-      .exec();
-    return result;
+    try {
+      let result = await Tag.find({ tagName: { $regex: searchValue } })
+        .populate("posts.postID")
+        .exec();
+      return { ok: true, result };
+    } catch (error) {
+      return { ok: false, status: 500, mes: error };
+    }
   }
 
   async uploadNotification(notificationData) {
@@ -394,7 +384,6 @@ class model {
       ).exec();
       return { ok: true, status: 200, mes: "upload success" };
     } catch (error) {
-      console.log(error);
       return { ok: false, status: 500, mes: error };
     }
   }
@@ -417,10 +406,9 @@ class model {
           console.log(mes);
         });
       }
-      return { ok: true, status: 200, data: result };
+      return { ok: true, result };
     } catch (error) {
-      console.log(error);
-      return { ok: false, status: 500, data: error };
+      return { ok: false, mes: error };
     }
   }
 
@@ -433,10 +421,10 @@ class model {
         { status: "0" }
       ).exec();
       console.log(result);
-      return { ok: true, status: 200, data: result };
+      return { ok: true, result };
     } catch (error) {
       console.log(error);
-      return { ok: false, status: 500, data: error };
+      return { ok: false, mes: error };
     }
   }
 }

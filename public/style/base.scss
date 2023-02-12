@@ -252,9 +252,9 @@ header {
     .serch-bar {
       display: none;
       position: absolute;
-      right: 0;
-      margin-right: 5px;
-      width: 235px;
+      right: 2.5%;
+      // margin-right: 5px;
+      width: 95vw;
       .search-input {
         width: 100%;
         input {
@@ -264,9 +264,9 @@ header {
         }
       }
       .search-table {
-        width: 330px;
+        width: 100%;
         position: absolute;
-        right: 10%;
+        right: 0;
       }
     }
   }
