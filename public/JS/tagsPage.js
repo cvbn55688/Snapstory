@@ -12,12 +12,13 @@ const noPostDiv = document.querySelector(".no-post");
 function loadPostImg(postArray) {
   tagsPostsAmount.textContent = postArray.length;
   postArray.forEach((post) => {
+    console.log(post);
     let newPostCard = document.createElement("a");
     newPostCard.classList.add("post-card");
     tagsPostsSection.prepend(newPostCard);
 
     let newPostCardImg = document.createElement("img");
-    newPostCardImg.src = post.postID.imageUrl;
+    newPostCardImg.src = post.postID.imageUrl[0];
     newPostCard.appendChild(newPostCardImg);
 
     newPostCard.addEventListener("click", () => {

@@ -48,7 +48,7 @@ const memberSchema = new mongoose.Schema({
 
 const PostSchema = new mongoose.Schema({
   userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },
-  imageUrl: String,
+  imageUrl: [String],
   content: String,
   time: String,
   comments: [

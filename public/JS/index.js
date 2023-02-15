@@ -38,6 +38,7 @@ function getData() {
       postsDataArray.forEach((post) => {
         createPost(
           post._id,
+          post.userID._id,
           post.userID.username,
           post.userID.headImg,
           post.imageUrl,
@@ -45,7 +46,8 @@ function getData() {
           post.comments,
           post.likes,
           post.time,
-          post.hashtags
+          post.hashtags,
+          data.currentUserData.userID
         );
         // console.log(post);
       });

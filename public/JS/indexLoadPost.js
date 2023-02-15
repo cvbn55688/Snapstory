@@ -3,19 +3,20 @@ const postBlacksreenIndex = document.querySelector(
   ".show-post-blacksreen-index"
 );
 const closePostButtonIndex = document.querySelector(".close-post-button-index");
-
 closePostButtonIndex.src = "/image/x.png";
 
 function createPost(
   postId,
+  userID,
   userName,
   headerImg,
-  postImgUrl,
+  postImgUrlArr,
   posterMessage,
   comments,
   likes,
   time,
-  hashtagArr
+  hashtagArr,
+  currentUserID
 ) {
   let date = new Date(time);
   let newArticle = document.createElement("article");
@@ -34,7 +35,7 @@ function createPost(
   newPosterHeaderImg.src = headerImg;
   newPoster.appendChild(newPosterHeaderImg);
   newPosterHeaderImg.addEventListener("click", () => {
-    location.href = `/personal/${userName}`;
+    location.href = `/personal/${userID}`;
   });
 
   let posterName = document.createElement("p");
@@ -42,7 +43,7 @@ function createPost(
   posterName.textContent = userName;
   newPoster.appendChild(posterName);
   posterName.addEventListener("click", () => {
-    location.href = `/personal/${userName}`;
+    location.href = `/personal/${userID}`;
   });
 
   let postDots = document.createElement("img");
@@ -54,10 +55,55 @@ function createPost(
   newContent.classList.add("content");
   newPostContainer.appendChild(newContent);
 
-  let newPostImg = document.createElement("img");
-  newPostImg.classList.add("post-img");
-  newPostImg.src = postImgUrl;
-  newContent.appendChild(newPostImg);
+  let newPostPreviousArrow = document.createElement("img");
+  newPostPreviousArrow.src = "/image/leftArrow.png";
+  newPostPreviousArrow.classList.add("post-previous-arrow");
+  newContent.appendChild(newPostPreviousArrow);
+
+  let newPostnextArrow = document.createElement("img");
+  newPostnextArrow.src = "/image/rightArrow.png";
+  newPostnextArrow.classList.add("post-next-arrow");
+  newContent.appendChild(newPostnextArrow);
+
+  let newPostDots = document.createElement("div");
+  newPostDots.classList.add("post-dots");
+  newContent.appendChild(newPostDots);
+
+  let imageHeights = [];
+  if (postImgUrlArr.length == 1) {
+    let newPostImg = document.createElement("img");
+    newPostImg.classList.add("post-img");
+    newPostImg.src = postImgUrlArr;
+    newContent.appendChild(newPostImg);
+    newPostImg.addEventListener("load", () => {
+      imageHeights.push(newPostImg.height);
+      newContent.style.height = Math.max(...imageHeights) + "px";
+    });
+  } else {
+    newPostPreviousArrow.style.display = "block";
+    newPostnextArrow.style.display = "block";
+    newPostDots.style.display = "flex";
+    postImgUrlArr.forEach((postImgUrl) => {
+      let newPostImg = document.createElement("img");
+      newPostImg.classList.add("post-img");
+      newPostImg.src = postImgUrl;
+      newContent.appendChild(newPostImg);
+      newPostImg.addEventListener("load", () => {
+        imageHeights.push(newPostImg.height);
+        newContent.style.height = Math.max(...imageHeights) + "px";
+      });
+
+      let newPicDot = document.createElement("div");
+      newPicDot.classList.add("pic-dot");
+      newPostDots.appendChild(newPicDot);
+
+      let PostImg = Array.from(newContent.childNodes).slice(3);
+      let PicDot = newPostDots.childNodes;
+      if (PostImg.length === postImgUrlArr.length) {
+        changePicOrder(PostImg, PicDot, newPostPreviousArrow, newPostnextArrow);
+      }
+    });
+  }
 
   let newPostHeart = document.createElement("img");
   newPostHeart.classList.add("post-heart");
@@ -90,6 +136,9 @@ function createPost(
   let userLike = document.createElement("div");
   userLike.classList.add("user-likes");
   newComment.appendChild(userLike);
+  userLike.addEventListener("click", () => {
+    getPostLike(postId);
+  });
 
   let newLikeAmount = document.createElement("span");
   newLikeAmount.classList.add("like-amount");
@@ -108,10 +157,26 @@ function createPost(
   newPosterName.classList.add("poster-name");
   newPosterName.textContent = userName;
   newPostMessageDiv.appendChild(newPosterName);
+  rediectToPersonalPage(newPosterName, userID);
 
   let newPosterMessage = document.createElement("span");
   newPosterMessage.textContent = posterMessage;
   newPostMessageDiv.appendChild(newPosterMessage);
+
+  if (comments.length != 0) {
+    let newCommentAmount = document.createElement("div");
+    newCommentAmount.classList.add("comment-amount");
+    newPostMessageDiv.appendChild(newCommentAmount);
+
+    let newCommentAmountP = document.createElement("p");
+    newCommentAmountP.textContent = "查看全部" + comments.length + "則留言";
+    newCommentAmount.appendChild(newCommentAmountP);
+
+    newCommentAmount.addEventListener("click", (e) => {
+      postBlacksreenIndex.style.display = "flex";
+      newPostTable.style.display = "flex";
+    });
+  }
 
   let newPostTime = document.createElement("p");
   newPostTime.classList.add("post-time");
@@ -128,10 +193,52 @@ function createPost(
   newPostImageContainer.classList.add("post-image-container");
   newPostTable.appendChild(newPostImageContainer);
 
-  let newPostImage = document.createElement("img");
-  newPostImage.classList.add("post-image");
-  newPostImage.src = postImgUrl;
-  newPostImageContainer.appendChild(newPostImage);
+  let newShowPostPreviousArrow = document.createElement("img");
+  newShowPostPreviousArrow.src = "/image/leftArrow.png";
+  newShowPostPreviousArrow.classList.add("show-post-previous-arrow");
+  newPostImageContainer.appendChild(newShowPostPreviousArrow);
+
+  let newShowPostnextArrow = document.createElement("img");
+  newShowPostnextArrow.src = "/image/rightArrow.png";
+  newShowPostnextArrow.classList.add("show-post-next-arrow");
+  newPostImageContainer.appendChild(newShowPostnextArrow);
+
+  let newShowPostDots = document.createElement("div");
+  newShowPostDots.classList.add("show-post-dots");
+  newPostImageContainer.appendChild(newShowPostDots);
+
+  if (postImgUrlArr.length == 1) {
+    let newPostImg = document.createElement("img");
+    newPostImg.classList.add("show-post-image");
+    newPostImg.src = postImgUrlArr;
+    newPostImageContainer.appendChild(newPostImg);
+  } else {
+    newShowPostPreviousArrow.style.display = "block";
+    newShowPostnextArrow.style.display = "block";
+    newShowPostDots.style.display = "flex";
+    postImgUrlArr.forEach((postImgUrl) => {
+      let newPostImg = document.createElement("img");
+      newPostImg.classList.add("show-post-image");
+      newPostImg.src = postImgUrl;
+      newPostImageContainer.appendChild(newPostImg);
+
+      let newPicDot = document.createElement("div");
+      newPicDot.classList.add("show-pic-dot");
+      newShowPostDots.appendChild(newPicDot);
+
+      let PostImg = Array.from(newPostImageContainer.childNodes).slice(3);
+      let PicDot = newShowPostDots.childNodes;
+
+      if (PostImg.length === postImgUrlArr.length) {
+        changePicOrder(
+          PostImg,
+          PicDot,
+          newShowPostPreviousArrow,
+          newShowPostnextArrow
+        );
+      }
+    });
+  }
 
   let commentContainer = document.createElement("div");
   commentContainer.classList.add("comment-container");
@@ -149,7 +256,7 @@ function createPost(
   newPosterHeaderImgPost.classList.add("poster-header-img-post");
   newPosterHeaderImgPost.src = headerImg;
   newPosterTitle.appendChild(newPosterHeaderImgPost);
-  rediectToPersonalPage(newPosterHeaderImgPost, userName);
+  rediectToPersonalPage(newPosterHeaderImgPost, userID);
 
   let newPosterContent = document.createElement("div");
   newPosterContent.classList.add("poster-content");
@@ -159,7 +266,7 @@ function createPost(
   newPosterNameP.classList.add("poster-name");
   newPosterNameP.textContent = userName;
   newPosterContent.appendChild(newPosterNameP);
-  rediectToPersonalPage(newPosterNameP, userName);
+  rediectToPersonalPage(newPosterNameP, userID);
 
   let newPosterMessageP = document.createElement("p");
   newPosterMessageP.classList.add("poster-messag");
@@ -169,7 +276,7 @@ function createPost(
   let newDots = document.createElement("img");
   newDots.classList.add("dots");
   newDots.src = "/image/dots.png";
-  newPosterTitle.appendChild(newDots);
+  // newPosterTitle.appendChild(newDots);
 
   let newCommentSection = document.createElement("section");
   newCommentSection.classList.add("comment");
@@ -227,6 +334,9 @@ function createPost(
   newLikeAmountPost.classList.add("like-amount-post");
   newLikeAmountPost.textContent = likes.length + "個讚";
   newPostLiker.appendChild(newLikeAmountPost);
+  newLikeAmountPost.addEventListener("click", () => {
+    getPostLike(postId);
+  });
 
   let newShowPostTime = document.createElement("span");
   newShowPostTime.classList.add("show-post-time");
@@ -261,10 +371,10 @@ function createPost(
   newMessage.addEventListener("click", (e) => {
     postBlacksreenIndex.style.display = "flex";
     newPostTable.style.display = "flex";
-    closePostButtonIndex.addEventListener("click", () => {
-      postBlacksreenIndex.style.display = "none";
-      newPostTable.style.display = "none";
-    });
+  });
+  closePostButtonIndex.addEventListener("click", () => {
+    postBlacksreenIndex.style.display = "none";
+    newPostTable.style.display = "none";
   });
 
   likePostIndex(
@@ -278,8 +388,23 @@ function createPost(
     newLikeAmountPost
   );
 
-  submitComment(newUl, postId, newLeaveComment, newSubmitComment);
-  createComment(newLeaveComment, newUl, comments);
+  submitComment(
+    newUl,
+    postId,
+    newLeaveComment,
+    newSubmitComment,
+    currentUserID
+  );
+  createComment(
+    postId,
+    newLeaveComment,
+    newUl,
+    comments,
+    currentUserID,
+    newTagSearchTable,
+    tagSearchUl,
+    tagSearchLoadingImg
+  );
   newMessagePost.addEventListener("click", () => {
     newLeaveComment.focus();
   });
@@ -299,9 +424,19 @@ function createPost(
   });
 }
 
-function createComment(input, newUl, comments) {
+function createComment(
+  postID,
+  input,
+  newUl,
+  comments,
+  currentUserID,
+  table,
+  ul,
+  loadingImg
+) {
   comments.forEach((comment) => {
     let date = new Date(comment.time);
+    let commentUserID = comment.userID._id;
 
     let newUserCommentLi = document.createElement("li");
     newUserCommentLi.classList.add("user-comment-li");
@@ -319,7 +454,7 @@ function createComment(input, newUl, comments) {
     newUserHeaderImg.classList.add("user-headerImg");
     newUserHeaderImg.src = comment.userID.headImg;
     newUserMainContent.appendChild(newUserHeaderImg);
-    rediectToPersonalPage(newUserHeaderImg, comment.userID.username);
+    rediectToPersonalPage(newUserHeaderImg, comment.userID._id);
 
     let newContentArea = document.createElement("div");
     newContentArea.classList.add("content-area");
@@ -329,12 +464,25 @@ function createComment(input, newUl, comments) {
     newUserNameContentArea.classList.add("user-name-content-area");
     newUserNameContentArea.textContent = comment.userID.username;
     newContentArea.appendChild(newUserNameContentArea);
-    rediectToPersonalPage(newUserNameContentArea, comment.userID.username);
+    rediectToPersonalPage(newUserNameContentArea, comment.userID._id);
 
     let newUserCommentContentArea = document.createElement("span");
     newUserCommentContentArea.classList.add("user-comment-content-area");
     newUserCommentContentArea.textContent = comment.content;
     newContentArea.appendChild(newUserCommentContentArea);
+
+    let newEditCommentDiv = document.createElement("div");
+    newEditCommentDiv.classList.add("edit-comment");
+    newContentArea.appendChild(newEditCommentDiv);
+
+    let newEditCommentInput = document.createElement("input");
+    newEditCommentInput.classList.add("edit-comment-input");
+    newEditCommentDiv.appendChild(newEditCommentInput);
+
+    let newEditCommentSubmmit = document.createElement("p");
+    newEditCommentSubmmit.classList.add("edit-comment-submmit");
+    newEditCommentSubmmit.textContent = "完成";
+    newEditCommentDiv.appendChild(newEditCommentSubmmit);
 
     let newOtherFunction = document.createElement("div");
     newOtherFunction.classList.add("other-function");
@@ -353,10 +501,44 @@ function createComment(input, newUl, comments) {
       input.value = `@${comment.userID.username} `;
       input.focus();
     });
+    if (commentUserID == currentUserID) {
+      let newCommentDots = document.createElement("img");
+      newCommentDots.classList.add("comment-dots");
+      newCommentDots.src = "/image/dots2.png";
+      newOtherFunction.appendChild(newCommentDots);
+
+      function handleCommentEdit() {
+        editComment(
+          postID,
+          comment._id,
+          newUserCommentContentArea,
+          newEditCommentDiv,
+          newEditCommentInput,
+          newEditCommentSubmmit,
+          newUserCommentLi
+        );
+      }
+      newCommentDots.addEventListener("click", handleCommentEdit);
+    }
+
+    newEditCommentInput.addEventListener("input", () => {
+      // console.log(newLeaveComment.value.slice(-1));
+      if (newEditCommentInput.value.slice(-1) == "@") {
+        openTagTable(table, ul, loadingImg, newEditCommentInput);
+      } else if (newEditCommentInput.value.slice(-1) == " ") {
+        table.style.display = "none";
+      }
+    });
   });
 }
 
-function submitComment(newUl, postId, commentInput, commentSubmitButton) {
+function submitComment(
+  newUl,
+  postId,
+  commentInput,
+  commentSubmitButton,
+  currentUserID
+) {
   commentSubmitButton.addEventListener("click", () => {
     fetch(`/newComment`, {
       method: "POST",
@@ -374,12 +556,18 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
       .then(function (data) {
         if (data.ok == true) {
           // console.log(data);
+          let commentID = data.result.mes.comments.pop()._id;
           data = data.data;
           let comments = [
             {
               content: commentInput.value,
-              userID: { headImg: data.headImg, username: data.username },
+              userID: {
+                headImg: data.headImg,
+                username: data.username,
+                _id: data.userID,
+              },
               time: new Date(),
+              _id: commentID,
             },
           ];
           let tagNameArr = commentInput.value.match(/@\w+/g);
@@ -403,7 +591,7 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
             });
           }
 
-          createComment(commentInput, newUl, comments);
+          createComment(postId, commentInput, newUl, comments, currentUserID);
           sendNotice(
             "comment",
             data.username,
@@ -423,7 +611,7 @@ function submitComment(newUl, postId, commentInput, commentSubmitButton) {
   });
 }
 
-function fetchLikePostIndex(postId, dislike) {
+function fetchLikePostIndex(postId, dislike, likeUl) {
   fetch(`/likePost`, {
     method: "POST",
     body: JSON.stringify({
@@ -465,7 +653,8 @@ function likePostIndex(
   newHeartPost,
   newLikeAmount,
   likesAmount,
-  newLikeAmountPost
+  newLikeAmountPost,
+  likeUl
 ) {
   let isLike = 0;
   let touchTime = 0;
@@ -508,7 +697,7 @@ function likePostIndex(
             newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
           }
 
-          fetchLikePostIndex(postId, false);
+          fetchLikePostIndex(postId, false, likeUl);
           newPostHeart.style.display = "flex";
           setTimeout(() => {
             newPostHeart.style.display = "none";
@@ -526,7 +715,7 @@ function likePostIndex(
             newLikeAmountPost.textContent = likesAmount + "個讚";
           }
 
-          fetchLikePostIndex(postId, true);
+          fetchLikePostIndex(postId, true, likeUl);
           isLike--;
         }
       });

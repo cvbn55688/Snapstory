@@ -72,7 +72,7 @@ class controller {
       let userHeadImg = userData.headImg;
       let result = await Model.uploadPost(
         userID,
-        postData.base64Img,
+        postData.base64ImgArr,
         postData.message,
         postData.hashtagArr
       );
@@ -101,7 +101,7 @@ class controller {
     }
   }
 
-  async getIndexData(page) {
+  async getIndexData(page, userData) {
     if (!/^\d+$/.test(page)) {
       console.log("testestest");
       return { ok: false, status: 400 };
@@ -114,6 +114,7 @@ class controller {
           status: 200,
           nextPage: postData.nextPage,
           data: postData.result,
+          currentUserData: userData,
         };
       } else {
         return { ok: false, mes: postData.mes };
@@ -123,11 +124,16 @@ class controller {
     }
   }
 
-  async getParticularPost(postID) {
+  async getParticularPost(postID, userData) {
     try {
       let postData = await Model.getParticularPost(postID);
       if (postData.ok) {
-        return { ok: true, postData: postData.result, status: 200 };
+        return {
+          ok: true,
+          postData: postData.result,
+          currentUserData: userData,
+          status: 200,
+        };
       } else {
         return { ok: false, mes: error, status: 400 };
       }
@@ -214,10 +220,44 @@ class controller {
     }
   }
 
-  async getUserPost(username, userData) {
+  async updateComment(userData, commentData) {
     try {
-      let fanId = userData.userID;
-      let result = await Model.getUserPost(username, fanId);
+      let userID = userData.userID;
+      let username = userData.name;
+      let headImg = userData.headImg;
+      let postID = commentData.postID;
+      let func = commentData.func;
+      let updateCommentID = commentData.commentID;
+      if (func == "edit") {
+        let updateComment = commentData.comment;
+        let result = await Model.updateComment(
+          userData,
+          postID,
+          updateCommentID,
+          updateComment
+        );
+        if (result.ok) {
+          return { ok: true, mes: result.mes, status: 200 };
+        } else {
+          return { ok: false, mes: result.mes, status: 500 };
+        }
+      } else if (func == "delete") {
+        let result = await Model.deleteComment(postID, updateCommentID);
+        if (result.ok) {
+          return { ok: true, mes: result.mes, status: 200 };
+        } else {
+          return { ok: false, mes: result.mes, status: 500 };
+        }
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async getUserPost(userID, fanData) {
+    try {
+      let fanId = fanData.userID;
+      let result = await Model.getUserPost(userID, fanId);
       if (result.ok) {
         let data = {
           posts: result.posts,

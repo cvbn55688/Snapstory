@@ -33,31 +33,48 @@ router.put("/signin", async (req, res) => {
   }
 });
 
-router.get("/getData", async (req, res) => {
-  if (req.cookies.JWTtoken == undefined) {
-    res.status(400).json({ ok: false, mes: "使用者未登入" });
-  } else {
-    try {
-      let page = req.query.page;
-      let postData = await controller.getIndexData(page);
-      res.status(postData.status).json(postData);
-    } catch (error) {
-      res.status(500).json({ ok: false, mes: error });
+router.delete("/logout", async (req, res) => {
+  console.log("test");
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, mes: "使用者未登入" });
     }
+    res
+      .status(200)
+      .clearCookie("JWTtoken")
+      .json({ ok: true, mes: "已刪除cookie" });
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.get("/getData", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, mes: "使用者未登入" });
+    } else {
+      let page = req.query.page;
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let postData = await controller.getIndexData(page, userData);
+      res.status(postData.status).json(postData);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
   }
 });
 
 router.get("/getParticularPost", async (req, res) => {
-  if (req.cookies.JWTtoken == undefined) {
-    res.status(400).json({ ok: false, mes: "使用者未登入" });
-  } else {
-    try {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, mes: "使用者未登入" });
+    } else {
       let postID = req.query.postID;
-      let postData = await controller.getParticularPost(postID);
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let postData = await controller.getParticularPost(postID, userData);
       res.status(postData.status).json(postData);
-    } catch (error) {
-      res.status(500).json({ ok: false, mes: error });
     }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
   }
 });
 
@@ -144,13 +161,26 @@ router.post("/newComment", async (req, res) => {
   }
 });
 
-router.get("/getUserPost/:username", async (req, res) => {
+router.put("/updateComment", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    }
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let result = await controller.updateComment(userData, req.body);
+    res.status(result.status).json(result);
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.get("/getUserPost/:userID", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
     } else {
       let userData = jwtDecode(req.cookies.JWTtoken);
-      let result = await controller.getUserPost(req.params.username, userData);
+      let result = await controller.getUserPost(req.params.userID, userData);
       res.status(result.status).json(result);
     }
   } catch (error) {

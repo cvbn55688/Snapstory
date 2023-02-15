@@ -189,19 +189,100 @@ textarea {
   justify-content: center;
   align-items: center;
 }
-.show-post .posting .cutting .preveiw-image-container {
+.show-post .posting .cutting .preview-image-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 480px;
   height: 550px;
 }
-.show-post .posting .cutting .preveiw-image-container .preveiw {
+.show-post .posting .cutting .preview-image-container .preview {
+  position: absolute;
   width: 100%;
   height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
   padding: 5px;
+}
+.show-post .posting .cutting .preview-image-container .preview:nth-child(n+5) {
+  opacity: 0;
+}
+.show-post .posting .cutting .preview-image-container .dot {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.show-post .posting .cutting .preview-image-container .dot .preview-dot {
+  border: 2px solid rgba(128, 128, 128, 0.578);
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  border-radius: 50%;
+}
+@keyframes showRight {
+  0% {
+    left: 5%;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+@keyframes hideRight {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  100% {
+    left: -5%;
+    opacity: 0;
+  }
+}
+@keyframes showLeft {
+  0% {
+    left: -5%;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+@keyframes hideLeft {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  100% {
+    left: 5%;
+    opacity: 0;
+  }
+}
+.show-post .posting .cutting .preview-image-container .previous-arrow {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  left: -10%;
+  margin-left: 10px;
+  height: 25px;
+  cursor: pointer;
+}
+.show-post .posting .cutting .preview-image-container .next-arrow {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  right: -10%;
+  margin-right: 10px;
+  height: 25px;
+  cursor: pointer;
 }
 .show-post .posting .cutting .post-message {
   display: none;

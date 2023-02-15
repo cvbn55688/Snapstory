@@ -33,17 +33,56 @@
   display: none;
 }
 .show-post-blacksreen-index .post-table .post-image-container {
+  position: relative;
   width: 60%;
   height: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 20px;
   border-right: 1px solid rgba(128, 128, 128, 0.578);
 }
-.show-post-blacksreen-index .post-table .post-image-container .post-image {
+.show-post-blacksreen-index .post-table .post-image-container .show-post-image {
+  position: absolute;
   width: 100%;
+  height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+}
+.show-post-blacksreen-index .post-table .post-image-container .show-post-image:nth-child(n+5) {
+  opacity: 0;
+}
+.show-post-blacksreen-index .post-table .post-image-container .show-post-previous-arrow,
+.show-post-blacksreen-index .post-table .post-image-container .show-post-next-arrow {
+  display: none;
+  position: absolute;
+  cursor: pointer;
+  margin: 0 10px;
+  z-index: 999;
+}
+.show-post-blacksreen-index .post-table .post-image-container .show-post-previous-arrow {
+  left: 0;
+}
+.show-post-blacksreen-index .post-table .post-image-container .show-post-next-arrow {
+  right: 0;
+}
+.show-post-blacksreen-index .post-table .post-image-container .show-post-dots {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.show-post-blacksreen-index .post-table .post-image-container .show-post-dots .show-pic-dot {
+  border: 2px solid rgba(128, 128, 128, 0.578);
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  border-radius: 50%;
 }
 .show-post-blacksreen-index .post-table .comment-container {
   display: flex;
@@ -74,7 +113,8 @@
   margin-left: 10px;
 }
 .show-post-blacksreen-index .post-table .comment-container .poster .poster-title .poster-content .poster-name {
-  width: 100%;
+  width: -moz-fit-content;
+  width: fit-content;
   font-weight: bold;
   cursor: pointer;
 }
@@ -106,6 +146,7 @@
 }
 .show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content {
   display: flex;
+  padding-right: 10px;
 }
 .show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .user-headerImg {
   width: 40px;
@@ -129,10 +170,42 @@
   width: 300px;
   color: rgba(54, 54, 54, 0.979);
 }
+.show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .edit-comment {
+  height: 22px;
+  width: 335px;
+  display: none;
+}
+.show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .edit-comment .edit-comment-input {
+  font-size: 16px;
+  width: 290px;
+  padding: 5px;
+}
+.show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .edit-comment .edit-comment-submmit {
+  margin-left: 5px;
+  font-size: 14px;
+  color: rgb(26, 83, 255);
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function {
+  display: flex;
+  align-items: center;
+  height: 20px;
+}
 .show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function span {
   margin-right: 10px;
   color: rgba(54, 54, 54, 0.63);
   font-size: 12px;
+}
+.show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function .reply {
+  cursor: pointer;
+}
+.show-post-blacksreen-index .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function .comment-dots {
+  position: relative;
+  height: 20px;
+  width: 20px;
   cursor: pointer;
 }
 .show-post-blacksreen-index .post-table .comment-container .post-interact-container {
@@ -317,11 +390,15 @@ main article .container .content {
   align-items: center;
 }
 main article .container .content .post-img {
+  position: absolute;
   width: 100%;
   min-height: 270px;
   max-height: 550px;
   -o-object-fit: cover;
      object-fit: cover;
+}
+main article .container .content .post-img:nth-child(n+5) {
+  opacity: 0;
 }
 main article .container .content .post-heart {
   display: none;
@@ -329,6 +406,38 @@ main article .container .content .post-heart {
   animation: popup 0.5s;
   z-index: 500;
   width: 25%;
+}
+main article .container .content .post-previous-arrow,
+main article .container .content .post-next-arrow {
+  display: none;
+  position: absolute;
+  cursor: pointer;
+  margin: 0 10px;
+  z-index: 999;
+}
+main article .container .content .post-previous-arrow {
+  left: 0;
+}
+main article .container .content .post-next-arrow {
+  right: 0;
+}
+main article .container .content .post-dots {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+main article .container .content .post-dots .pic-dot {
+  border: 2px solid rgba(128, 128, 128, 0.578);
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  border-radius: 50%;
 }
 main article .container .comment {
   padding: 0 10px 15px 10px;
@@ -345,14 +454,22 @@ main article .container .comment .user-interacte img {
   cursor: pointer;
 }
 main article .container .comment .user-likes {
-  height: 30px;
+  margin-bottom: 5px;
   width: 150px;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
-main article .container .comment .user-likes .like-amount {
+main article .container .comment .user-likes span {
   font-weight: bold;
+}
+main article .container .comment .comment-amount {
+  margin: 5px 0;
+  width: 130px;
+  cursor: pointer;
+}
+main article .container .comment .comment-amount p {
+  color: rgb(105, 105, 105);
 }
 main article .container .comment .post-message {
   min-height: 20px;
@@ -361,9 +478,10 @@ main article .container .comment .post-message {
 main article .container .comment .post-message .poster-name {
   margin-right: 10px;
   font-weight: bold;
+  cursor: pointer;
 }
 main article .container .comment .post-message .post-time {
-  padding-top: 5px;
+  margin-top: 5px;
   font-size: 14px;
   color: rgb(105, 105, 105);
   width: 60px;

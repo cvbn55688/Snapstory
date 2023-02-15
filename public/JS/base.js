@@ -18,10 +18,12 @@ const postLeaveButton = document.querySelector(".post-leave-img");
 const postImageInput = document.querySelector(".post-image");
 const postingArea = document.querySelector(".posting-area");
 const postCutting = document.querySelector(".cutting");
-const preveiwImageContainer = document.querySelector(
-  ".preveiw-image-container"
+const previewImageContainer = document.querySelector(
+  ".preview-image-container"
 );
-const postPreveiw = document.querySelector(".preveiw");
+const previewDotContainer = document.querySelector(".dot");
+const postPreviewPreviousArrow = document.querySelector(".previous-arrow");
+const postPreviewNextArrow = document.querySelector(".next-arrow");
 const postTitle = document.querySelector(".post-title");
 const postNextStep = document.querySelector(".next-step");
 const postUndo = document.querySelector(".undo");
@@ -76,9 +78,9 @@ searchImg.addEventListener("click", () => {
   });
 });
 
-function rediectToPersonalPage(container, targetName) {
+function rediectToPersonalPage(container, targetID) {
   container.addEventListener("click", () => {
-    location.href = `/personal/${targetName}`;
+    location.href = `/personal/${targetID}`;
   });
 }
 // console.log(location.hostname);
@@ -99,13 +101,15 @@ function websocketConnect() {
   ws.addEventListener("message", function (e) {
     let data = JSON.parse(e.data);
     let time = new Date().getTime();
+    let postImg = [data.postImg];
     createNotificationLi(
       data.funcChoice,
       data.senderImg,
+      data.senderId,
       data.sendername,
       data.message,
       time,
-      data.postImg,
+      postImg,
       data.postID
     );
     heartImg.src = "../image/heart5.png";
@@ -152,6 +156,7 @@ function getNotification() {
           createNotificationLi(
             notification.func,
             notification.sendUserId.headImg,
+            notification.sendUserId._id,
             notification.sendUserId.username,
             notification.notificationMessage,
             notification.time,
@@ -166,6 +171,7 @@ function getNotification() {
 function createNotificationLi(
   func,
   likerHeadImg,
+  likerID,
   likername,
   likernotificationMes,
   notificationTime,
@@ -179,7 +185,7 @@ function createNotificationLi(
   newNotificationHeadImg.src = likerHeadImg;
   newNotificationLi.appendChild(newNotificationHeadImg);
   newNotificationHeadImg.addEventListener("mousedown", () => {
-    rediectToPersonalPage(newNotificationHeadImg, likername);
+    rediectToPersonalPage(newNotificationHeadImg, likerID);
   });
 
   let newNotificationMesContainer = document.createElement("div");
@@ -220,7 +226,7 @@ function createNotificationLi(
 
   let newNotificationImg = document.createElement("img");
   if (func != "follow") {
-    newNotificationImg.src = postImg;
+    newNotificationImg.src = postImg[0];
     newNotificationImgContainer.appendChild(newNotificationImg);
     newNotificationLi.addEventListener("click", () => {
       createParticularPost(postID);
@@ -249,7 +255,7 @@ function sendNotice(
       name: sendUserName,
       sendUserImg,
       id: sendUserId,
-      postImg: postImg,
+      postImg: postImg[0],
       message: sendMessage,
       time: notificationTime,
       targetId: targetUserId,
@@ -262,7 +268,7 @@ function sendNotice(
     body: JSON.stringify({
       fuc: func,
       sendUserId,
-      postImg: postImg,
+      postImg: postImg[0],
       message: sendMessage,
       time: notificationTime,
       targetId: targetUserId,
@@ -310,10 +316,12 @@ function getHistoricalData() {
       let searchHistoricalName = searchHistorical[0];
       let searchHistoricalImg = searchHistorical[1];
       let searchHistoricalFunc = searchHistorical[2];
+      let searchHistoricalUserID = searchHistorical[3];
       createSearchLi(
         searchHistoricalFunc,
         searchHistoricalImg,
-        searchHistoricalName
+        searchHistoricalName,
+        searchHistoricalUserID
       );
     });
   } catch {
@@ -359,7 +367,7 @@ function changeIcon(targetIcon) {
   });
 }
 
-function createSearchLi(func, headImg, searchValue) {
+function createSearchLi(func, headImg, searchValue, userID) {
   let searchUserLi = document.createElement("li");
   searchTableUl.appendChild(searchUserLi);
 
@@ -372,31 +380,62 @@ function createSearchLi(func, headImg, searchValue) {
   searchUserLi.appendChild(searchUsername);
 
   searchUserLi.addEventListener("mousedown", () => {
-    if (historicalSearch == null) {
-      window.localStorage.setItem(
-        "historicalSearch",
-        searchValue + ";" + headImg + ";" + func
-      );
-    } else {
-      let historicalSearchArray = historicalSearch.split(",");
-      Array.prototype.remove = function (value) {
-        var index = this.indexOf(value);
-        if (index !== -1) {
-          this.splice(index, 1);
-        }
-      };
-
-      historicalSearchArray.remove(searchValue + ";" + headImg + ";" + func);
-
-      window.localStorage.setItem(
-        "historicalSearch",
-        searchValue + ";" + headImg + ";" + func + "," + historicalSearchArray
-      );
-    }
     if (func == "personal") {
-      location.href = `/personal/${searchValue}`;
+      location.href = `/personal/${userID}`;
+      if (historicalSearch == null) {
+        window.localStorage.setItem(
+          "historicalSearch",
+          searchValue + ";" + headImg + ";" + func + ";" + userID
+        );
+      } else {
+        let historicalSearchArray = historicalSearch.split(",");
+        Array.prototype.remove = function (value) {
+          let index = this.indexOf(value);
+          if (index !== -1) {
+            this.splice(index, 1);
+          }
+        };
+
+        historicalSearchArray.remove(
+          searchValue + ";" + headImg + ";" + func + ";" + userID
+        );
+
+        window.localStorage.setItem(
+          "historicalSearch",
+          searchValue +
+            ";" +
+            headImg +
+            ";" +
+            func +
+            ";" +
+            userID +
+            "," +
+            historicalSearchArray
+        );
+      }
     } else if (func == "hashtag") {
       location.href = `/tags/${searchValue}`;
+      if (historicalSearch == null) {
+        window.localStorage.setItem(
+          "historicalSearch",
+          searchValue + ";" + headImg + ";" + func
+        );
+      } else {
+        let historicalSearchArray = historicalSearch.split(",");
+        Array.prototype.remove = function (value) {
+          var index = this.indexOf(value);
+          if (index !== -1) {
+            this.splice(index, 1);
+          }
+        };
+
+        historicalSearchArray.remove(searchValue + ";" + headImg + ";" + func);
+
+        window.localStorage.setItem(
+          "historicalSearch",
+          searchValue + ";" + headImg + ";" + func + "," + historicalSearchArray
+        );
+      }
     }
   });
 }
@@ -467,7 +506,13 @@ function searchBarFuction() {
             searchNoData.style.display = "flex";
           }
           searchDataArray.forEach((userData) => {
-            createSearchLi("personal", userData.headImg, userData.username);
+            createSearchLi(
+              "personal",
+              userData.headImg,
+              userData.username,
+              userData._id,
+              null
+            );
             searchBarLoadingImg.style.display = "none";
             searchTableLoadImg.style.display = "none";
           });
@@ -754,29 +799,61 @@ function headerIconFuction() {
   });
 
   postImageInput.addEventListener("change", (eve) => {
-    let imageFile = eve.target.files[0];
-    let reader = new FileReader();
+    let imageFiles = Array.from(eve.target.files);
     setTimeout(() => {
       postImageInput.value = "";
     }, 100);
-    let base64Img;
-    reader.readAsDataURL(imageFile);
-    reader.addEventListener("load", () => {
-      base64Img = reader.result;
-      postingArea.style.display = "none";
-      postCutting.style.display = "flex";
-      postPreveiw.src = base64Img;
-      postTitle.textContent = "預覽";
-      postNextStep.style.display = "flex";
-      postUndo.style.display = "flex";
-      postUndo.addEventListener("click", handelPostUndo);
-      postNextStep.addEventListener("click", handelPostNextStep);
+    let imageArr = [];
+    imageFiles.forEach((data) => {
+      let reader = new FileReader();
+      reader.readAsDataURL(data);
+      reader.addEventListener("load", () => {
+        imageArr.push(reader.result);
+        let newImg = document.createElement("img");
+        newImg.src = reader.result;
+        newImg.classList.add("preview");
+        previewImageContainer.appendChild(newImg);
+
+        let newDotDiv = document.createElement("div");
+        newDotDiv.classList.add("preview-dot");
+        previewDotContainer.appendChild(newDotDiv);
+
+        let previewImgs = document.querySelectorAll(".preview");
+        let previewDot = document.querySelectorAll(".preview-dot");
+        if (previewImgs.length === imageFiles.length) {
+          changePicOrder(
+            previewImgs,
+            previewDot,
+            postPreviewPreviousArrow,
+            postPreviewNextArrow
+          );
+        }
+      });
     });
 
+    if (imageFiles.length > 1) {
+      postPreviewPreviousArrow.style.display = "block";
+      postPreviewNextArrow.style.display = "block";
+      previewDotContainer.style.display = "flex";
+    }
+    postingArea.style.display = "none";
+    postCutting.style.display = "flex";
+    postTitle.textContent = "預覽";
+    postNextStep.style.display = "flex";
+    postUndo.style.display = "flex";
+    postUndo.addEventListener("click", handelPostUndo);
+    postNextStep.addEventListener("click", handelPostNextStep);
+
     function handelPostUndo() {
+      let previewImgs = document.querySelectorAll(".preview");
+      previewImgs.forEach((img) => {
+        img.remove();
+      });
+      postPreviewPreviousArrow.style.display = "none";
+      postPreviewNextArrow.style.display = "none";
+      // previewDotContainer.style.display = "none";
       postingArea.style.display = "flex";
       postCutting.style.display = "none";
-      postPreveiw.src = "";
       postTitle.textContent = "選擇圖片";
       postNextStep.style.display = "none";
       postUndo.style.display = "none";
@@ -785,10 +862,12 @@ function headerIconFuction() {
     }
 
     function handelPostNextStep() {
-      postPreveiw.style.animation = "postImageMove 0.7s forwards";
+      previewImageContainer.style.animation = "postImageMove 0.7s forwards";
       postHashTag.style.display = "block";
       postHashTag.style.animation = "showTable 0.8s forwards";
-
+      postPreviewPreviousArrow.style.display = "none";
+      postPreviewNextArrow.style.display = "none";
+      previewDotContainer.style.display = "none";
       postUndo.style.display = "none";
       postUndo2.style.display = "flex";
       postNextStep.style.display = "none";
@@ -797,7 +876,7 @@ function headerIconFuction() {
       postTitle.textContent = "建立新貼文";
       postCutting.style.padding = "20px";
       postCutting.style.height = "330px";
-      preveiwImageContainer.style.height = "330px";
+      previewImageContainer.style.height = "330px";
       postMessage.style.display = "flex";
       postMessage.style.animation = "showTable 0.8s forwards";
       postMessageTextarea.addEventListener("input", () => {
@@ -818,7 +897,12 @@ function headerIconFuction() {
     }
 
     function handelPostUndo2() {
-      postPreveiw.style.animation = "";
+      if (imageFiles.length > 1) {
+        postPreviewPreviousArrow.style.display = "block";
+        postPreviewNextArrow.style.display = "block";
+        previewDotContainer.style.display = "flex";
+      }
+      previewImageContainer.style.animation = "";
       postHashTag.style.animation = "";
       postHashTag.style.display = "none";
       postUndo.style.display = "flex";
@@ -827,7 +911,7 @@ function headerIconFuction() {
       postNextStep2.style.display = "none";
       postCutting.style.padding = "none";
       postCutting.style.height = "580px";
-      preveiwImageContainer.style.height = "550px";
+      previewImageContainer.style.height = "550px";
       postMessage.style.display = "none";
       postHr.style.display = "none";
       postNextStep2.removeEventListener("click", uploadPost);
@@ -843,7 +927,7 @@ function headerIconFuction() {
       fetch(`/uploadPost`, {
         method: "POST",
         body: JSON.stringify({
-          base64Img: base64Img,
+          base64ImgArr: imageArr,
           message: postMessageTextarea.value,
           hashtagArr: postHashtagArr,
         }),
@@ -892,6 +976,45 @@ function headerIconFuction() {
   });
 }
 
+function changePicOrder(value, dots, previousArrow, nextArrow) {
+  let current = 0;
+  dots[current].style.backgroundColor = "#000000";
+  function nextPic() {
+    value[current].style.animation = "hideRight 0.25s forwards";
+    value[current >= value.length - 1 ? 0 : current + 1].style.animation =
+      "showRight 1s forwards";
+    dots[current].style.backgroundColor = "#ffffff";
+    if (current < value.length - 1) {
+      current++;
+      dots[current].style.backgroundColor = "#000000";
+    } else {
+      current = 0;
+      dots[current].style.backgroundColor = "#000000";
+    }
+  }
+  function preciousPic() {
+    value[current].style.animation = "hideLeft  0.25s forwards";
+    value[current > 0 ? current - 1 : value.length - 1].style.animation =
+      "showLeft 1s forwards";
+    dots[current].style.backgroundColor = "#ffffff";
+    if (current > 0) {
+      current--;
+      dots[current].style.backgroundColor = "#000000";
+    } else {
+      current = value.length - 1;
+      dots[current].style.backgroundColor = "#000000";
+    }
+  }
+  previousArrow.addEventListener("click", (event) => {
+    event.stopPropagation();
+    preciousPic();
+  });
+  nextArrow.addEventListener("click", (event) => {
+    event.stopPropagation();
+    nextPic();
+  });
+}
+
 function uploadHashtag(hashtagName, postID) {
   fetch(`/uploadHashtag`, {
     method: "PUT",
@@ -929,7 +1052,7 @@ async function checkLonin() {
       data = data.decoded;
       personalImg.src = data.headImg;
       personalImg.addEventListener("click", () => {
-        location.href = `/personal/${data.name}`;
+        location.href = `/personal/${data.userID}`;
       });
 
       let userData = { fuc: 0, name: data.name, id: data.userID };
@@ -943,6 +1066,7 @@ async function checkLonin() {
       console.log(error);
     });
 }
+
 const ws = websocketConnect();
 checkLonin();
 checkPathIcon();

@@ -6,6 +6,14 @@
     opacity: 100%;
   }
 }
+@keyframes deleteComment {
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 .show-post-blacksreen {
   animation: showTable 0.5s;
   position: relative;
@@ -33,17 +41,56 @@
   display: none;
 }
 .show-post-blacksreen .post-table .post-image-container {
+  position: relative;
   width: 60%;
   height: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 20px;
   border-right: 1px solid rgba(128, 128, 128, 0.578);
 }
-.show-post-blacksreen .post-table .post-image-container .post-image {
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-image {
+  position: absolute;
   width: 100%;
+  height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+}
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-image:nth-child(n+5) {
+  opacity: 0;
+}
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-previous-arrow,
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-next-arrow {
+  display: none;
+  position: absolute;
+  cursor: pointer;
+  margin: 0 10px;
+  z-index: 999;
+}
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-previous-arrow {
+  left: 0;
+}
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-next-arrow {
+  right: 0;
+}
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-dots {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.show-post-blacksreen .post-table .post-image-container .particular-show-post-dots .particular-show-pic-dot {
+  border: 2px solid rgba(128, 128, 128, 0.578);
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  border-radius: 50%;
 }
 .show-post-blacksreen .post-table .comment-container {
   display: flex;
@@ -74,7 +121,8 @@
   margin-left: 10px;
 }
 .show-post-blacksreen .post-table .comment-container .poster .poster-title .poster-content .poster-name {
-  width: 100%;
+  width: -moz-fit-content;
+  width: fit-content;
   font-weight: bold;
   cursor: pointer;
 }
@@ -129,10 +177,42 @@
   width: 300px;
   color: rgba(54, 54, 54, 0.979);
 }
+.show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .edit-comment {
+  height: 22px;
+  width: 335px;
+  display: none;
+}
+.show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .edit-comment .edit-comment-input {
+  font-size: 16px;
+  width: 290px;
+  padding: 5px;
+}
+.show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .user-main-content .content-area .edit-comment .edit-comment-submmit {
+  margin-left: 5px;
+  font-size: 14px;
+  color: rgb(26, 83, 255);
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function {
+  display: flex;
+  align-items: center;
+  height: 20px;
+}
 .show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function span {
   margin-right: 10px;
   color: rgba(54, 54, 54, 0.63);
   font-size: 12px;
+}
+.show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function .reply {
+  cursor: pointer;
+}
+.show-post-blacksreen .post-table .comment-container .comment ul .user-comment-li .user-comment-content .other-function .comment-dots {
+  position: relative;
+  height: 20px;
+  width: 20px;
   cursor: pointer;
 }
 .show-post-blacksreen .post-table .comment-container .post-interact-container {
@@ -247,6 +327,39 @@
   background-color: rgb(255, 255, 255);
   color: rgb(26, 83, 255);
   cursor: pointer;
+}
+
+.show-edit-blacksreen {
+  animation: showTable 0.5s;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 101;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.show-edit-blacksreen .edit-table {
+  width: 330px;
+  height: 150px;
+  background-color: rgb(255, 255, 255);
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  border-radius: 10px;
+}
+.show-edit-blacksreen .edit-table p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+.show-edit-blacksreen .edit-table .delete-button {
+  border-top: 1px solid rgb(98, 98, 98);
+  border-bottom: 1px solid rgb(98, 98, 98);
+  color: red;
 }
 
 @media screen and (max-width: 650px) {

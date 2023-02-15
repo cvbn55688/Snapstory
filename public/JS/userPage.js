@@ -22,6 +22,7 @@ const fansUl = document.querySelector(".fans-ul");
 const followingUl = document.querySelector(".following-ul");
 const fansClose = document.querySelector(".fans-close");
 const followingClose = document.querySelector(".following-close");
+const logoutButton = document.querySelector(".logout");
 
 function closeFanFollowTable(closeButton, ul, table) {
   closeButton.addEventListener("click", () => {
@@ -43,6 +44,7 @@ function createFansFollowingLi(dataArray, table, ul) {
   table.style.display = "flex";
   dataArray.forEach((userData) => {
     let fanName = userData.userID.username;
+    let fanID = userData.userID._id;
     let fanHeadImg = userData.userID.headImg;
 
     let newLi = document.createElement("li");
@@ -59,7 +61,7 @@ function createFansFollowingLi(dataArray, table, ul) {
     // newLi.addEventListener("click", () => {
     //   location.href = `/personal/${fanName}`;
     // });
-    rediectToPersonalPage(newLi, fanName);
+    rediectToPersonalPage(newLi, fanID);
   });
 }
 
@@ -71,7 +73,7 @@ function loadPostImg(postArray, userData) {
     userPostsSection.appendChild(newPostCard);
 
     let newPostCardImg = document.createElement("img");
-    newPostCardImg.src = post.imageUrl;
+    newPostCardImg.src = post.imageUrl[0];
     newPostCard.appendChild(newPostCardImg);
 
     newPostCard.addEventListener("click", () => {
@@ -109,6 +111,32 @@ function getUserData() {
             followButton.style.display = "none";
             sendMessageButton.style.display = "none";
             setUserData.style.display = "flex";
+            logoutButton.style.display = "flex";
+            logoutButton.addEventListener("click", () => {
+              let yes = confirm("確定要登出?");
+              if (yes) {
+                fetch(`/logout`, {
+                  method: "DELETE",
+                  body: JSON.stringify({
+                    userID: data.userID,
+                  }),
+                  headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                  },
+                })
+                  .then(function (response) {
+                    if (response.status == 200) {
+                      alert("已成功登出");
+                      location.href = "/login";
+                      return;
+                    }
+                    return response.json();
+                  })
+                  .then(function (data) {
+                    console.log(data);
+                  });
+              }
+            });
           }
         });
         followButton.addEventListener("click", () => {

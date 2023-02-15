@@ -75,47 +75,59 @@ class model {
     return result;
   }
 
-  async uploadPost(userID, base64Img, message, hashtagArr) {
-    let time = new Date().getTime();
-    let imageData = base64Img;
-    let imgType = base64Img.split(";")[0].split("/")[1];
-    let imageBuffer = Buffer.from(
-      imageData.replace(/^data:image\/\w+;base64,/, ""),
-      "base64"
-    );
-    await s3.upload(
-      {
-        Bucket: "mywebsiteforwehelp",
-        Key: `snapstory/post/${time}`,
-        Body: imageBuffer,
-        ContentEncoding: "base64",
-        ContentType: `image/${imgType}`,
-      },
-      (error, data) => {
-        if (error) {
-          console.log(error);
+  async uploadPost(userID, imagesArr, message, hashtagArr) {
+    try {
+      let imageUrlArr = [];
+      async function uploadS3(base64ImgArr) {
+        for (let base64Img of base64ImgArr) {
+          let time = new Date().getTime();
+          let imageData = base64Img;
+          let imgType = base64Img.split(";")[0].split("/")[1];
+          let imageBuffer = Buffer.from(
+            imageData.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+          );
+          await s3.upload(
+            {
+              Bucket: "mywebsiteforwehelp",
+              Key: `snapstory/post/${time}`,
+              Body: imageBuffer,
+              ContentEncoding: "base64",
+              ContentType: `image/${imgType}`,
+            },
+            (error, data) => {
+              if (error) {
+                console.log(error);
+              }
+            }
+          );
+          let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
+          imageUrlArr.push(imgUrl);
         }
       }
-    );
-    let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
-    const post = new Post({
-      userID: userID,
-      imageUrl: imgUrl,
-      time: new Date(),
-      content: message,
-      hashtags: hashtagArr,
-    });
-    return await post
-      .save()
-      .then((data) => {
-        console.log("have been saveed into DB");
-        console.log(data);
-        return { ok: true, status: 200, data };
-      })
-      .catch((e) => {
-        console.log(e);
-        return { ok: false, mes: e, status: 500 };
+      await uploadS3(imagesArr);
+
+      const post = new Post({
+        userID: userID,
+        imageUrl: imageUrlArr,
+        time: new Date(),
+        content: message,
+        hashtags: hashtagArr,
       });
+      return await post
+        .save()
+        .then((data) => {
+          console.log("have been saveed into DB");
+          console.log(data);
+          return { ok: true, status: 200, data };
+        })
+        .catch((e) => {
+          console.log(e);
+          return { ok: false, mes: e, status: 500 };
+        });
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
   }
 
   async uploadHashtag(hashtagName, postID) {
@@ -138,8 +150,9 @@ class model {
         .sort({ _id: -1 })
         .skip(6 * Number(page))
         .limit(7)
-        .populate("userID")
-        .populate("comments.userID")
+        .populate({ path: "userID", select: "-password" })
+        .populate({ path: "comments.userID", select: "-password" })
+        .populate({ path: "likes.userID", select: "-password" })
         .exec();
       if (result.length == 7) {
         nextPage = Number(page) + 1;
@@ -235,6 +248,47 @@ class model {
               time,
             },
           },
+        },
+        { new: true }
+      ).then((mes) => {
+        console.log(mes);
+        return { ok: true, status: 200, mes };
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async updateComment(userID, postID, updateCommentID, updateComment) {
+    try {
+      let time = new Date();
+      let result = await Post.updateOne(
+        {
+          _id: postID,
+          "comments._id": updateCommentID,
+        },
+        { $set: { "comments.$.content": updateComment } }
+      ).then((mes) => {
+        return { ok: true, status: 200, mes };
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async deleteComment(postID, updateCommentID) {
+    try {
+      let time = new Date();
+      let result = await Post.updateOne(
+        { _id: postID },
+        {
+          $pull: {
+            comments: { _id: updateCommentID },
+          },
         }
       ).then((mes) => {
         return { ok: true, status: 200, mes };
@@ -246,9 +300,9 @@ class model {
     }
   }
 
-  async getUserPost(username, fanId) {
+  async getUserPost(userID, fanId) {
     try {
-      let user = await Member.findOne({ username: username })
+      let user = await Member.findOne({ _id: userID })
         .populate("fans.userID")
         .populate("following.userID")
         .exec();
@@ -393,7 +447,7 @@ class model {
       let result = await Notification.findOne({
         userID: userID,
       })
-        .populate("notifications.sendUserId")
+        .populate({ path: "notifications.sendUserId", select: "-password" })
         .populate("notifications.postID")
         .exec();
       if (result.notifications.length == 20) {
@@ -430,6 +484,22 @@ class model {
 }
 
 module.exports = model;
+let time = new Date();
+// Post.findOne(
+//   { _id: "63e98c88325041fd6d7cccfa" },
+//   {
+//     $set: {
+//       comments: {
+//         _id: "63eb5b699715db9de409f0e4",
+//         userID: "63c76d88d55533e391061346",
+//         content: "修改後留言part22",
+//         time,
+//       },
+//     },
+//   }
+// ).then((mes) => {
+//   console.log(mes);
+// });
 
 // Post.find({ _id: "63df3b6883f9f1265b5fc875" }).then((posts) => {
 //   console.log(posts);
