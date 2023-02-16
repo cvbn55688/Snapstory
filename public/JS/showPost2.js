@@ -123,11 +123,6 @@ function createParticularPost(postID) {
       newPosterMessageP.textContent = posterMessage;
       newPosterContent.appendChild(newPosterMessageP);
 
-      let newDots = document.createElement("img");
-      newDots.classList.add("dots");
-      newDots.src = "/image/dots.png";
-      newPosterTitle.appendChild(newDots);
-
       let newCommentSection = document.createElement("section");
       newCommentSection.classList.add("comment");
       commentContainer.appendChild(newCommentSection);
@@ -220,6 +215,41 @@ function createParticularPost(postID) {
         postBlacksreen.style.display = "none";
         newPostTable.remove();
       });
+      if (
+        userID == currentUserID &&
+        location.pathname.split("/")[1] == "personal"
+      ) {
+        let newDots = document.createElement("img");
+        newDots.classList.add("dots");
+        newDots.src = "/image/dots.png";
+        newPosterTitle.appendChild(newDots);
+
+        newDots.addEventListener("click", () => {
+          editBlackscreen.style.display = "flex";
+          editCancelButton.addEventListener("click", () => {
+            editBlackscreen.style.display = "none";
+            window.removeEventListener("click", postEdit);
+          });
+          window.addEventListener("click", postEdit);
+          function postEdit(e) {
+            if (e.target.textContent == "編輯") {
+              editPost(
+                postImgUrlArr,
+                posterMessage,
+                hashtagArr,
+                postID,
+                currentUserID
+              );
+              window.removeEventListener("click", postEdit);
+            } else if (e.target.textContent == "刪除") {
+              let yes = confirm("確定要刪除此貼文?");
+              if (yes) {
+                deletePost(postID, postImgUrlArr, hashtagArr, currentUserID);
+              }
+            }
+          }
+        });
+      }
 
       newLikeAmountPost.addEventListener("click", () => {
         getPostLike(postID);
@@ -371,6 +401,272 @@ function createComment(
     });
   });
 }
+function deletePost(postID, postImgUrlArr, hashtagArr, currentUserID) {
+  fetch(`/deletePost`, {
+    method: "DELETE",
+    body: JSON.stringify({
+      postID,
+      postImgUrlArr,
+      hashtagArr,
+      currentUserID,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      hashtagArr.forEach((hashtagName) => {
+        deleteHashtag(hashtagName, postID);
+      });
+      alert("刪除成功");
+      location.reload();
+    });
+}
+
+function editPost(
+  images,
+  postOriMessage,
+  PostOriHashTag,
+  postID,
+  currentUserID
+) {
+  postImageInput.removeEventListener("change", inputLoad);
+  let imagesArr = [];
+  let originImageArr = [];
+  let reload = false;
+  postImageInput.addEventListener("change", (eve) => {
+    console.log("test");
+    reload = true;
+    let imageFiles = Array.from(eve.target.files);
+    setTimeout(() => {
+      postImageInput.value = "";
+    }, 100);
+    imageFiles.forEach((data) => {
+      let reader = new FileReader();
+      reader.readAsDataURL(data);
+      reader.addEventListener("load", () => {
+        imagesArr.push(reader.result);
+        let newImg = document.createElement("img");
+        newImg.src = reader.result;
+        newImg.classList.add("preview");
+        previewImageContainer.appendChild(newImg);
+
+        let newDotDiv = document.createElement("div");
+        newDotDiv.classList.add("preview-dot");
+        previewDotContainer.appendChild(newDotDiv);
+
+        let previewImgs = document.querySelectorAll(".preview");
+        let previewDot = document.querySelectorAll(".preview-dot");
+        if (previewImgs.length === imageFiles.length) {
+          changePicOrder(
+            previewImgs,
+            previewDot,
+            postPreviewPreviousArrow,
+            postPreviewNextArrow
+          );
+        }
+      });
+      if (imageFiles.length > 1) {
+        postPreviewPreviousArrow.style.display = "block";
+        postPreviewNextArrow.style.display = "block";
+        previewDotContainer.style.display = "flex";
+      }
+      postButtonImg.src = "../image/post2.png";
+      showPost.style.display = "flex";
+      editBlackscreen.style.display = "none";
+      postingArea.style.display = "none";
+      postCutting.style.display = "flex";
+      postTitle.textContent = "預覽";
+      postNextStep.style.display = "flex";
+      postUndo.style.display = "flex";
+      postUndo.addEventListener("click", handelPostUndo);
+      postNextStep.addEventListener("click", handelPostNextStep);
+    });
+  });
+  images.forEach((image) => {
+    imagesArr.push(image);
+    originImageArr.push(image);
+    let newImg = document.createElement("img");
+    newImg.src = image;
+    newImg.classList.add("preview");
+    previewImageContainer.appendChild(newImg);
+
+    let newDotDiv = document.createElement("div");
+    newDotDiv.classList.add("preview-dot");
+    previewDotContainer.appendChild(newDotDiv);
+
+    let previewImgs = document.querySelectorAll(".preview");
+    let previewDot = document.querySelectorAll(".preview-dot");
+    if (previewImgs.length === images.length) {
+      changePicOrder(
+        previewImgs,
+        previewDot,
+        postPreviewPreviousArrow,
+        postPreviewNextArrow
+      );
+    }
+  });
+  if (images.length > 1) {
+    postPreviewPreviousArrow.style.display = "block";
+    postPreviewNextArrow.style.display = "block";
+    previewDotContainer.style.display = "flex";
+  }
+
+  postButtonImg.src = "../image/post2.png";
+  showPost.style.display = "flex";
+  editBlackscreen.style.display = "none";
+  postingArea.style.display = "none";
+  postCutting.style.display = "flex";
+  postTitle.textContent = "預覽";
+  postNextStep.style.display = "flex";
+  postUndo.style.display = "flex";
+  postUndo.addEventListener("click", handelPostUndo);
+  postNextStep.addEventListener("click", handelPostNextStep);
+
+  function handelPostUndo() {
+    imagesArr = [];
+    let previewImgs = document.querySelectorAll(".preview");
+    let previewDot = document.querySelectorAll(".preview-dot");
+    console.log(previewDot);
+    previewImgs.forEach((img) => {
+      img.remove();
+    });
+    previewDot.forEach((dot) => {
+      dot.remove();
+    });
+    postPreviewPreviousArrow.style.display = "none";
+    postPreviewNextArrow.style.display = "none";
+    previewDotContainer.style.display = "none";
+    postingArea.style.display = "flex";
+    postCutting.style.display = "none";
+    postTitle.textContent = "選擇圖片";
+    postNextStep.style.display = "none";
+    postUndo.style.display = "none";
+    postUndo.removeEventListener("click", handelPostUndo);
+    postNextStep.removeEventListener("click", handelPostNextStep);
+  }
+
+  function handelPostNextStep() {
+    previewImageContainer.style.animation = "postImageMove 0.7s forwards";
+    postHashTag.style.display = "block";
+    postHashTag.style.animation = "showTable 0.8s forwards";
+    postPreviewPreviousArrow.style.display = "none";
+    postPreviewNextArrow.style.display = "none";
+    previewDotContainer.style.display = "none";
+    postUndo.style.display = "none";
+    postUndo2.style.display = "flex";
+    postNextStep.style.display = "none";
+    postNextStep2.style.display = "flex";
+
+    postNextStep2.textContent = "更新";
+    postTitle.textContent = "編輯貼文";
+    postCutting.style.padding = "20px";
+    postCutting.style.height = "330px";
+    previewImageContainer.style.height = "330px";
+    postMessage.style.display = "flex";
+    postMessage.style.animation = "showTable 0.8s forwards";
+    postMessageTextarea.value = postOriMessage;
+    postMessageTextarea.addEventListener("input", () => {
+      // console.log(newLeaveComment.value.slice(-1));
+      if (postMessageTextarea.value.slice(-1) == "@") {
+        openTagTable(
+          postMessageTagTable,
+          postMessageTagUl,
+          postMessageTagLoadimg,
+          postMessageTextarea
+        );
+      } else if (postMessageTextarea.value.slice(-1) == " ") {
+        postMessageTagTable.style.display = "none";
+      }
+    });
+    PostOriHashTag.forEach((hashtagName) => {
+      createHashtagLi(hashtagName);
+    });
+    postNextStep2.addEventListener("click", updatePost);
+    postUndo2.addEventListener("click", handelPostUndo2);
+  }
+  function handelPostUndo2() {
+    if (images.length > 1) {
+      postPreviewPreviousArrow.style.display = "block";
+      postPreviewNextArrow.style.display = "block";
+      previewDotContainer.style.display = "flex";
+    }
+    previewImageContainer.style.animation = "";
+    postHashTag.style.animation = "";
+    postHashTag.style.display = "none";
+    postUndo.style.display = "flex";
+    postUndo2.style.display = "none";
+    postNextStep.style.display = "flex";
+    postNextStep2.style.display = "none";
+    postCutting.style.padding = "none";
+    postCutting.style.height = "580px";
+    previewImageContainer.style.height = "550px";
+    postMessage.style.display = "none";
+    postHr.style.display = "none";
+    postNextStep2.removeEventListener("click", updatePost);
+    postUndo2.removeEventListener("click", handelPostUndo2);
+  }
+
+  function updatePost() {
+    let postHashtag = document.querySelectorAll(".hashtags-li");
+    let postHashtagArr = [];
+    postHashtag.forEach((hashtag) => {
+      postHashtagArr.push(hashtag.innerText.replace("#", ""));
+    });
+    fetch(`/updatePost`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        postID,
+        originImageArr,
+        imagesArr,
+        postMes: postMessageTextarea.value,
+        hashtagArr: postHashtagArr,
+        currentUserID,
+        reload,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        if (data.ok == true) {
+          console.log(data);
+
+          let hashtagIntersection = new Set(
+            [...PostOriHashTag].filter((x) => postHashtagArr.includes(x))
+          );
+          let originMinus = new Set(
+            [...PostOriHashTag].filter((x) => !hashtagIntersection.has(x))
+          );
+          let newMinus = new Set(
+            [...postHashtagArr].filter((x) => !hashtagIntersection.has(x))
+          );
+
+          console.log(Array.from(originMinus), Array.from(newMinus));
+          if (Array.from(originMinus).length > 0) {
+            Array.from(originMinus).forEach((hashtagName) => {
+              console.log(hashtagName);
+              deleteHashtag(hashtagName, postID);
+            });
+          }
+          if (Array.from(newMinus).length > 0) {
+            Array.from(newMinus).forEach((hashtagName) => {
+              console.log(hashtagName);
+              uploadHashtag(hashtagName, postID);
+            });
+          }
+          alert("上傳成功");
+          location.reload();
+        }
+      });
+  }
+}
 
 function editComment(
   postID,
@@ -384,10 +680,10 @@ function editComment(
   editBlackscreen.style.display = "flex";
   editCancelButton.addEventListener("click", () => {
     editBlackscreen.style.display = "none";
-    window.removeEventListener("click", commentEddit);
+    window.removeEventListener("click", commentEdit);
   });
-  window.addEventListener("click", commentEddit);
-  function commentEddit(e) {
+  window.addEventListener("click", commentEdit);
+  function commentEdit(e) {
     if (e.target.textContent == "編輯") {
       commentContent.style.display = "none";
       CommentDiv.style.display = "flex";
@@ -400,14 +696,14 @@ function editComment(
         CommentDiv.style.display = "none";
         commentContent.textContent = commentInput.value;
         EditCommentSubmmit.removeEventListener("click", submmitEditComment);
-        window.removeEventListener("click", commentEddit);
+        window.removeEventListener("click", commentEdit);
         let newEditedComment = commentInput.value;
-        update("edit", postID, targerID, newEditedComment);
+        updateComment("edit", postID, targerID, newEditedComment);
       }
     } else if (e.target.textContent == "刪除") {
       let yse = confirm("確定要刪除留言嗎?");
       if (yse) {
-        update("delete", postID, targerID);
+        updateComment("delete", postID, targerID);
         commentLi.style.animation = "deleteComment 0.5s forwards";
         setTimeout(() => {
           commentLi.remove();
@@ -415,14 +711,14 @@ function editComment(
 
         editBlackscreen.style.display = "none";
       }
-      window.removeEventListener("click", commentEddit);
+      window.removeEventListener("click", commentEdit);
     }
   }
 }
 
-function update(func, postID, targerID, editedCommet) {
+function updateComment(func, postID, targerID, editedCommet) {
   fetch(`/updateComment`, {
-    method: "PUT",
+    method: "PATCH",
     body: JSON.stringify({
       func,
       postID: postID,

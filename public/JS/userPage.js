@@ -24,6 +24,11 @@ const fansClose = document.querySelector(".fans-close");
 const followingClose = document.querySelector(".following-close");
 const logoutButton = document.querySelector(".logout");
 
+setUserData.addEventListener("click", editUserDate);
+function editUserDate() {
+  console.log("test");
+}
+
 function closeFanFollowTable(closeButton, ul, table) {
   closeButton.addEventListener("click", () => {
     fullBlackScreen.style.display = "none";

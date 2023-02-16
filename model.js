@@ -10,6 +10,53 @@ const s3 = new AWS.S3({
 });
 const { Member, Post, Notification, Tag } = require("./schema.js");
 
+async function uploadS3(imagesArr) {
+  let imageUrlArr = [];
+  for (let image of imagesArr) {
+    let time = new Date().getTime();
+    let imageData = image;
+    let imgType = imageData.split(";")[0].split("/")[1];
+    let imageBuffer = Buffer.from(
+      imageData.replace(/^data:image\/\w+;base64,/, ""),
+      "base64"
+    );
+    await s3.upload(
+      {
+        Bucket: "mywebsiteforwehelp",
+        Key: `snapstory/post/${time}`,
+        Body: imageBuffer,
+        ContentEncoding: "base64",
+        ContentType: `image/${imgType}`,
+      },
+      (error, data) => {
+        if (error) {
+          console.log(error);
+        }
+      }
+    );
+    let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
+    imageUrlArr.push(imgUrl);
+  }
+  return imageUrlArr;
+}
+
+function deleteImgS3(imageArr) {
+  imageArr.forEach((imageUrl) => {
+    let imageName = imageUrl.split("/").slice(-1)[0];
+    s3.deleteObject(
+      {
+        Bucket: "mywebsiteforwehelp",
+        Key: `snapstory/post/${imageName}`,
+      },
+      (error, data) => {
+        if (error) {
+          console.log(error);
+        }
+      }
+    );
+  });
+}
+
 class model {
   async signup(data) {
     if (data.account == "" || data.username == "" || data.password == "") {
@@ -77,35 +124,7 @@ class model {
 
   async uploadPost(userID, imagesArr, message, hashtagArr) {
     try {
-      let imageUrlArr = [];
-      async function uploadS3(base64ImgArr) {
-        for (let base64Img of base64ImgArr) {
-          let time = new Date().getTime();
-          let imageData = base64Img;
-          let imgType = base64Img.split(";")[0].split("/")[1];
-          let imageBuffer = Buffer.from(
-            imageData.replace(/^data:image\/\w+;base64,/, ""),
-            "base64"
-          );
-          await s3.upload(
-            {
-              Bucket: "mywebsiteforwehelp",
-              Key: `snapstory/post/${time}`,
-              Body: imageBuffer,
-              ContentEncoding: "base64",
-              ContentType: `image/${imgType}`,
-            },
-            (error, data) => {
-              if (error) {
-                console.log(error);
-              }
-            }
-          );
-          let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
-          imageUrlArr.push(imgUrl);
-        }
-      }
-      await uploadS3(imagesArr);
+      let imageUrlArr = await uploadS3(imagesArr);
 
       const post = new Post({
         userID: userID,
@@ -130,12 +149,75 @@ class model {
     }
   }
 
+  async updatePost(
+    postID,
+    originImageArr,
+    imagesArr,
+    postMes,
+    postHashtagArr,
+    reload
+  ) {
+    try {
+      if (reload) {
+        deleteImgS3(originImageArr);
+        let imageUrlArr = await uploadS3(imagesArr);
+        let result = await Post.updateOne(
+          { _id: postID },
+          {
+            $set: {
+              imageUrl: imageUrlArr,
+              content: postMes,
+              hashtags: postHashtagArr,
+            },
+          }
+        ).exec();
+        return { ok: true, data: result, status: 200 };
+      } else {
+        let result = await Post.updateOne(
+          { _id: postID },
+          {
+            $set: {
+              content: postMes,
+              hashtags: postHashtagArr,
+            },
+          }
+        ).exec();
+        return { ok: true, data: result, status: 200 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async deletePost(postID, imageArr, postHashtagArr) {
+    try {
+      deleteImgS3(imageArr);
+      let result = await Post.deleteOne({ _id: postID }).exec();
+
+      return { ok: true, status: 200, data: result };
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
   async uploadHashtag(hashtagName, postID) {
     try {
       let result = await Tag.updateOne(
         { tagName: hashtagName },
         { $push: { posts: { postID: postID } } },
         { upsert: true }
+      ).exec();
+      return { ok: true, status: 200, result };
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async deleteHashtag(hashtagName, postID) {
+    try {
+      let result = await Tag.updateOne(
+        { tagName: hashtagName },
+        { $pull: { posts: { postID: postID } } }
       ).exec();
       return { ok: true, status: 200, result };
     } catch (error) {
@@ -282,7 +364,6 @@ class model {
 
   async deleteComment(postID, updateCommentID) {
     try {
-      let time = new Date();
       let result = await Post.updateOne(
         { _id: postID },
         {
@@ -484,7 +565,26 @@ class model {
 }
 
 module.exports = model;
-let time = new Date();
+
+// s3.deleteObject(
+//   {
+//     Bucket: "mywebsiteforwehelp",
+//     Key: `snapstory/post/1675272345995`,
+//   },
+//   (error, data) => {
+//     if (error) {
+//       console.log(error);
+//     }
+//   }
+// );
+
+// Post.updateOne(
+//   { _id: "63edd9c0f917095fab9d02c4" },
+//   { $set: { content: "編輯貼文內容", hashtags: ["wehelp", "test"] } }
+// ).then((mes) => {
+//   console.log(mes);
+// });
+
 // Post.findOne(
 //   { _id: "63e98c88325041fd6d7cccfa" },
 //   {

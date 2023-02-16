@@ -610,7 +610,7 @@ function openTagTable(table, ul, loadingImg, input) {
 
   let debounceSearchTagName = debounce(() => {
     searchTagName();
-  }, 200);
+  }, 500);
   input.addEventListener("input", debounceSearchTagName);
   function searchTagName() {
     ul.childNodes.forEach((li) => {
@@ -657,8 +657,6 @@ function openTagTable(table, ul, loadingImg, input) {
   }
 }
 
-// function openHashtagTable() {
-// }
 postHashTagInput.addEventListener("input", () => {
   postHashTagUl.childNodes.forEach((li) => {
     li.remove();
@@ -798,182 +796,191 @@ function headerIconFuction() {
     }
   });
 
-  postImageInput.addEventListener("change", (eve) => {
-    let imageFiles = Array.from(eve.target.files);
-    setTimeout(() => {
-      postImageInput.value = "";
-    }, 100);
-    let imageArr = [];
-    imageFiles.forEach((data) => {
-      let reader = new FileReader();
-      reader.readAsDataURL(data);
-      reader.addEventListener("load", () => {
-        imageArr.push(reader.result);
-        let newImg = document.createElement("img");
-        newImg.src = reader.result;
-        newImg.classList.add("preview");
-        previewImageContainer.appendChild(newImg);
+  postImageInput.addEventListener("change", inputLoad);
 
-        let newDotDiv = document.createElement("div");
-        newDotDiv.classList.add("preview-dot");
-        previewDotContainer.appendChild(newDotDiv);
+  // });
+}
 
-        let previewImgs = document.querySelectorAll(".preview");
-        let previewDot = document.querySelectorAll(".preview-dot");
-        if (previewImgs.length === imageFiles.length) {
-          changePicOrder(
-            previewImgs,
-            previewDot,
-            postPreviewPreviousArrow,
-            postPreviewNextArrow
-          );
-        }
-      });
+function inputLoad(eve) {
+  console.log("base test");
+  let imageFiles = Array.from(eve.target.files);
+  setTimeout(() => {
+    postImageInput.value = "";
+  }, 100);
+  let imageArr = [];
+  imageFiles.forEach((data) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(data);
+    reader.addEventListener("load", () => {
+      imageArr.push(reader.result);
+      let newImg = document.createElement("img");
+      newImg.src = reader.result;
+      newImg.classList.add("preview");
+      previewImageContainer.appendChild(newImg);
+
+      let newDotDiv = document.createElement("div");
+      newDotDiv.classList.add("preview-dot");
+      previewDotContainer.appendChild(newDotDiv);
+
+      let previewImgs = document.querySelectorAll(".preview");
+      let previewDot = document.querySelectorAll(".preview-dot");
+      if (previewImgs.length === imageFiles.length) {
+        changePicOrder(
+          previewImgs,
+          previewDot,
+          postPreviewPreviousArrow,
+          postPreviewNextArrow
+        );
+      }
     });
+  });
 
+  if (imageFiles.length > 1) {
+    postPreviewPreviousArrow.style.display = "block";
+    postPreviewNextArrow.style.display = "block";
+    previewDotContainer.style.display = "flex";
+  }
+  postingArea.style.display = "none";
+  postCutting.style.display = "flex";
+  postTitle.textContent = "預覽";
+  postNextStep.style.display = "flex";
+  postUndo.style.display = "flex";
+  postUndo.addEventListener("click", handelPostUndo);
+  postNextStep.addEventListener("click", handelPostNextStep);
+
+  function handelPostUndo() {
+    let previewImgs = document.querySelectorAll(".preview");
+    let previewDot = document.querySelectorAll(".preview-dot");
+    previewImgs.forEach((img) => {
+      img.remove();
+    });
+    previewDot.forEach((dot) => {
+      dot.remove();
+    });
+    postPreviewPreviousArrow.style.display = "none";
+    postPreviewNextArrow.style.display = "none";
+    // previewDotContainer.style.display = "none";
+    postingArea.style.display = "flex";
+    postCutting.style.display = "none";
+    postTitle.textContent = "選擇圖片";
+    postNextStep.style.display = "none";
+    postUndo.style.display = "none";
+    postUndo.removeEventListener("click", handelPostUndo);
+    postNextStep.removeEventListener("click", handelPostNextStep);
+  }
+
+  function handelPostNextStep() {
+    previewImageContainer.style.animation = "postImageMove 0.7s forwards";
+    postHashTag.style.display = "block";
+    postHashTag.style.animation = "showTable 0.8s forwards";
+    postPreviewPreviousArrow.style.display = "none";
+    postPreviewNextArrow.style.display = "none";
+    previewDotContainer.style.display = "none";
+    postUndo.style.display = "none";
+    postUndo2.style.display = "flex";
+    postNextStep.style.display = "none";
+    postNextStep2.style.display = "flex";
+
+    postTitle.textContent = "建立新貼文";
+    postCutting.style.padding = "20px";
+    postCutting.style.height = "330px";
+    previewImageContainer.style.height = "330px";
+    postMessage.style.display = "flex";
+    postMessage.style.animation = "showTable 0.8s forwards";
+    postMessageTextarea.addEventListener("input", () => {
+      // console.log(newLeaveComment.value.slice(-1));
+      if (postMessageTextarea.value.slice(-1) == "@") {
+        openTagTable(
+          postMessageTagTable,
+          postMessageTagUl,
+          postMessageTagLoadimg,
+          postMessageTextarea
+        );
+      } else if (postMessageTextarea.value.slice(-1) == " ") {
+        postMessageTagTable.style.display = "none";
+      }
+    });
+    // openHashtagTable();
+    postNextStep2.addEventListener("click", uploadPost);
+    postUndo2.addEventListener("click", handelPostUndo2);
+  }
+
+  function handelPostUndo2() {
     if (imageFiles.length > 1) {
       postPreviewPreviousArrow.style.display = "block";
       postPreviewNextArrow.style.display = "block";
       previewDotContainer.style.display = "flex";
     }
-    postingArea.style.display = "none";
-    postCutting.style.display = "flex";
-    postTitle.textContent = "預覽";
-    postNextStep.style.display = "flex";
+    previewImageContainer.style.animation = "";
+    postHashTag.style.animation = "";
+    postHashTag.style.display = "none";
     postUndo.style.display = "flex";
-    postUndo.addEventListener("click", handelPostUndo);
-    postNextStep.addEventListener("click", handelPostNextStep);
+    postUndo2.style.display = "none";
+    postNextStep.style.display = "flex";
+    postNextStep2.style.display = "none";
+    postCutting.style.padding = "none";
+    postCutting.style.height = "580px";
+    previewImageContainer.style.height = "550px";
+    postMessage.style.display = "none";
+    postHr.style.display = "none";
+    postNextStep2.removeEventListener("click", uploadPost);
+    postUndo2.removeEventListener("click", handelPostUndo2);
+  }
 
-    function handelPostUndo() {
-      let previewImgs = document.querySelectorAll(".preview");
-      previewImgs.forEach((img) => {
-        img.remove();
-      });
-      postPreviewPreviousArrow.style.display = "none";
-      postPreviewNextArrow.style.display = "none";
-      // previewDotContainer.style.display = "none";
-      postingArea.style.display = "flex";
-      postCutting.style.display = "none";
-      postTitle.textContent = "選擇圖片";
-      postNextStep.style.display = "none";
-      postUndo.style.display = "none";
-      postUndo.removeEventListener("click", handelPostUndo);
-      postNextStep.removeEventListener("click", handelPostNextStep);
-    }
+  function uploadPost() {
+    let postHashtag = document.querySelectorAll(".hashtags-li");
+    let postHashtagArr = [];
+    postHashtag.forEach((hashtag) => {
+      postHashtagArr.push(hashtag.innerText.replace("#", ""));
+    });
+    fetch(`/uploadPost`, {
+      method: "POST",
+      body: JSON.stringify({
+        base64ImgArr: imageArr,
+        message: postMessageTextarea.value,
+        hashtagArr: postHashtagArr,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        if (data.ok == true) {
+          console.log(data);
+          let tagNameArr = postMessageTextarea.value.match(/@\w+/g);
+          if (tagNameArr != null) {
+            tagNameArr.forEach((tagName) => {
+              searchUser(tagName.replace(/@/, "")).then((tagData) => {
+                let tagedUserID = tagData.data[0]._id;
+                setTimeout(() => {
+                  sendNotice(
+                    "postTag",
+                    data.username,
+                    data.result.userID,
+                    data.userHeadImg,
+                    null,
+                    "剛剛",
+                    tagedUserID,
+                    data.result.imageUrl,
+                    data.result._id
+                  );
+                }, 1);
+              });
+            });
+          }
+          postHashtagArr.forEach((hashtagName) => {
+            console.log(hashtagName);
+            uploadHashtag(hashtagName, data.result._id);
+          });
 
-    function handelPostNextStep() {
-      previewImageContainer.style.animation = "postImageMove 0.7s forwards";
-      postHashTag.style.display = "block";
-      postHashTag.style.animation = "showTable 0.8s forwards";
-      postPreviewPreviousArrow.style.display = "none";
-      postPreviewNextArrow.style.display = "none";
-      previewDotContainer.style.display = "none";
-      postUndo.style.display = "none";
-      postUndo2.style.display = "flex";
-      postNextStep.style.display = "none";
-      postNextStep2.style.display = "flex";
-
-      postTitle.textContent = "建立新貼文";
-      postCutting.style.padding = "20px";
-      postCutting.style.height = "330px";
-      previewImageContainer.style.height = "330px";
-      postMessage.style.display = "flex";
-      postMessage.style.animation = "showTable 0.8s forwards";
-      postMessageTextarea.addEventListener("input", () => {
-        // console.log(newLeaveComment.value.slice(-1));
-        if (postMessageTextarea.value.slice(-1) == "@") {
-          openTagTable(
-            postMessageTagTable,
-            postMessageTagUl,
-            postMessageTagLoadimg,
-            postMessageTextarea
-          );
-        } else if (postMessageTextarea.value.slice(-1) == " ") {
-          postMessageTagTable.style.display = "none";
+          alert("上傳成功");
+          location.reload();
         }
       });
-      postNextStep2.addEventListener("click", uploadPost);
-      postUndo2.addEventListener("click", handelPostUndo2);
-    }
-
-    function handelPostUndo2() {
-      if (imageFiles.length > 1) {
-        postPreviewPreviousArrow.style.display = "block";
-        postPreviewNextArrow.style.display = "block";
-        previewDotContainer.style.display = "flex";
-      }
-      previewImageContainer.style.animation = "";
-      postHashTag.style.animation = "";
-      postHashTag.style.display = "none";
-      postUndo.style.display = "flex";
-      postUndo2.style.display = "none";
-      postNextStep.style.display = "flex";
-      postNextStep2.style.display = "none";
-      postCutting.style.padding = "none";
-      postCutting.style.height = "580px";
-      previewImageContainer.style.height = "550px";
-      postMessage.style.display = "none";
-      postHr.style.display = "none";
-      postNextStep2.removeEventListener("click", uploadPost);
-      postUndo2.removeEventListener("click", handelPostUndo2);
-    }
-
-    function uploadPost() {
-      let postHashtag = document.querySelectorAll(".hashtags-li");
-      let postHashtagArr = [];
-      postHashtag.forEach((hashtag) => {
-        postHashtagArr.push(hashtag.innerText.replace("#", ""));
-      });
-      fetch(`/uploadPost`, {
-        method: "POST",
-        body: JSON.stringify({
-          base64ImgArr: imageArr,
-          message: postMessageTextarea.value,
-          hashtagArr: postHashtagArr,
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (data) {
-          if (data.ok == true) {
-            console.log(data);
-            let tagNameArr = postMessageTextarea.value.match(/@\w+/g);
-            if (tagNameArr != null) {
-              tagNameArr.forEach((tagName) => {
-                searchUser(tagName.replace(/@/, "")).then((tagData) => {
-                  let tagedUserID = tagData.data[0]._id;
-                  console.log(tagedUserID, tagName);
-                  setTimeout(() => {
-                    sendNotice(
-                      "postTag",
-                      data.username,
-                      data.result.userID,
-                      data.userHeadImg,
-                      null,
-                      "剛剛",
-                      tagedUserID,
-                      data.result.imageUrl,
-                      data.result._id
-                    );
-                  }, 1);
-                });
-              });
-            }
-            postHashtagArr.forEach((hashtagName) => {
-              console.log(hashtagName);
-              uploadHashtag(hashtagName, data.result._id);
-            });
-
-            alert("上傳成功");
-            location.reload();
-          }
-        });
-    }
-  });
+  }
 }
 
 function changePicOrder(value, dots, previousArrow, nextArrow) {
@@ -1018,6 +1025,25 @@ function changePicOrder(value, dots, previousArrow, nextArrow) {
 function uploadHashtag(hashtagName, postID) {
   fetch(`/uploadHashtag`, {
     method: "PUT",
+    body: JSON.stringify({
+      hashtagName,
+      postID,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+    });
+}
+
+function deleteHashtag(hashtagName, postID) {
+  fetch(`/deleteHashtag`, {
+    method: "DELETE",
     body: JSON.stringify({
       hashtagName,
       postID,

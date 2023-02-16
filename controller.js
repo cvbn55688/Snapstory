@@ -92,8 +92,77 @@ class controller {
     }
   }
 
+  async updatePost(userData, postData) {
+    try {
+      let userID = userData.userID;
+      let username = userData.name;
+      let userHeadImg = userData.headImg;
+      let postID = postData.postID;
+      let originImageArr = postData.originImageArr;
+      let imagesArr = postData.imagesArr;
+      let postMes = postData.postMes;
+      let postHashtagArr = postData.hashtagArr;
+      let reload = postData.reload;
+      let result = await Model.updatePost(
+        postID,
+        originImageArr,
+        imagesArr,
+        postMes,
+        postHashtagArr,
+        reload
+      );
+      if (result.ok) {
+        return {
+          ok: true,
+          result: result.data,
+          status: 200,
+        };
+      } else {
+        return { ok: true, mes: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async deletePost(userData, postData) {
+    try {
+      let userID = userData.userID;
+      let username = userData.name;
+      let userHeadImg = userData.headImg;
+      let postID = postData.postID;
+      let postImgUrlArr = postData.postImgUrlArr;
+      let postHashtagArr = postData.hashtagArr;
+      let result = await Model.deletePost(
+        postID,
+        postImgUrlArr,
+        postHashtagArr
+      );
+      if (result.ok) {
+        return {
+          ok: true,
+          result: result.data,
+          status: 200,
+        };
+      } else {
+        return { ok: true, mes: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
   async uploadHashtag(hashtagName, postID) {
     let result = await Model.uploadHashtag(hashtagName, postID);
+    if (result.ok) {
+      return { ok: true, result: result.result, status: 200 };
+    } else {
+      return { ok: false, mes: result.mes, status: 500 };
+    }
+  }
+
+  async deleteHashtag(hashtagName, postID) {
+    let result = await Model.deleteHashtag(hashtagName, postID);
     if (result.ok) {
       return { ok: true, result: result.result, status: 200 };
     } else {

@@ -133,7 +133,8 @@ textarea {
 .show-post .posting .post-header .next-step-2 {
   display: none;
   color: rgb(40, 154, 255);
-  width: 50px;
+  width: -moz-fit-content;
+  width: fit-content;
   margin: 0 15px;
   cursor: pointer;
   -webkit-user-select: none;

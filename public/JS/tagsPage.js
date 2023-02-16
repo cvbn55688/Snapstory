@@ -44,7 +44,8 @@ function getTagsData() {
         tagsPosts = data.data.posts;
         console.log(tagsPosts);
         loadPostImg(tagsPosts);
-        tagsInfoHeadImg.src = tagsPosts[0].postID.imageUrl;
+        tagsInfoHeadImg.src =
+          tagsPosts[tagsPosts.length - 1].postID.imageUrl[0];
         tagsName.textContent = "#" + data.data.tagName;
         // checkLonin().then(function (data) {
         //   if (tagsData._id == data.tagsID) {

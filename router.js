@@ -101,6 +101,32 @@ router.post("/uploadPost", async (req, res) => {
   }
 });
 
+router.patch("/updatePost", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, mes: "使用者未登入" });
+    }
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let result = await controller.updatePost(userData, req.body);
+    res.status(result.status).json(result);
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.delete("/deletePost", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, mes: "使用者未登入" });
+    }
+    let userData = jwtDecode(req.cookies.JWTtoken);
+    let result = await controller.deletePost(userData, req.body);
+    res.status(result.status).json(result);
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
 router.put("/uploadHashtag", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
@@ -109,6 +135,20 @@ router.put("/uploadHashtag", async (req, res) => {
     let hashtagName = req.body.hashtagName;
     let postID = req.body.postID;
     let result = await controller.uploadHashtag(hashtagName, postID);
+    res.status(result.status).json(result);
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.delete("/deleteHashtag", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    }
+    let hashtagName = req.body.hashtagName;
+    let postID = req.body.postID;
+    let result = await controller.deleteHashtag(hashtagName, postID);
     res.status(result.status).json(result);
   } catch (error) {
     res.status(500).json({ ok: false, mes: error });
@@ -161,7 +201,7 @@ router.post("/newComment", async (req, res) => {
   }
 });
 
-router.put("/updateComment", async (req, res) => {
+router.patch("/updateComment", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
