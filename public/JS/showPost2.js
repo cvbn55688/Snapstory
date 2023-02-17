@@ -594,6 +594,10 @@ function editPost(
       postPreviewNextArrow.style.display = "block";
       previewDotContainer.style.display = "flex";
     }
+    let hashtagLi = document.querySelectorAll(".hashtags-li");
+    hashtagLi.forEach((hashtag) => {
+      hashtag.remove();
+    });
     previewImageContainer.style.animation = "";
     postHashTag.style.animation = "";
     postHashTag.style.display = "none";
