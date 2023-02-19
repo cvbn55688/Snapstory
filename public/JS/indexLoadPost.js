@@ -32,7 +32,7 @@ function createPost(
 
   let newPosterHeaderImg = document.createElement("img");
   newPosterHeaderImg.classList.add("poster-header-img");
-  newPosterHeaderImg.src = headerImg;
+  newPosterHeaderImg.src = headerImg + vTime;
   newPoster.appendChild(newPosterHeaderImg);
   newPosterHeaderImg.addEventListener("click", () => {
     location.href = `/personal/${userID}`;
@@ -254,7 +254,7 @@ function createPost(
 
   let newPosterHeaderImgPost = document.createElement("img");
   newPosterHeaderImgPost.classList.add("poster-header-img-post");
-  newPosterHeaderImgPost.src = headerImg;
+  newPosterHeaderImgPost.src = headerImg + vTime;
   newPosterTitle.appendChild(newPosterHeaderImgPost);
   rediectToPersonalPage(newPosterHeaderImgPost, userID);
 
@@ -452,7 +452,7 @@ function createComment(
 
     let newUserHeaderImg = document.createElement("img");
     newUserHeaderImg.classList.add("user-headerImg");
-    newUserHeaderImg.src = comment.userID.headImg;
+    newUserHeaderImg.src = comment.userID.headImg + vTime;
     newUserMainContent.appendChild(newUserHeaderImg);
     rediectToPersonalPage(newUserHeaderImg, comment.userID._id);
 

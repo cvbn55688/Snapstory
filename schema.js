@@ -33,6 +33,7 @@ const memberSchema = new mongoose.Schema({
     default:
       "https://d1vscilbhjiukl.cloudfront.net/snapstory/profile_picture/user.png",
   },
+  profile: String,
   fans: [
     {
       userID: { type: mongoose.Schema.Types.ObjectId, ref: "Member" },

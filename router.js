@@ -228,6 +228,23 @@ router.get("/getUserPost/:userID", async (req, res) => {
   }
 });
 
+router.patch("/updateUserData", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.updateUserData(req.body, userData);
+      res
+        .cookie("JWTtoken", result.token, { httpOnly: true })
+        .status(result.status)
+        .json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
 router.get("/getTagsPost/:tags", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {

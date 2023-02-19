@@ -104,7 +104,7 @@ function createParticularPost(postID) {
 
       let newPosterHeaderImgPost = document.createElement("img");
       newPosterHeaderImgPost.classList.add("poster-header-img-post");
-      newPosterHeaderImgPost.src = headerImg;
+      newPosterHeaderImgPost.src = headerImg + vTime;
       newPosterTitle.appendChild(newPosterHeaderImgPost);
       rediectToPersonalPage(newPosterHeaderImgPost, userID);
 
@@ -321,7 +321,7 @@ function createComment(
 
     let newUserHeaderImg = document.createElement("img");
     newUserHeaderImg.classList.add("user-headerImg");
-    newUserHeaderImg.src = comment.userID.headImg;
+    newUserHeaderImg.src = comment.userID.headImg + vTime;
     newUserMainContent.appendChild(newUserHeaderImg);
     rediectToPersonalPage(newUserHeaderImg, comment.userID._id);
 

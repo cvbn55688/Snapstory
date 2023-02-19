@@ -60,12 +60,12 @@ const postMessageTagUl = document.querySelector(".post-message-tag ul");
 const postMessageTagLoadimg = document.querySelector(
   ".tag-name-search-loadingImg"
 );
+const vTime = `?v=${new Date().getTime()}`;
 
 let historicalSearch = window.localStorage.getItem("historicalSearch");
 let notificationCount = 0;
 
 searchImg.addEventListener("click", () => {
-  console.log("test");
   setTimeout(() => {
     searchBar.focus();
     searchBar.setAttribute("placeholder", "搜尋");
@@ -91,7 +91,6 @@ function websocketConnect() {
   ws.addEventListener("open", function () {
     console.log("連結建立成功。");
     window.addEventListener("click", () => {
-      console.log(ws.readyState);
       if (ws.readyState != 1) {
         websocketConnect();
       }
@@ -802,7 +801,6 @@ function headerIconFuction() {
 }
 
 function inputLoad(eve) {
-  console.log("base test");
   let imageFiles = Array.from(eve.target.files);
   setTimeout(() => {
     postImageInput.value = "";
@@ -1076,7 +1074,7 @@ async function checkLonin() {
         return;
       }
       data = data.decoded;
-      personalImg.src = data.headImg;
+      personalImg.src = data.headImg + `?v=${new Date().getTime()}`;
       personalImg.addEventListener("click", () => {
         location.href = `/personal/${data.userID}`;
       });

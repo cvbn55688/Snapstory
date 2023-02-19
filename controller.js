@@ -346,6 +346,47 @@ class controller {
     }
   }
 
+  async updateUserData(editData, userData) {
+    try {
+      let userID = userData.userID;
+      let username = userData.name;
+      let editUserID = editData.userID;
+      let editNewUsername = editData.newUsername;
+      let editNewUserProfile = editData.newUserProfile;
+      let editNewHeadImg = editData.newUserHeadImg;
+      let headImgReload = editData.headimgReload;
+      if (userID == editUserID) {
+        let result = await Model.updateUserData(
+          userID,
+          editNewUsername,
+          editNewUserProfile,
+          editNewHeadImg,
+          headImgReload
+        );
+        if (result.ok) {
+          let payload = {
+            name: editNewUsername,
+            userID: userID,
+            headImg: result.headImgAM,
+          };
+          let token = jwt.sign(payload, JWTsecret);
+          return {
+            ok: true,
+            result: result.result,
+            token,
+            status: 200,
+          };
+        } else {
+          return { ok: false, mes: result.mes, status: 500 };
+        }
+      } else {
+        return { ok: false, data: "使用者錯誤", status: 401 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
   async getTagsPost(userData, tagsname) {
     try {
       let result = await Model.getTagsPost(tagsname);

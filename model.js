@@ -10,7 +10,7 @@ const s3 = new AWS.S3({
 });
 const { Member, Post, Notification, Tag } = require("./schema.js");
 
-async function uploadS3(imagesArr) {
+async function uploadS3(func, imagesArr, userID) {
   let imageUrlArr = [];
   for (let image of imagesArr) {
     let time = new Date().getTime();
@@ -20,22 +20,44 @@ async function uploadS3(imagesArr) {
       imageData.replace(/^data:image\/\w+;base64,/, ""),
       "base64"
     );
-    await s3.upload(
-      {
-        Bucket: "mywebsiteforwehelp",
-        Key: `snapstory/post/${time}`,
-        Body: imageBuffer,
-        ContentEncoding: "base64",
-        ContentType: `image/${imgType}`,
-      },
-      (error, data) => {
-        if (error) {
-          console.log(error);
+
+    if (func == "post") {
+      let imgUrl = `https://${cloudFront}/snapstory/${func}/${time}`;
+      imageUrlArr.push(imgUrl);
+      let key = `snapstory/${func}/${time}`;
+      await s3.upload(
+        {
+          Bucket: "mywebsiteforwehelp",
+          Key: key,
+          Body: imageBuffer,
+          ContentEncoding: "base64",
+          ContentType: `image/${imgType}`,
+        },
+        (error, data) => {
+          if (error) {
+            console.log(error);
+          }
         }
-      }
-    );
-    let imgUrl = `https://${cloudFront}/snapstory/post/${time}`;
-    imageUrlArr.push(imgUrl);
+      );
+    } else {
+      let imgUrl = `https://${cloudFront}/snapstory/${func}/${userID}`;
+      imageUrlArr.push(imgUrl);
+      let key = `snapstory/${func}/${userID}`;
+      await s3.upload(
+        {
+          Bucket: "mywebsiteforwehelp",
+          Key: key,
+          Body: imageBuffer,
+          ContentEncoding: "base64",
+          ContentType: `image/${imgType}`,
+        },
+        (error, data) => {
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+    }
   }
   return imageUrlArr;
 }
@@ -124,7 +146,7 @@ class model {
 
   async uploadPost(userID, imagesArr, message, hashtagArr) {
     try {
-      let imageUrlArr = await uploadS3(imagesArr);
+      let imageUrlArr = await uploadS3("post", imagesArr);
 
       const post = new Post({
         userID: userID,
@@ -160,7 +182,7 @@ class model {
     try {
       if (reload) {
         deleteImgS3(originImageArr);
-        let imageUrlArr = await uploadS3(imagesArr);
+        let imageUrlArr = await uploadS3("post", imagesArr);
         let result = await Post.updateOne(
           { _id: postID },
           {
@@ -404,6 +426,55 @@ class model {
         isMatchFan = true;
       }
       return { ok: true, posts, user, isMatchFan };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, status: 500, mes: error };
+    }
+  }
+
+  async updateUserData(
+    userID,
+    newUsername,
+    newUserProfile,
+    newHeadImg,
+    headImgReload
+  ) {
+    try {
+      // console.log(
+      //   userID,
+      //   newUsername,
+      //   newUserProfile,
+      //   newHeadImg,
+      //   headImgReload
+      // );
+      if (headImgReload) {
+        let headImgUrl = await uploadS3(
+          "profile_picture",
+          [newHeadImg],
+          userID
+        );
+        console.log(headImgUrl);
+        let headImgAM = envData.awsHeadImgS3 + userID;
+        let result = await Member.updateOne(
+          { _id: userID },
+          {
+            $set: {
+              username: newUsername,
+              profile: newUserProfile,
+              headImg: headImgAM,
+            },
+          }
+        ).exec();
+        return { ok: true, result, headImgAM };
+      } else {
+        let result = await Member.updateOne(
+          { _id: userID },
+          {
+            $set: { username: newUsername, profile: newUserProfile },
+          }
+        ).exec();
+        return { ok: true, result };
+      }
     } catch (error) {
       console.log(error);
       return { ok: false, status: 500, mes: error };

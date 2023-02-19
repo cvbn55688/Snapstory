@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
 }
-.user-info .user-info-section .user-info-content-container .user-person .user-account {
+.user-info .user-info-section .user-info-content-container .user-person .user-name {
   font-size: 18px;
   font-weight: bold;
   margin-right: 15px;
@@ -172,11 +172,11 @@
 }
 .full-screen {
   animation: showTable 0.5s;
-  position: relative;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
+  top: 0;
   z-index: 101;
   display: none;
   justify-content: center;
@@ -260,6 +260,112 @@
 .full-screen .following-table ul.fans-ul li:hover,
 .full-screen .following-table .following-ul li:hover {
   background-color: rgba(230, 230, 230, 0.7137254902);
+}
+.full-screen .edit-user-data {
+  display: none;
+  width: 40%;
+  height: 500px;
+  background-color: white;
+  border-radius: 10px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-title {
+  height: 45px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+}
+.full-screen .edit-user-data .basic-data .basic-data-title p {
+  font-size: 18px;
+  font-weight: bold;
+}
+.full-screen .edit-user-data .basic-data .basic-data-title .edit-userdata-close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 15px 15px 0 0;
+  cursor: pointer;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head .user-head-img {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  padding: 20px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head .head-img-upload {
+  display: none;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  padding: 10px;
+  background-color: rgb(235, 235, 235);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head label:hover {
+  background-color: rgb(201, 201, 201);
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data {
+  padding: 15px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div {
+  width: 75%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div p {
+  width: 60%;
+  text-align: end;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 30px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div span,
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div input,
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div textarea {
+  width: 70%;
+  padding: 5px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data .edit-profile textarea {
+  resize: none;
+  height: 70px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .edit-submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .edit-submit p {
+  background-color: rgb(235, 235, 235);
+  margin: 0 5px 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .edit-submit p:hover {
+  background-color: rgb(201, 201, 201);
 }
 
 @media screen and (max-width: 500px) {
