@@ -1,3 +1,7 @@
+const header = document.querySelector("header");
+const headerTitle = document.querySelector(".tittle p");
+const headerNav = document.querySelector(".nav");
+const headerNavSpan = document.querySelectorAll(".nav span");
 const searchBar = document.querySelector(".serch-bar input");
 const searchBarContainer = document.querySelector(".serch-bar");
 const searchTable = document.querySelector(".search-table");
@@ -7,6 +11,7 @@ const homePage = document.querySelector(".home-page");
 const homePageImg = document.querySelector(".home-page img");
 const inboxPage = document.querySelector(".inbox-page");
 const inboxPageImg = document.querySelector(".inbox-page img");
+const postButton = document.querySelector(".post");
 const postButtonImg = document.querySelector(".post img");
 const heart = document.querySelector(".heart");
 const heartImg = document.querySelector(".heart img");
@@ -32,6 +37,7 @@ const postMessageTextarea = document.querySelector(".user-message-textarea");
 const postHeader1 = document.querySelector(".post-header");
 const postUndo2 = document.querySelector(".undo-2");
 const postNextStep2 = document.querySelector(".next-step-2");
+const postUploadLoading = document.querySelector(".post-header img");
 const postHr = document.querySelector(".post-hr");
 const postCancel = document.querySelector(".cancel-container");
 const cancelButton = document.querySelector(".cancel-button");
@@ -83,7 +89,6 @@ function rediectToPersonalPage(container, targetID) {
     location.href = `/personal/${targetID}`;
   });
 }
-// console.log(location.hostname);
 function websocketConnect() {
   let url = "ws://" + location.hostname + ":8000";
   let ws = new WebSocket(url);
@@ -92,7 +97,9 @@ function websocketConnect() {
     console.log("連結建立成功。");
     window.addEventListener("click", () => {
       if (ws.readyState != 1) {
-        websocketConnect();
+        ws.addEventListener("open", function () {
+          console.log("連結建立成功。");
+        });
       }
     });
   });
@@ -127,6 +134,7 @@ function getNotification() {
     })
     .then(function (data) {
       if (data.ok == true) {
+        console.log(data);
         data = data.data;
         notifications = data.notifications;
         if (data.status == "1") {
@@ -752,7 +760,7 @@ function headerIconFuction() {
     }
   });
 
-  postButtonImg.addEventListener("click", (e) => {
+  postButton.addEventListener("click", (e) => {
     changeIcon("postButtonImg");
     postButtonImg.src = "../image/post2.png";
     showPost.style.display = "flex";
@@ -772,8 +780,17 @@ function headerIconFuction() {
   heart.addEventListener("click", () => {
     if (heartCount == 0) {
       changeIcon("heartImg");
+
       heartImg.src = "../image/heart2.png";
       notificationTable.style.display = "block";
+      notificationTable.style.animation = "showNotice 1s forwards";
+      header.style.animation = "closeHeader 0.7s forwards";
+      headerNav.style.width = "auto";
+      headerTitle.style.opacity = "0";
+      searchBar.style.display = "none";
+      headerNavSpan.forEach((span) => {
+        span.style.display = "none";
+      });
       heartCount++;
       if (notificationCount == 0) {
         fetch(`/changeNotificationStatus`, {
@@ -790,272 +807,19 @@ function headerIconFuction() {
     } else {
       checkPathIcon();
       heartImg.src = "../image/heart.png";
-      notificationTable.style.display = "none";
+      notificationTable.style.animation = "closeNotice 1s forwards";
+      header.style.animation = "showHeader 1s forwards";
+      headerNav.style.width = "100%";
+      headerTitle.style.opacity = "1";
+      searchBar.style.display = "flex";
+      headerNavSpan.forEach((span) => {
+        span.style.display = "block";
+      });
       heartCount--;
     }
   });
 
   postImageInput.addEventListener("change", inputLoad);
-
-  // });
-}
-
-function inputLoad(eve) {
-  let imageFiles = Array.from(eve.target.files);
-  setTimeout(() => {
-    postImageInput.value = "";
-  }, 100);
-  let imageArr = [];
-  imageFiles.forEach((data) => {
-    let reader = new FileReader();
-    reader.readAsDataURL(data);
-    reader.addEventListener("load", () => {
-      imageArr.push(reader.result);
-      let newImg = document.createElement("img");
-      newImg.src = reader.result;
-      newImg.classList.add("preview");
-      previewImageContainer.appendChild(newImg);
-
-      let newDotDiv = document.createElement("div");
-      newDotDiv.classList.add("preview-dot");
-      previewDotContainer.appendChild(newDotDiv);
-
-      let previewImgs = document.querySelectorAll(".preview");
-      let previewDot = document.querySelectorAll(".preview-dot");
-      if (previewImgs.length === imageFiles.length) {
-        changePicOrder(
-          previewImgs,
-          previewDot,
-          postPreviewPreviousArrow,
-          postPreviewNextArrow
-        );
-      }
-    });
-  });
-
-  if (imageFiles.length > 1) {
-    postPreviewPreviousArrow.style.display = "block";
-    postPreviewNextArrow.style.display = "block";
-    previewDotContainer.style.display = "flex";
-  }
-  postingArea.style.display = "none";
-  postCutting.style.display = "flex";
-  postTitle.textContent = "預覽";
-  postNextStep.style.display = "flex";
-  postUndo.style.display = "flex";
-  postUndo.addEventListener("click", handelPostUndo);
-  postNextStep.addEventListener("click", handelPostNextStep);
-
-  function handelPostUndo() {
-    let previewImgs = document.querySelectorAll(".preview");
-    let previewDot = document.querySelectorAll(".preview-dot");
-    previewImgs.forEach((img) => {
-      img.remove();
-    });
-    previewDot.forEach((dot) => {
-      dot.remove();
-    });
-    postPreviewPreviousArrow.style.display = "none";
-    postPreviewNextArrow.style.display = "none";
-    // previewDotContainer.style.display = "none";
-    postingArea.style.display = "flex";
-    postCutting.style.display = "none";
-    postTitle.textContent = "選擇圖片";
-    postNextStep.style.display = "none";
-    postUndo.style.display = "none";
-    postUndo.removeEventListener("click", handelPostUndo);
-    postNextStep.removeEventListener("click", handelPostNextStep);
-  }
-
-  function handelPostNextStep() {
-    previewImageContainer.style.animation = "postImageMove 0.7s forwards";
-    postHashTag.style.display = "block";
-    postHashTag.style.animation = "showTable 0.8s forwards";
-    postPreviewPreviousArrow.style.display = "none";
-    postPreviewNextArrow.style.display = "none";
-    previewDotContainer.style.display = "none";
-    postUndo.style.display = "none";
-    postUndo2.style.display = "flex";
-    postNextStep.style.display = "none";
-    postNextStep2.style.display = "flex";
-
-    postTitle.textContent = "建立新貼文";
-    postCutting.style.padding = "20px";
-    postCutting.style.height = "330px";
-    previewImageContainer.style.height = "330px";
-    postMessage.style.display = "flex";
-    postMessage.style.animation = "showTable 0.8s forwards";
-    postMessageTextarea.addEventListener("input", () => {
-      // console.log(newLeaveComment.value.slice(-1));
-      if (postMessageTextarea.value.slice(-1) == "@") {
-        openTagTable(
-          postMessageTagTable,
-          postMessageTagUl,
-          postMessageTagLoadimg,
-          postMessageTextarea
-        );
-      } else if (postMessageTextarea.value.slice(-1) == " ") {
-        postMessageTagTable.style.display = "none";
-      }
-    });
-    // openHashtagTable();
-    postNextStep2.addEventListener("click", uploadPost);
-    postUndo2.addEventListener("click", handelPostUndo2);
-  }
-
-  function handelPostUndo2() {
-    if (imageFiles.length > 1) {
-      postPreviewPreviousArrow.style.display = "block";
-      postPreviewNextArrow.style.display = "block";
-      previewDotContainer.style.display = "flex";
-    }
-    previewImageContainer.style.animation = "";
-    postHashTag.style.animation = "";
-    postHashTag.style.display = "none";
-    postUndo.style.display = "flex";
-    postUndo2.style.display = "none";
-    postNextStep.style.display = "flex";
-    postNextStep2.style.display = "none";
-    postCutting.style.padding = "none";
-    postCutting.style.height = "580px";
-    previewImageContainer.style.height = "550px";
-    postMessage.style.display = "none";
-    postHr.style.display = "none";
-    postNextStep2.removeEventListener("click", uploadPost);
-    postUndo2.removeEventListener("click", handelPostUndo2);
-  }
-
-  function uploadPost() {
-    let postHashtag = document.querySelectorAll(".hashtags-li");
-    let postHashtagArr = [];
-    postHashtag.forEach((hashtag) => {
-      postHashtagArr.push(hashtag.innerText.replace("#", ""));
-    });
-    fetch(`/uploadPost`, {
-      method: "POST",
-      body: JSON.stringify({
-        base64ImgArr: imageArr,
-        message: postMessageTextarea.value,
-        hashtagArr: postHashtagArr,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (data) {
-        if (data.ok == true) {
-          console.log(data);
-          let tagNameArr = postMessageTextarea.value.match(/@\w+/g);
-          if (tagNameArr != null) {
-            tagNameArr.forEach((tagName) => {
-              searchUser(tagName.replace(/@/, "")).then((tagData) => {
-                let tagedUserID = tagData.data[0]._id;
-                setTimeout(() => {
-                  sendNotice(
-                    "postTag",
-                    data.username,
-                    data.result.userID,
-                    data.userHeadImg,
-                    null,
-                    "剛剛",
-                    tagedUserID,
-                    data.result.imageUrl,
-                    data.result._id
-                  );
-                }, 1);
-              });
-            });
-          }
-          postHashtagArr.forEach((hashtagName) => {
-            console.log(hashtagName);
-            uploadHashtag(hashtagName, data.result._id);
-          });
-
-          alert("上傳成功");
-          location.reload();
-        }
-      });
-  }
-}
-
-function changePicOrder(value, dots, previousArrow, nextArrow) {
-  let current = 0;
-  dots[current].style.backgroundColor = "#000000";
-  function nextPic() {
-    value[current].style.animation = "hideRight 0.25s forwards";
-    value[current >= value.length - 1 ? 0 : current + 1].style.animation =
-      "showRight 1s forwards";
-    dots[current].style.backgroundColor = "#ffffff";
-    if (current < value.length - 1) {
-      current++;
-      dots[current].style.backgroundColor = "#000000";
-    } else {
-      current = 0;
-      dots[current].style.backgroundColor = "#000000";
-    }
-  }
-  function preciousPic() {
-    value[current].style.animation = "hideLeft  0.25s forwards";
-    value[current > 0 ? current - 1 : value.length - 1].style.animation =
-      "showLeft 1s forwards";
-    dots[current].style.backgroundColor = "#ffffff";
-    if (current > 0) {
-      current--;
-      dots[current].style.backgroundColor = "#000000";
-    } else {
-      current = value.length - 1;
-      dots[current].style.backgroundColor = "#000000";
-    }
-  }
-  previousArrow.addEventListener("click", (event) => {
-    event.stopPropagation();
-    preciousPic();
-  });
-  nextArrow.addEventListener("click", (event) => {
-    event.stopPropagation();
-    nextPic();
-  });
-}
-
-function uploadHashtag(hashtagName, postID) {
-  fetch(`/uploadHashtag`, {
-    method: "PUT",
-    body: JSON.stringify({
-      hashtagName,
-      postID,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  })
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      console.log(data);
-    });
-}
-
-function deleteHashtag(hashtagName, postID) {
-  fetch(`/deleteHashtag`, {
-    method: "DELETE",
-    body: JSON.stringify({
-      hashtagName,
-      postID,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  })
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      console.log(data);
-    });
 }
 
 async function checkLonin() {
@@ -1074,16 +838,6 @@ async function checkLonin() {
         return;
       }
       data = data.decoded;
-      personalImg.src = data.headImg + `?v=${new Date().getTime()}`;
-      personalImg.addEventListener("click", () => {
-        location.href = `/personal/${data.userID}`;
-      });
-
-      let userData = { fuc: 0, name: data.name, id: data.userID };
-      setTimeout(() => {
-        ws.send(JSON.stringify(userData));
-      }, 3000);
-
       return data;
     })
     .catch((error) => {
@@ -1091,9 +845,24 @@ async function checkLonin() {
     });
 }
 
+checkLonin().then((data) => {
+  console.log(data);
+  personalImg.src = data.headImg + `?v=${new Date().getTime()}`;
+  personal.addEventListener("click", () => {
+    location.href = `/personal/${data.userID}`;
+  });
+
+  let userData = { fuc: 0, name: data.name, id: data.userID };
+  ws.send(JSON.stringify(userData));
+
+  socket.emit("join", { userID: data.userID });
+  socket.on("connectionSuccess", (data) => {
+    console.log(data);
+  });
+});
+
 const ws = websocketConnect();
-checkLonin();
+getNotification();
 checkPathIcon();
 searchBarFuction();
 headerIconFuction();
-getNotification();

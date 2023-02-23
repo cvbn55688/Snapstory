@@ -1,4 +1,6 @@
-<% include showPost.ejs %> <% include posting.ejs %><% include showLike.ejs %>
+<% include showPost.ejs %> <% include posting.ejs %><% include showLike.ejs %><%
+include showSendChat.ejs %>
+<script src="/socket.io/socket.io.js"></script>
 <header>
   <div class="tittle">
     <p onclick="location.href='/'">Snapstory</p>
@@ -29,38 +31,30 @@
   </div>
   <div class="nav">
     <li class="search-header"><img src="/image/search2.png" alt="" /></li>
-    <li class="home-page"><img src="/image/home.png" alt="" /></li>
-    <li class="inbox-page"><img src="/image/message.png" alt="" /></li>
-    <li class="post"><img src="/image/post.png" alt="" /></li>
-    <li class="heart"><img src="/image/heart.png" alt="" /></li>
-    <li class="personal"><img src="/image/loading.gif" alt="" /></li>
+    <li class="home-page">
+      <img src="/image/home.png" alt="" /><span>首頁</span>
+    </li>
+    <li class="inbox-page">
+      <img src="/image/message.png" alt="" /> <span>訊息</span>
+      <p class="unread-message"></p>
+    </li>
+    <li class="post"><img src="/image/post.png" alt="" /><span>建立</span></li>
+    <li class="heart">
+      <img src="/image/heart.png" alt="" /><span>通知</span>
+    </li>
+    <li class="personal">
+      <img src="/image/loading.gif" alt="" /><span>個人檔案</span>
+    </li>
   </div>
 
   <div class="notification-table">
     <div class="notification-title">
       <p>通知</p>
     </div>
-    <ul class="notification-ul">
-      <!-- <li>
-        <img
-          src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1675272345995"
-          alt=""
-        />
-        <div class="notification-mes-container">
-          <p class="notification-message-main">cvbn留言回應了:</p>
-          <p class="notification-message-second">
-            我來這裡測試留言~<span class="notification-time">2天</span>
-          </p>
-        </div>
-        <div class="notification-img-preview">
-          <img
-            src="https://d1vscilbhjiukl.cloudfront.net/snapstory/post/1675044099883"
-            alt=""
-          />
-        </div>
-      </li> -->
-    </ul>
+    <ul class="notification-ul"></ul>
     <p class="notification-no-data">沒有通知紀錄。</p>
   </div>
 </header>
+<script src="/JS/base.js"></script>
 <script src="/JS/showPost2.js"></script>
+<script src="/JS/sendChat.js"></script>

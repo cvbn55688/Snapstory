@@ -6,7 +6,7 @@ const closePostButtonIndex = document.querySelector(".close-post-button-index");
 closePostButtonIndex.src = "/image/x.png";
 
 function createPost(
-  postId,
+  postID,
   userID,
   userName,
   headerImg,
@@ -19,6 +19,12 @@ function createPost(
   currentUserID
 ) {
   let date = new Date(time);
+  let postData = {
+    postID,
+    postImg: postImgUrlArr[0],
+    poster: { userID, userName, headerImg },
+  };
+
   let newArticle = document.createElement("article");
   articleContainer.appendChild(newArticle);
 
@@ -127,17 +133,23 @@ function createPost(
   newMessage.src = "/image/message.png";
   newMessage.classList.add("messagge-index");
   newUserInteracte.appendChild(newMessage);
+  // newMessage.addEventListener("click", (e) => {
+  //   createParticularPost(postID);
+  // });
 
   let newShare = document.createElement("img");
   newShare.src = "/image/share.png";
   newShare.classList.add("share-index");
   newUserInteracte.appendChild(newShare);
+  newShare.addEventListener("click", () => {
+    sharePost(postData);
+  });
 
   let userLike = document.createElement("div");
   userLike.classList.add("user-likes");
   newComment.appendChild(userLike);
   userLike.addEventListener("click", () => {
-    getPostLike(postId);
+    getPostLike(postID);
   });
 
   let newLikeAmount = document.createElement("span");
@@ -175,6 +187,7 @@ function createPost(
     newCommentAmount.addEventListener("click", (e) => {
       postBlacksreenIndex.style.display = "flex";
       newPostTable.style.display = "flex";
+      // createParticularPost(postID);
     });
   }
 
@@ -186,7 +199,7 @@ function createPost(
   //5454564
   let newPostTable = document.createElement("div");
   newPostTable.classList.add("post-table");
-  newPostTable.setAttribute("id", postId);
+  newPostTable.setAttribute("id", postID);
   postBlacksreenIndex.appendChild(newPostTable);
 
   let newPostImageContainer = document.createElement("div");
@@ -269,7 +282,7 @@ function createPost(
   rediectToPersonalPage(newPosterNameP, userID);
 
   let newPosterMessageP = document.createElement("p");
-  newPosterMessageP.classList.add("poster-messag");
+  newPosterMessageP.classList.add("poster-message");
   newPosterMessageP.textContent = posterMessage;
   newPosterContent.appendChild(newPosterMessageP);
 
@@ -308,6 +321,9 @@ function createPost(
   newSharePost.src = "/image/share.png";
   newSharePost.classList.add("share-post");
   newPostInteract.appendChild(newSharePost);
+  newSharePost.addEventListener("click", () => {
+    sharePost(postData);
+  });
 
   let newHashtagContainer = document.createElement("div");
   newHashtagContainer.classList.add("hashtag-container-post");
@@ -335,7 +351,7 @@ function createPost(
   newLikeAmountPost.textContent = likes.length + "個讚";
   newPostLiker.appendChild(newLikeAmountPost);
   newLikeAmountPost.addEventListener("click", () => {
-    getPostLike(postId);
+    getPostLike(postID);
   });
 
   let newShowPostTime = document.createElement("span");
@@ -378,7 +394,7 @@ function createPost(
   });
 
   likePostIndex(
-    postId,
+    postID,
     newHeart,
     newContent,
     newPostHeart,
@@ -390,13 +406,13 @@ function createPost(
 
   submitComment(
     newUl,
-    postId,
+    postID,
     newLeaveComment,
     newSubmitComment,
     currentUserID
   );
   createComment(
-    postId,
+    postID,
     newLeaveComment,
     newUl,
     comments,
@@ -534,7 +550,7 @@ function createComment(
 
 function submitComment(
   newUl,
-  postId,
+  postID,
   commentInput,
   commentSubmitButton,
   currentUserID
@@ -543,7 +559,7 @@ function submitComment(
     fetch(`/newComment`, {
       method: "POST",
       body: JSON.stringify({
-        postID: postId,
+        postID: postID,
         comment: commentInput.value,
       }),
       headers: {
@@ -585,13 +601,13 @@ function submitComment(
                   "剛剛",
                   tagedUserID,
                   data.postImg,
-                  postId
+                  postID
                 );
               });
             });
           }
 
-          createComment(postId, commentInput, newUl, comments, currentUserID);
+          createComment(postID, commentInput, newUl, comments, currentUserID);
           sendNotice(
             "comment",
             data.username,
@@ -601,7 +617,7 @@ function submitComment(
             "剛剛",
             data.targetUserID,
             data.postImg,
-            postId
+            postID
           );
           commentInput.value = "";
         } else {
@@ -611,11 +627,11 @@ function submitComment(
   });
 }
 
-function fetchLikePostIndex(postId, dislike, likeUl) {
+function fetchLikePostIndex(postID, dislike, likeUl) {
   fetch(`/likePost`, {
     method: "POST",
     body: JSON.stringify({
-      postID: postId,
+      postID: postID,
       dislike: dislike,
     }),
     headers: {
@@ -638,7 +654,7 @@ function fetchLikePostIndex(postId, dislike, likeUl) {
             "剛剛",
             data.data.targetUserID,
             data.data.postImg,
-            postId
+            postID
           );
         });
       }
@@ -646,7 +662,7 @@ function fetchLikePostIndex(postId, dislike, likeUl) {
 }
 
 function likePostIndex(
-  postId,
+  postID,
   newHeart,
   newContent,
   newPostHeart,
@@ -662,7 +678,7 @@ function likePostIndex(
   fetch(`/checkUserLike`, {
     method: "POST",
     body: JSON.stringify({
-      postID: postId,
+      postID: postID,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -697,7 +713,7 @@ function likePostIndex(
             newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
           }
 
-          fetchLikePostIndex(postId, false, likeUl);
+          fetchLikePostIndex(postID, false, likeUl);
           newPostHeart.style.display = "flex";
           setTimeout(() => {
             newPostHeart.style.display = "none";
@@ -715,7 +731,7 @@ function likePostIndex(
             newLikeAmountPost.textContent = likesAmount + "個讚";
           }
 
-          fetchLikePostIndex(postId, true, likeUl);
+          fetchLikePostIndex(postID, true, likeUl);
           isLike--;
         }
       });
@@ -732,7 +748,7 @@ function likePostIndex(
             newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
           }
 
-          fetchLikePostIndex(postId, false);
+          fetchLikePostIndex(postID, false);
           newPostHeart.style.display = "flex";
           setTimeout(() => {
             newPostHeart.style.display = "none";
@@ -750,7 +766,7 @@ function likePostIndex(
             newLikeAmountPost.textContent = likesAmount + "個讚";
           }
 
-          fetchLikePostIndex(postId, true);
+          fetchLikePostIndex(postID, true);
           isLike--;
         }
       });
@@ -772,7 +788,7 @@ function likePostIndex(
                 newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
               }
 
-              fetchLikePostIndex(postId, false);
+              fetchLikePostIndex(postID, false);
               newPostHeart.style.display = "flex";
               setTimeout(() => {
                 newPostHeart.style.display = "none";
@@ -790,7 +806,7 @@ function likePostIndex(
                 newLikeAmountPost.textContent = likesAmount + "個讚";
               }
 
-              fetchLikePostIndex(postId, true);
+              fetchLikePostIndex(postID, true);
               isLike--;
             }
             touchTime = 0;

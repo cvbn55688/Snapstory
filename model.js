@@ -8,7 +8,7 @@ const s3 = new AWS.S3({
   accessKeyId: aws_access_key_id,
   secretAccessKey: aws_secret_access_key,
 });
-const { Member, Post, Notification, Tag } = require("./schema.js");
+const { Member, Post, Notification, Tag, Chat } = require("./schema.js");
 
 async function uploadS3(func, imagesArr, userID) {
   let imageUrlArr = [];
@@ -76,6 +76,23 @@ function deleteImgS3(imageArr) {
         }
       }
     );
+  });
+}
+async function createNewChat(sender, receiver, message) {
+  const chat = new Chat({
+    members: [sender, receiver],
+    messages: [
+      {
+        sender,
+        receiver,
+        content: message,
+        time: new Date(),
+      },
+    ],
+  });
+  chat.save().then((data) => {
+    console.log(data);
+    return data;
   });
 }
 
@@ -252,13 +269,13 @@ class model {
       let nextPage;
       let result = await Post.find()
         .sort({ _id: -1 })
-        .skip(6 * Number(page))
-        .limit(7)
+        .skip(3 * Number(page))
+        .limit(4)
         .populate({ path: "userID", select: "-password" })
         .populate({ path: "comments.userID", select: "-password" })
         .populate({ path: "likes.userID", select: "-password" })
         .exec();
-      if (result.length == 7) {
+      if (result.length == 4) {
         nextPage = Number(page) + 1;
         result.pop();
       } else {
@@ -411,7 +428,7 @@ class model {
         .exec();
       let posts = await Post.find({ userID: user._id })
         .sort({ _id: -1 })
-        // .limit(12)
+        // .limit(9)
         .populate("comments.userID")
         .exec();
       let isMatchFan = await Member.findOne({
@@ -440,13 +457,6 @@ class model {
     headImgReload
   ) {
     try {
-      // console.log(
-      //   userID,
-      //   newUsername,
-      //   newUserProfile,
-      //   newHeadImg,
-      //   headImgReload
-      // );
       if (headImgReload) {
         let headImgUrl = await uploadS3(
           "profile_picture",
@@ -546,12 +556,11 @@ class model {
 
   async userSeacher(searchValue) {
     try {
-      let result = await Member.find(
-        {
-          username: { $regex: searchValue },
-        },
-        { password: 0 }
-      ).exec();
+      let result = await Member.find({
+        username: { $regex: searchValue },
+      })
+        .select("headImg username _id")
+        .exec();
       return { ok: true, result };
     } catch (error) {
       return { ok: false, status: 500, mes: error };
@@ -599,18 +608,16 @@ class model {
       let result = await Notification.findOne({
         userID: userID,
       })
-        .populate({ path: "notifications.sendUserId", select: "-password" })
-        .populate("notifications.postID")
+        .populate("notifications.sendUserId", ["headImg", "_id", "username"])
+        .populate("notifications.postID", ["imageUrl", "_id"])
         .exec();
-      if (result.notifications.length == 20) {
+      if (result.notifications.length >= 31) {
         Notification.updateOne(
           { userID: userID },
           {
             $pop: { notifications: -1 },
           }
-        ).then((mes) => {
-          console.log(mes);
-        });
+        ).exec();
       }
       return { ok: true, result };
     } catch (error) {
@@ -633,21 +640,189 @@ class model {
       return { ok: false, mes: error };
     }
   }
+
+  async getChatMember(userID) {
+    try {
+      let result = await Chat.find({ members: userID })
+        .sort({ updateTime: -1 })
+        .select("members")
+        .select({
+          messages: {
+            $filter: {
+              input: "$messages",
+              as: "message",
+              cond: {
+                $and: [{ $eq: ["$$message.read", false] }],
+              },
+            },
+          },
+        })
+        .populate("members", ["username", "headImg"])
+        .exec();
+      return { ok: true, result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, mes: error };
+    }
+  }
+
+  async getChatData(userID, targetID) {
+    try {
+      let result = await Chat.findOne({ members: { $all: [userID, targetID] } })
+        // .populate("members", ["username", "headImg"])
+        .select("messages")
+        .populate("messages.sender", "username")
+        .populate("messages.receiver", "username")
+        .exec();
+      return { ok: true, result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, mes: error };
+    }
+  }
+
+  async uploadChatData(userID, targetID, message, isPost) {
+    try {
+      let mesType = "text";
+      if (isPost == true) {
+        mesType = "post";
+      }
+      let result = await Chat.updateOne(
+        {
+          members: { $all: [userID, targetID] },
+        },
+        {
+          $push: {
+            messages: {
+              sender: userID,
+              receiver: targetID,
+              content: message,
+              time: new Date(),
+              mesType,
+            },
+          },
+          $set: { updateTime: Date.now() },
+        }
+      ).exec();
+      if (result.matchedCount == 0) {
+        let result = await createNewChat(userID, targetID, message);
+        return { ok: true, result };
+      } else {
+        return { ok: true, result };
+      }
+    } catch (error) {
+      console.log(error);
+      return { ok: false, mes: error };
+    }
+  }
+
+  async getUnreadMessage(userID) {
+    try {
+      let result = await Chat.find(
+        { members: userID },
+        {
+          messages: {
+            $filter: {
+              input: "$messages",
+              as: "message",
+              cond: {
+                $and: [{ $eq: ["$$message.read", false] }],
+              },
+            },
+          },
+        }
+      )
+        .select("messages")
+        .exec();
+      console.log(result);
+      return { ok: true, result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, mes: error };
+    }
+  }
+
+  async updateUnreadStatus(userID, targetID) {
+    try {
+      let result = await Chat.updateOne(
+        {
+          members: { $all: [userID, targetID] },
+        },
+        {
+          $set: {
+            "messages.$[].read": true,
+          },
+        }
+      ).exec();
+      return { ok: true, result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, mes: error };
+    }
+  }
 }
 
 module.exports = model;
 
-// s3.deleteObject(
+Chat.findOne(
+  { members: "63c76d88d55533e391061346" },
+  {
+    messages: {
+      $filter: {
+        input: "$messages",
+        as: "message",
+        cond: {
+          // $eq: ["$$message.read", true],
+        },
+      },
+    },
+  }
+)
+  .select("messages")
+  .then((data) => {
+    console.log(data);
+  });
+
+// Chat.updateOne(
 //   {
-//     Bucket: "mywebsiteforwehelp",
-//     Key: `snapstory/post/1675272345995`,
+//     members: { $all: ["63c76d88d55533e391061346", "63c77bd3c3731b2b43ec86b5"] },
 //   },
-//   (error, data) => {
-//     if (error) {
-//       console.log(error);
-//     }
+//   {
+//     $push: {
+//       messages: {
+//         sender: "63c76d88d55533e391061346",
+//         receiver: "63c77bd3c3731b2b43ec86b5",
+//         content: "若不存在則新增",
+//         time: new Date(),
+//       },
+//     },
 //   }
-// );
+// ).then((data) => {
+//   // console.log(typeof data.matchedCount);
+//   if (data.matchedCount == 0) {
+//     createNewChat(
+//       "63c76d88d55533e391061346",
+//       "63c77bd3c3731b2b43ec86b5",
+//       "若不存在則新增"
+//     );
+//   }
+// });
+
+// Chat.updateOne(
+//   {
+//     members: { $all: ["63c76d88d55533e391061346", "63ceb9f42bcaf0a79ea85c58"] },
+//   },
+//   {
+//     $push: {
+//       messages: {
+//         sender: "63ceb9f42bcaf0a79ea85c58",
+//         receiver: "63c76d88d55533e391061346",
+//         content: "回覆訊息測試",
+//         time: new Date(),
+//       },
+//     },
+//   }
+// ).exec();
 
 // Post.updateOne(
 //   { _id: "63edd9c0f917095fab9d02c4" },

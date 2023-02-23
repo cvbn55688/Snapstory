@@ -128,9 +128,11 @@
   cursor: pointer;
 }
 .show-post-blacksreen .post-table .comment-container .poster .poster-title .poster-content .poster-message {
-  width: 280px;
+  width: 300px;
   margin-top: 5px;
-  font-size: 14px;
+  font-size: 16px;
+  word-wrap: break-word;
+  white-space: normal;
   color: rgba(54, 54, 54, 0.979);
 }
 .show-post-blacksreen .post-table .comment-container .poster .poster-title .dots {

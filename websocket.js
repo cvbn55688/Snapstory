@@ -3,18 +3,13 @@ const server = new WebSocket.Server({ port: 8000 });
 let clients = new Map();
 // let clientId = 0;
 
+function heartbeat() {
+  this.isAlive = true;
+}
+
 function websocketStart() {
   server.on("connection", (socket) => {
-    console.log("Client connected");
-
-    // let data = { name: "August", blog: "Let's Write" };
-    // setTimeout(function () {
-    //   socket.send(JSON.stringify(data));
-    // }, 3000);
-
-    // const id = clientId++;
-
-    // console.log(`Client connected with id ${id}`);
+    // console.log("Client connected");
     let userId;
     socket.on("message", (message) => {
       let funcChoice = JSON.parse(message).fuc;
@@ -22,7 +17,7 @@ function websocketStart() {
       userId = JSON.parse(message).id;
       clients.set(userId, socket);
       if (funcChoice == 0) {
-        console.log(`已設定${userName}的userID:${userId}`);
+        // console.log(`已設定${userName}的userID:${userId}`);
       } else {
         sendMessageToClient(
           funcChoice,
@@ -38,10 +33,24 @@ function websocketStart() {
       }
     });
 
+    socket.on("pong", heartbeat);
+
     socket.on("close", () => {
-      console.log(`Client disconnected with id ${userId}`);
+      // console.log(`Client disconnected with id ${userId}`);
       clients.delete(userId);
     });
+
+    const interval = setInterval(() => {
+      server.clients.forEach((socket) => {
+        if (socket.isAlive == false) {
+          // console.log(`Client disconnected with id ${userId}`);
+          clients.delete(userId);
+          return socket.terminate();
+        }
+        socket.isAlive = false;
+        socket.ping();
+      });
+    }, 30000); // 每 30 秒發送一次心跳訊息
 
     //   let clients = server.clients;
     // console.log(clients, "asdasdasdasdasdasdasd====");

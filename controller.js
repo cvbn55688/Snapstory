@@ -512,6 +512,84 @@ class controller {
       return { ok: false, mes: error, status: 500 };
     }
   }
+
+  async getChatMember(userData) {
+    try {
+      let userID = userData.userID;
+      let result = await Model.getChatMember(userID);
+      if (result.ok) {
+        return { ok: true, data: result.result, userData, status: 200 };
+      } else {
+        return { ok: false, data: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async getChatData(userData, targetID) {
+    try {
+      let userID = userData.userID;
+      let result = await Model.getChatData(userID, targetID);
+      if (result.ok) {
+        return { ok: true, data: result.result, status: 200 };
+      } else {
+        return { ok: false, data: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async uploadChatData(userData, chatData) {
+    try {
+      let userID = userData.userID;
+      let targetID = chatData.targetID;
+      let message = chatData.message;
+      let isPost = chatData.isPost;
+      let result = await Model.uploadChatData(
+        userID,
+        targetID,
+        message,
+        isPost
+      );
+      if (result.ok) {
+        return { ok: true, data: result.result, status: 200 };
+      } else {
+        return { ok: false, data: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async getUnreadMessage(userData) {
+    try {
+      let userID = userData.userID;
+      let result = await Model.getUnreadMessage(userID);
+      if (result.ok) {
+        return { ok: true, data: result.result, userID, status: 200 };
+      } else {
+        return { ok: false, data: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
+
+  async updateUnreadStatus(userData, targetID) {
+    try {
+      let userID = userData.userID;
+      let result = await Model.updateUnreadStatus(userID, targetID);
+      if (result.ok) {
+        return { ok: true, data: result.result, userID, status: 200 };
+      } else {
+        return { ok: false, data: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
+    }
+  }
 }
 
 module.exports = controller;

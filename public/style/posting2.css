@@ -151,6 +151,13 @@ textarea {
   position: absolute;
   right: 0;
 }
+.show-post .posting .post-header img {
+  height: 25px;
+  display: none;
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+}
 .show-post .posting .posting-area {
   display: flex;
   width: 100%;

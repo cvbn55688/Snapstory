@@ -35,6 +35,7 @@ const editUserProfileTextarea = document.querySelector(
 );
 const editSubmit = document.querySelector(".edit-userdata-submit");
 const editCancel = document.querySelector(".edit-userdate-cancel");
+
 let headimgReload = false;
 function headImgLoad(eve) {
   let imageFile = Array.from(eve.target.files)[0];
@@ -110,6 +111,7 @@ function loadPostImg(postArray, userData) {
     newPostCard.appendChild(newPostCardImg);
 
     newPostCard.addEventListener("click", () => {
+      postBlacksreen.style.display = "flex";
       createParticularPost(post._id);
     });
   });
@@ -145,6 +147,13 @@ function getUserData() {
         editUserNameInput.value = userData.username;
         fansAmount.textContent = userData.fans.length;
         followingAmount.textContent = userData.following.length;
+        let sendChatTarget = {
+          username: userData.username,
+          _id: userData._id,
+        };
+        sendMessageButton.addEventListener("click", () => {
+          openSendChatTable(sendChatTarget);
+        });
         userPosts = data.data.posts;
         if (userPosts.length == 0) {
           noPostDiv.style.display = "flex";

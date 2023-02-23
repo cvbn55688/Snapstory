@@ -3,7 +3,13 @@ const closePostButton = document.querySelector(".close-post-button");
 const editBlackscreen = document.querySelector(".show-edit-blacksreen");
 const editCancelButton = document.querySelector(".edit-cancel-button");
 
-function createParticularPost(postID) {
+function createParticularPost(
+  postID,
+  newHeart,
+  newContent,
+  newPostHeart,
+  newLikeAmount
+) {
   console.log(postID);
   fetch(`/getParticularPost?postID=${postID}`, {
     method: "GET",
@@ -30,6 +36,11 @@ function createParticularPost(postID) {
       let likes = data.likes;
       let comments = data.comments;
       let hashtagArr = data.hashtags;
+      let postData = {
+        postID,
+        postImg: postImgUrlArr[0],
+        poster: { userID, userName, headerImg },
+      };
 
       let newPostTable = document.createElement("div");
       newPostTable.classList.add("post-table");
@@ -119,7 +130,7 @@ function createParticularPost(postID) {
       rediectToPersonalPage(newPosterNameP, userID);
 
       let newPosterMessageP = document.createElement("p");
-      newPosterMessageP.classList.add("poster-messag");
+      newPosterMessageP.classList.add("poster-message");
       newPosterMessageP.textContent = posterMessage;
       newPosterContent.appendChild(newPosterMessageP);
 
@@ -153,6 +164,9 @@ function createParticularPost(postID) {
       newSharePost.src = "/image/share.png";
       newSharePost.classList.add("share-post");
       newPostInteract.appendChild(newSharePost);
+      newSharePost.addEventListener("click", () => {
+        sharePost(postData);
+      });
 
       let newHashtagContainer = document.createElement("div");
       newHashtagContainer.classList.add("hashtag-container-post");
@@ -255,7 +269,20 @@ function createParticularPost(postID) {
         getPostLike(postID);
       });
 
+      // if (location.pathname == "/") {
+      //   likePostIndex(
+      //     postID,
+      //     newHeart,
+      //     newContent,
+      //     newPostHeart,
+      //     newHeartPost,
+      //     newLikeAmount,
+      //     likes.length,
+      //     newLikeAmountPost
+      //   );
+      // } else {
       likePost(postID, newHeartPost, likes.length, newLikeAmountPost);
+      // }
 
       submitComment(
         newUl,
@@ -751,7 +778,7 @@ function updateComment(func, postID, targerID, editedCommet) {
 
 function submitComment(
   newUl,
-  postId,
+  postID,
   commentInput,
   commentSubmitButton,
   currentUserID
@@ -760,7 +787,7 @@ function submitComment(
     fetch(`/newComment`, {
       method: "POST",
       body: JSON.stringify({
-        postID: postId,
+        postID: postID,
         comment: commentInput.value,
       }),
       headers: {
@@ -802,13 +829,13 @@ function submitComment(
                   "剛剛",
                   tagedUserID,
                   data.postImg,
-                  postId
+                  postID
                 );
               });
             });
           }
 
-          createComment(postId, commentInput, newUl, comments, currentUserID);
+          createComment(postID, commentInput, newUl, comments, currentUserID);
           sendNotice(
             "comment",
             data.username,
@@ -818,7 +845,7 @@ function submitComment(
             "剛剛",
             data.targetUserID,
             data.postImg,
-            postId
+            postID
           );
 
           commentInput.value = "";
@@ -829,11 +856,11 @@ function submitComment(
   });
 }
 
-function fetchLikePost(postId, dislike) {
+function fetchLikePost(postID, dislike) {
   fetch(`/likePost`, {
     method: "POST",
     body: JSON.stringify({
-      postID: postId,
+      postID: postID,
       dislike: dislike,
     }),
     headers: {
@@ -857,7 +884,7 @@ function fetchLikePost(postId, dislike) {
               "剛剛",
               data.data.targetUserID,
               data.data.postImg,
-              postId
+              postID
             );
           });
         }
@@ -865,13 +892,13 @@ function fetchLikePost(postId, dislike) {
     });
 }
 
-function likePost(postId, newHeartPost, likesAmount, newLikeAmountPost) {
+function likePost(postID, newHeartPost, likesAmount, newLikeAmountPost) {
   let isLike = 0;
 
   fetch(`/checkUserLike`, {
     method: "POST",
     body: JSON.stringify({
-      postID: postId,
+      postID: postID,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -896,7 +923,7 @@ function likePost(postId, newHeartPost, likesAmount, newLikeAmountPost) {
             newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
           }
 
-          fetchLikePost(postId, false);
+          fetchLikePost(postID, false);
           isLike++;
         } else {
           newHeartPost.src = "/image/heart.png";
@@ -907,9 +934,166 @@ function likePost(postId, newHeartPost, likesAmount, newLikeAmountPost) {
             newLikeAmountPost.textContent = likesAmount + "個讚";
           }
 
-          fetchLikePost(postId, true);
+          fetchLikePost(postID, true);
           isLike--;
         }
       });
     });
 }
+
+// function likePostIndex(
+//   postID,
+//   newHeart,
+//   newContent,
+//   newPostHeart,
+//   newHeartPost,
+//   newLikeAmount,
+//   likesAmount,
+//   newLikeAmountPost,
+//   likeUl
+// ) {
+//   let isLike = 0;
+//   let touchTime = 0;
+
+//   fetch(`/checkUserLike`, {
+//     method: "POST",
+//     body: JSON.stringify({
+//       postID: postID,
+//     }),
+//     headers: {
+//       "Content-type": "application/json; charset=UTF-8",
+//     },
+//   })
+//     .then(function (response) {
+//       if (response.status == 400) {
+//         location.href = "/login";
+//         return;
+//       }
+//       return response.json();
+//     })
+//     .then(function (data) {
+//       if (data.data != 0) {
+//         isLike = 1;
+//         newHeart.src = "/image/heart3.png";
+//         newHeartPost.src = "/image/heart3.png";
+
+//         newLikeAmount.textContent = likesAmount;
+//         newLikeAmountPost.textContent = likesAmount + "個讚";
+//       }
+//       newHeartPost.addEventListener("click", () => {
+//         if (isLike == 0) {
+//           newHeart.src = "/image/heart3.png";
+//           newHeartPost.src = "/image/heart3.png";
+
+//           if (data.data != 0) {
+//             newLikeAmount.textContent = likesAmount;
+//             newLikeAmountPost.textContent = likesAmount + "個讚";
+//           } else {
+//             newLikeAmount.textContent = likesAmount + 1;
+//             newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
+//           }
+
+//           fetchLikePostIndex(postID, false, likeUl);
+//           newPostHeart.style.display = "flex";
+//           setTimeout(() => {
+//             newPostHeart.style.display = "none";
+//           }, 1000);
+//           isLike++;
+//         } else {
+//           newHeart.src = "/image/heart.png";
+//           newHeartPost.src = "/image/heart.png";
+
+//           if (data.data != 0) {
+//             newLikeAmount.textContent = likesAmount - 1;
+//             newLikeAmountPost.textContent = likesAmount - 1 + "個讚";
+//           } else {
+//             newLikeAmount.textContent = likesAmount;
+//             newLikeAmountPost.textContent = likesAmount + "個讚";
+//           }
+
+//           fetchLikePostIndex(postID, true, likeUl);
+//           isLike--;
+//         }
+//       });
+//       newHeart.addEventListener("click", () => {
+//         if (isLike == 0) {
+//           newHeart.src = "/image/heart3.png";
+//           newHeartPost.src = "/image/heart3.png";
+
+//           if (data.data != 0) {
+//             newLikeAmount.textContent = likesAmount;
+//             newLikeAmountPost.textContent = likesAmount + "個讚";
+//           } else {
+//             newLikeAmount.textContent = likesAmount + 1;
+//             newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
+//           }
+
+//           fetchLikePostIndex(postID, false);
+//           newPostHeart.style.display = "flex";
+//           setTimeout(() => {
+//             newPostHeart.style.display = "none";
+//           }, 1000);
+//           isLike++;
+//         } else {
+//           newHeart.src = "/image/heart.png";
+//           newHeartPost.src = "/image/heart.png";
+
+//           if (data.data != 0) {
+//             newLikeAmount.textContent = likesAmount - 1;
+//             newLikeAmountPost.textContent = likesAmount - 1 + "個讚";
+//           } else {
+//             newLikeAmount.textContent = likesAmount;
+//             newLikeAmountPost.textContent = likesAmount + "個讚";
+//           }
+
+//           fetchLikePostIndex(postID, true);
+//           isLike--;
+//         }
+//       });
+
+//       newContent.addEventListener("click", () => {
+//         if (touchTime == 0) {
+//           touchTime = new Date().getTime();
+//         } else {
+//           if (new Date().getTime() - touchTime < 800) {
+//             if (isLike == 0) {
+//               newHeart.src = "/image/heart3.png";
+//               newHeartPost.src = "/image/heart3.png";
+
+//               if (data.data != 0) {
+//                 newLikeAmount.textContent = likesAmount;
+//                 newLikeAmountPost.textContent = likesAmount + "個讚";
+//               } else {
+//                 newLikeAmount.textContent = likesAmount + 1;
+//                 newLikeAmountPost.textContent = likesAmount + 1 + "個讚";
+//               }
+
+//               fetchLikePostIndex(postID, false);
+//               newPostHeart.style.display = "flex";
+//               setTimeout(() => {
+//                 newPostHeart.style.display = "none";
+//               }, 1000);
+//               isLike++;
+//             } else {
+//               newHeart.src = "/image/heart.png";
+//               newHeartPost.src = "/image/heart.png";
+
+//               if (data.data != 0) {
+//                 newLikeAmount.textContent = likesAmount - 1;
+//                 newLikeAmountPost.textContent = likesAmount - 1 + "個讚";
+//               } else {
+//                 newLikeAmount.textContent = likesAmount;
+//                 newLikeAmountPost.textContent = likesAmount + "個讚";
+//               }
+
+//               fetchLikePostIndex(postID, true);
+//               isLike--;
+//             }
+//             touchTime = 0;
+//           } else {
+//             touchTime = new Date().getTime();
+//           }
+//         }
+//       });
+//     });
+// }

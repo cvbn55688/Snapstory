@@ -347,4 +347,77 @@ router.post("/changeNotificationStatus", async (req, res) => {
   }
 });
 
+router.get("/getChatMember", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.getChatMember(userData);
+      res.status(result.status).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.get("/getChatData", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.getChatData(userData, req.query.targetID);
+      res.status(result.status).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.post("/uploadChatData", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.uploadChatData(userData, req.body);
+      res.status(result.status).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.get("/getUnreadMessage", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.getUnreadMessage(userData);
+      res.status(result.status).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.put("/updateUnreadStatus", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, data: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.updateUnreadStatus(
+        userData,
+        req.body.targetID
+      );
+      res.status(result.status).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
 module.exports = router;

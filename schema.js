@@ -1,3 +1,4 @@
+const { text } = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const envData = process.env;
@@ -93,14 +94,58 @@ const TagsSchema = new mongoose.Schema({
   ],
 });
 
+const ChatScema = new mongoose.Schema({
+  members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Member",
+      required: true,
+    },
+  ],
+  messages: [
+    {
+      sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Member",
+        required: true,
+      },
+      receiver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Member",
+        required: true,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+      time: {
+        type: String,
+        required: true,
+      },
+      read: {
+        type: Boolean,
+        default: false,
+        required: true,
+      },
+      mesType: {
+        type: String,
+        default: "text",
+      },
+    },
+  ],
+  updateTime: { type: Date, default: Date.now },
+});
+
 const Member = mongoose.model("Member", memberSchema);
 const Post = mongoose.model("Post", PostSchema);
 const Notification = mongoose.model("Notification", NotificationSchema);
 const Tag = mongoose.model("Tag", TagsSchema);
+const Chat = mongoose.model("Chat", ChatScema);
 
 module.exports = {
   Member,
   Post,
   Notification,
   Tag,
+  Chat,
 };
