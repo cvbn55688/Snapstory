@@ -1,0 +1,245 @@
+main {
+  position: relative;
+  left: 20%;
+  width: 80%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+main .inbox-table {
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  width: 80%;
+  height: 600px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+main .inbox-table .inbox-friends-zone {
+  height: 600px;
+  border-right: 1px solid rgba(128, 128, 128, 0.578);
+}
+main .inbox-table .inbox-friends-zone .user-inbox-name {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+  width: 100%;
+  height: 12%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+main .inbox-table .inbox-friends-zone .user-inbox-name p {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+main .inbox-table .inbox-friends-zone .user-inbox-name img {
+  position: absolute;
+  right: 0;
+  margin: 10px;
+  width: 25px;
+  cursor: pointer;
+}
+main .inbox-table .inbox-friends-zone .chat-select {
+  width: 100%;
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+main .inbox-table .inbox-friends-zone .chat-select p {
+  font-size: 18px;
+  font-weight: bold;
+  position: absolute;
+  display: none;
+}
+main .inbox-table .inbox-friends-zone .chat-select ul {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+}
+main .inbox-table .inbox-friends-zone .chat-select ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+}
+main .inbox-table .inbox-friends-zone .chat-select ul li img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main .inbox-table .inbox-friends-zone .chat-select ul li p {
+  display: block;
+  position: relative;
+  margin-left: 10px;
+}
+main .inbox-table .inbox-friends-zone .chat-select ul li .chat-select-unread {
+  position: absolute;
+  text-align: center;
+  display: none;
+  right: 5%;
+  margin-left: 5%;
+  width: 22px;
+  height: 22px;
+  line-height: 18px;
+  font-weight: bold;
+  background-color: rgb(255, 50, 50);
+  font-size: 10px;
+  padding: 2px;
+  color: #ffffff;
+  border-radius: 50%;
+}
+main .inbox-table .inbox-friends-zone .chat-select ul li:hover {
+  background-color: rgba(230, 230, 230, 0.7137254902);
+}
+main .inbox-table .inbox-friends-zone .chat-select ul li[hold=true] {
+  background-color: rgba(230, 230, 230, 0.7137254902);
+}
+main .inbox-table .inbox-chat-zone {
+  height: 600px;
+  position: relative;
+}
+main .inbox-table .inbox-chat-zone .chat-target-name {
+  display: flex;
+  position: relative;
+  align-items: center;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+  width: 100%;
+  height: 12%;
+}
+main .inbox-table .inbox-chat-zone .chat-target-name img {
+  display: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  margin: 0 20px 0 30px;
+  cursor: pointer;
+}
+main .inbox-table .inbox-chat-zone .chat-target-name p {
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone {
+  position: relative;
+  width: 100%;
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul {
+  overflow-y: auto;
+  width: 100%;
+  height: 90%;
+  padding: 10px;
+  position: relative;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul li {
+  width: 100%;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul li p {
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  border-radius: 10px;
+  padding: 5px;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 200px;
+  word-wrap: break-word;
+  white-space: normal;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .chat-user {
+  display: flex;
+  justify-content: end;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container {
+  cursor: pointer;
+  width: 220px;
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container p {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-user {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-user img {
+  width: 40px;
+  height: 40px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-user p {
+  margin-left: 10px;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container img {
+  width: 100%;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-click-text {
+  margin-bottom: 3px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .submit-caht {
+  width: 100%;
+  height: 10%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .submit-caht input {
+  width: 90%;
+  height: 60%;
+  border-radius: 10px;
+  padding-left: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.578);
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .submit-caht img {
+  height: 40%;
+  margin-left: 10px;
+  cursor: pointer;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .new-send-chat {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .new-send-chat img {
+  width: 40px;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .new-send-chat p {
+  margin: 5px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .new-send-chat .new-send-chat-button {
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  background-color: rgb(40, 154, 255);
+  color: white;
+  cursor: pointer;
+}
+main .inbox-table .inbox-chat-zone .chat-main-zone .new-send-chat .new-send-chat-button:hover {
+  background-color: rgb(32, 127, 209);
+}/*# sourceMappingURL=inbox.css.map */

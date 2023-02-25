@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style/base.css" />
+    <link rel="stylesheet" href="/style/user_page.css" />
+
+    <title>Snapstory</title>
+  </head>
+  <body>
+    <% include header.ejs %>
+    <div class="full-screen">
+      <div class="fans-table">
+        <div class="fans-title">
+          <p>粉絲</p>
+          <img class="fans-close" src="/image/close.png" alt="" />
+        </div>
+        <ul class="fans-ul"></ul>
+      </div>
+      <div class="following-table">
+        <div class="following-title">
+          <p>追蹤中</p>
+          <img class="following-close" src="/image/close.png" alt="" />
+        </div>
+        <ul class="following-ul"></ul>
+      </div>
+      <div class="edit-user-data">
+        <div class="basic-data">
+          <div class="basic-data-title">
+            <p>編輯個人檔案</p>
+            <img class="edit-userdata-close" src="/image/close.png" alt="" />
+          </div>
+          <div class="basic-data-edit">
+            <div class="user-head">
+              <img class="user-head-img" src="/image/loading.gif" alt="" />
+              <input id="head-img-upload" class="head-img-upload" type="file" />
+              <label for="head-img-upload">更換大頭貼</label>
+            </div>
+            <div class="user-data">
+              <div class="edit-account">
+                <p>用戶帳號：</p>
+                <span></span>
+              </div>
+              <div class="edit-name">
+                <p>用戶名稱：</p>
+                <input type="text" />
+              </div>
+              <div class="edit-profile">
+                <p>個人簡介：</p>
+                <textarea></textarea>
+              </div>
+            </div>
+            <div class="edit-submit">
+              <p class="edit-userdata-submit">提交</p>
+              <p class="edit-userdate-cancel">取消</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <div class="user-info">
+        <section class="user-info-section">
+          <div class="user-info-container">
+            <div class="img-container">
+              <img class="user-info-headImg" src="/image/loading.gif" alt="" />
+            </div>
+
+            <div class="user-info-content-container">
+              <div class="user-person">
+                <p class="user-name"></p>
+                <div class="user-interaction">
+                  <p class="follow">
+                    追隨<img class="loading" src="/image/loading.gif" alt="" />
+                  </p>
+                  <p class="isfollowed">
+                    追隨中<img
+                      class="down-arrow"
+                      src="/image/down-arrow.png"
+                      alt=""
+                    />
+                  </p>
+                  <p class="message">發送訊息</p>
+                  <p class="set-user-data">編輯個人檔案</p>
+                  <p class="logout">登出</p>
+                </div>
+              </div>
+
+              <div class="user-info-count-container">
+                <div class="post-amount-container">
+                  <li class="post-amount"></li>
+                  <span>貼文</span>
+                </div>
+
+                <div class="fans-amount-container">
+                  <li class="fans"></li>
+                  <span>位粉絲</span>
+                </div>
+
+                <div class="following-amount-container">
+                  <li class="following"></li>
+                  <span>追蹤中</span>
+                </div>
+              </div>
+
+              <div class="user-name-container"><p></p></div>
+
+              <div class="self-introduction">
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="user-posts"></section>
+        <div class="no-post">
+          <img class="no-post-img" src="/image/camera.png" alt="" />
+          <p>尚無貼文</p>
+        </div>
+      </div>
+    </main>
+  </body>
+  <!-- <script src="/JS/base.js"></script> -->
+  <script src="/JS/userPage.js"></script>
+  <!-- <script src="/JS/showPost2.js"></script> -->
+</html>

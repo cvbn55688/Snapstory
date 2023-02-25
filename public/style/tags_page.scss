@@ -1,0 +1,219 @@
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+.tags-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .tags-info-section {
+    // width: 60%;
+    width: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .tags-info-container {
+      width: 100%;
+      display: flex;
+      margin-top: 20px;
+
+      .fans-amount-container,
+      .following-amount-container {
+        cursor: pointer;
+      }
+    }
+    .img-container {
+      width: 40%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .tags-info-headImg {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin: 0 50px;
+      }
+    }
+    .tags-info-content-container {
+      width: 60%;
+      margin: 10px;
+      .tags-person {
+        display: flex;
+        align-items: center;
+        .tags-name {
+          font-size: 18px;
+          font-weight: bold;
+          margin-right: 15px;
+        }
+        .tags-interaction {
+          display: flex;
+          p {
+            margin-right: 10px;
+            background-color: rgb(235, 235, 235);
+            color: rgb(0, 0, 0);
+            padding: 5px 10px;
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+          P:hover {
+            background-color: rgb(201, 201, 201);
+          }
+          .follow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(59, 137, 255);
+            color: rgb(255, 255, 255);
+            img {
+              display: none;
+              height: 15px;
+              margin-left: 10px;
+            }
+          }
+          .follow:hover {
+            background-color: rgb(18, 113, 255);
+          }
+          .isfollowed {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            img {
+              margin-left: 5px;
+              width: 20px;
+            }
+          }
+          .set-tags-data {
+            display: none;
+          }
+        }
+      }
+    }
+    .tags-info-count-container {
+      display: flex;
+      margin: 15px 0;
+      div {
+        display: flex;
+        margin-right: 20px;
+        li {
+          list-style: none;
+          // margin-right: 20px;
+          font-weight: bold;
+        }
+        span {
+          display: block;
+        }
+      }
+    }
+    .tags-name-container {
+      p {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .tags-posts {
+    margin: 3% 0 5% 0;
+    // width: 60%;
+    width: 800px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 15px;
+    border-top: 1px solid rgba(128, 128, 128, 0.578);
+    // background-color: rgba(128, 128, 128, 0.578);
+    .post-card {
+      width: 240px;
+      height: 240px;
+      // padding-bottom: 100%;
+      position: relative;
+      background-color: rgba(128, 128, 128, 0.578);
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+      }
+    }
+  }
+  .no-post {
+    margin-top: 30px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 80px;
+    }
+    p {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .tags-info {
+    .tags-info-section {
+      width: 80%;
+    }
+    .tags-posts {
+      width: 80%;
+      padding: 2%;
+      grid-gap: 2%;
+      .post-card {
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .tags-info {
+    .tags-info-section {
+      width: 100%;
+      .tags-info-content-container {
+        .tags-person {
+          display: block;
+          .tags-interaction {
+            margin-top: 5px;
+          }
+        }
+
+        li {
+          text-align: center;
+        }
+      }
+
+      .tags-info-count-container {
+        div {
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+    .tags-posts {
+      width: 100%;
+      grid-gap: 1%;
+      .post-card {
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+      }
+    }
+  }
+}

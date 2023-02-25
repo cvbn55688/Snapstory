@@ -1,0 +1,60 @@
+<% include showPost.ejs %> <% include posting.ejs %><% include showLike.ejs %><%
+include showSendChat.ejs %>
+<script src="/socket.io/socket.io.js"></script>
+<header>
+  <div class="tittle">
+    <p onclick="location.href='/'">Snapstory</p>
+  </div>
+  <div class="serch-bar">
+    <div class="search-input">
+      <input
+        type="text"
+        onclick="this.placeholder='搜尋'"
+        onblur="this.placeholder='      搜尋'"
+        placeholder="      搜尋"
+      />
+      <img src="/image/loading.gif" alt="" />
+    </div>
+
+    <div class="search-table">
+      <div class="show-history">
+        <p class="history-p">最近</p>
+        <p class="clear-history">全部清除</p>
+      </div>
+
+      <ul class="search-user"></ul>
+
+      <img class="search-Table-loading-image" src="/image/loading.gif" alt="" />
+      <p class="search-no-data">查無結果。</p>
+      <p class="histiry-no-data">沒有近期搜尋紀錄。</p>
+    </div>
+  </div>
+  <div class="nav">
+    <li class="search-header"><img src="/image/search2.png" alt="" /></li>
+    <li class="home-page">
+      <img src="/image/home.png" alt="" /><span>首頁</span>
+    </li>
+    <li class="inbox-page">
+      <img src="/image/message.png" alt="" /> <span>訊息</span>
+      <p class="unread-message"></p>
+    </li>
+    <li class="post"><img src="/image/post.png" alt="" /><span>建立</span></li>
+    <li class="heart">
+      <img src="/image/heart.png" alt="" /><span>通知</span>
+    </li>
+    <li class="personal">
+      <img src="/image/loading.gif" alt="" /><span>個人檔案</span>
+    </li>
+  </div>
+
+  <div class="notification-table">
+    <div class="notification-title">
+      <p>通知</p>
+    </div>
+    <ul class="notification-ul"></ul>
+    <p class="notification-no-data">沒有通知紀錄。</p>
+  </div>
+</header>
+<script src="/JS/base.js"></script>
+<script src="/JS/showPost2.js"></script>
+<script src="/JS/sendChat.js"></script>

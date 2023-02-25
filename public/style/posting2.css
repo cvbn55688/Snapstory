@@ -1,0 +1,466 @@
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+@keyframes postImageMove {
+  0% {
+    transform: translate(150px, 124px) scale(1.8);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+input,
+textarea {
+  font-family: Arial, sans-serif;
+}
+
+.show-post {
+  animation: showTable 0.5s;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 101;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.show-post .post-leave-img {
+  height: 30px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 20px;
+  cursor: pointer;
+}
+.show-post .cancel-container {
+  display: none;
+  position: absolute;
+  animation: showTable 0.25s;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.501);
+  z-index: 210;
+  justify-content: center;
+  align-items: center;
+}
+.show-post .cancel-container .cancel-table {
+  width: 330px;
+  height: 180px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.show-post .cancel-container .cancel-table .cancel-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+}
+.show-post .cancel-container .cancel-table .cancel-title .cancel-main {
+  font-size: 18px;
+  font-weight: bold;
+}
+.show-post .cancel-container .cancel-table .cancel-title .cancel-second {
+  margin-top: 10px;
+  color: rgb(98, 98, 98);
+}
+.show-post .cancel-container .cancel-table .ensure-cancel {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.show-post .cancel-container .cancel-table .ensure-cancel div {
+  width: 100%;
+  height: 50%;
+  text-align: center;
+  border-top: 1px solid rgb(98, 98, 98);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.show-post .cancel-container .cancel-table .ensure-cancel .cancel-button {
+  color: red;
+  font-weight: bold;
+}
+.show-post .posting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 200;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  border-radius: 10px;
+  width: 580px;
+  height: 620px;
+}
+.show-post .posting hr {
+  margin: 0 20px;
+  width: 95%;
+  display: none;
+}
+.show-post .posting .post-header {
+  position: relative;
+  height: 40px;
+  width: 100%;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.show-post .posting .post-header p {
+  font-size: 16px;
+  font-weight: bold;
+}
+.show-post .posting .post-header .undo,
+.show-post .posting .post-header .undo-2,
+.show-post .posting .post-header .next-step,
+.show-post .posting .post-header .next-step-2 {
+  display: none;
+  color: rgb(40, 154, 255);
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: 0 15px;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.show-post .posting .post-header .undo,
+.show-post .posting .post-header .undo-2 {
+  position: absolute;
+  left: 0;
+}
+.show-post .posting .post-header .next-step,
+.show-post .posting .post-header .next-step-2 {
+  position: absolute;
+  right: 0;
+}
+.show-post .posting .post-header img {
+  height: 25px;
+  display: none;
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+}
+.show-post .posting .posting-area {
+  display: flex;
+  width: 100%;
+  height: 580px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.show-post .posting .posting-area .posting-area-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.show-post .posting .posting-area .posting-area-div img {
+  width: 25%;
+}
+.show-post .posting .posting-area .posting-area-div .post-image {
+  display: none;
+}
+.show-post .posting .posting-area .posting-area-div label {
+  width: 20%;
+  height: 30px;
+  background-color: rgb(40, 154, 255);
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.show-post .posting .cutting {
+  display: none;
+  width: 100%;
+  height: 580px;
+  justify-content: center;
+  align-items: center;
+}
+.show-post .posting .cutting .preview-image-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 480px;
+  height: 550px;
+}
+.show-post .posting .cutting .preview-image-container .preview {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  padding: 5px;
+}
+.show-post .posting .cutting .preview-image-container .preview:nth-child(n+5) {
+  opacity: 0;
+}
+.show-post .posting .cutting .preview-image-container .dot {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.show-post .posting .cutting .preview-image-container .dot .preview-dot {
+  border: 2px solid rgba(128, 128, 128, 0.578);
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  border-radius: 50%;
+}
+@keyframes showRight {
+  0% {
+    left: 5%;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+@keyframes hideRight {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  100% {
+    left: -5%;
+    opacity: 0;
+  }
+}
+@keyframes showLeft {
+  0% {
+    left: -5%;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+@keyframes hideLeft {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  100% {
+    left: 5%;
+    opacity: 0;
+  }
+}
+.show-post .posting .cutting .preview-image-container .previous-arrow {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  left: -10%;
+  margin-left: 10px;
+  height: 25px;
+  cursor: pointer;
+}
+.show-post .posting .cutting .preview-image-container .next-arrow {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  right: -10%;
+  margin-right: 10px;
+  height: 25px;
+  cursor: pointer;
+}
+.show-post .posting .cutting .post-message {
+  display: none;
+  position: relative;
+  justify-content: center;
+  z-index: 200;
+  margin-left: 15px;
+  height: 250px;
+  width: 100%;
+}
+.show-post .posting .cutting .post-message .user-message-textarea {
+  width: 100%;
+  resize: none;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  border-radius: 10px;
+}
+.show-post .posting .cutting .post-message .user-message-textarea::-webkit-input-placeholder {
+  font-style: italic;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+.show-post .posting .cutting .post-message .user-message-textarea:focus {
+  outline: none;
+}
+.show-post .posting .cutting .post-message .post-message-tag {
+  display: none;
+  position: absolute;
+  top: 255px;
+  width: 98%;
+  height: 150px;
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(104, 104, 104, 0.6);
+}
+.show-post .posting .cutting .post-message .post-message-tag ul {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+.show-post .posting .cutting .post-message .post-message-tag ul li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.show-post .posting .cutting .post-message .post-message-tag ul li img {
+  width: 45px;
+  height: 45px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  margin: 5px 10px;
+}
+.show-post .posting .cutting .post-message .post-message-tag ul li:hover {
+  background-color: rgba(227, 227, 227, 0.773);
+}
+.show-post .posting .cutting .post-message .post-message-tag .tag-name-search-loadingImg {
+  display: none;
+  position: absolute;
+  height: 20px;
+  top: 45%;
+  right: 47%;
+}
+.show-post .posting .post-hashtag {
+  display: none;
+  width: 100%;
+  height: 250px;
+  padding: 2.5%;
+}
+.show-post .posting .post-hashtag .post-hashtag-div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+  border: 1px solid rgba(128, 128, 128, 0.578);
+  border-radius: 10px;
+}
+.show-post .posting .post-hashtag .post-hashtag-div .hashImg {
+  height: 25px;
+  margin: 0 10px;
+}
+.show-post .posting .post-hashtag .post-hashtag-div input {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+.show-post .posting .post-hashtag .post-hashtag-div input:focus {
+  outline: none;
+}
+.show-post .posting .post-hashtag .post-hashtag-div input::-webkit-input-placeholder {
+  font-style: italic;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+.show-post .posting .post-hashtag .hashtag-container {
+  position: relative;
+  margin-top: 10px;
+  height: 180px;
+}
+.show-post .posting .post-hashtag .hashtag-container li {
+  list-style: none;
+  display: inline-block;
+  border: 2px solid rgba(227, 227, 227, 0.773);
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 5px;
+  margin: 5px 5px 0 0;
+  background-color: rgba(227, 227, 227, 0.773);
+  text-align: center;
+  vertical-align: middle;
+}
+.show-post .posting .post-hashtag .hashtag-container li img {
+  margin-left: 5px;
+  height: 20px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe {
+  display: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 160px;
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(104, 104, 104, 0.6);
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul li {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin: 0;
+  width: 100%;
+  border-radius: 0;
+  background-color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul li .hashtag-post-amount {
+  color: rgba(122, 122, 122, 0.773);
+  font-size: 14px;
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe ul li:hover {
+  background-color: rgba(227, 227, 227, 0.773);
+}
+.show-post .posting .post-hashtag .hashtag-container .hashtag-search-talbe .hashtag-search-loadingImg {
+  display: none;
+  height: 30px;
+  position: absolute;
+  top: 45%;
+  right: 50%;
+}
+
+@media screen and (max-width: 650px) {
+  .show-post .posting {
+    width: 90%;
+    height: auto;
+  }
+  .show-post .posting .cutting {
+    height: auto;
+  }
+  .show-post .posting .posting-area {
+    height: 300px;
+  }
+}/*# sourceMappingURL=posting2.css.map */

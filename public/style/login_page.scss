@@ -1,0 +1,93 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  .login,
+  .signup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+    .login-container,
+    .signup-container {
+      border: 1px solid rgba(178, 178, 178, 0.712);
+      //   height: 350px;
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 20px;
+      border-radius: 5px;
+      .title {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 40px 0;
+        user-select: none;
+      }
+      input {
+        width: 250px;
+        height: 40px;
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid rgba(216, 216, 216, 0.578);
+        background-color: rgba(238, 238, 238, 0.578);
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      input,
+      input::placeholder {
+        font: 14px sans-serif;
+        color: rgba(91, 91, 91, 0.578);
+        letter-spacing: 1.5px;
+      }
+      input,
+      input:focus ~ p {
+        color: rgb(0, 0, 0);
+      }
+      input:focus {
+        outline: none !important;
+        border-color: rgba(216, 216, 216, 0.578);
+        box-shadow: 0 0 3px rgba(141, 141, 141, 0.578);
+      }
+
+      button {
+        margin: 10px 0 20px 0;
+        width: 250px;
+        height: 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        border: none;
+        background-color: rgb(40, 154, 255);
+        color: white;
+      }
+    }
+
+    .no-account,
+    .have-account {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid rgba(178, 178, 178, 0.712);
+      width: 350px;
+      height: 60px;
+      margin-top: 15px;
+      border-radius: 5px;
+      p {
+        margin: 5px;
+      }
+      .signup-button,
+      .login-button {
+        cursor: pointer;
+        user-select: none;
+        color: rgb(27, 53, 255);
+      }
+    }
+  }
+  .signup {
+    display: none;
+  }
+}

@@ -1,0 +1,404 @@
+@keyframes showTable {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+.user-info {
+  position: relative;
+  left: 20%;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .user-info-section {
+  width: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-info .user-info-section .user-info-container {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+}
+.user-info .user-info-section .user-info-container .fans-amount-container,
+.user-info .user-info-section .user-info-container .following-amount-container {
+  cursor: pointer;
+}
+.user-info .user-info-section .img-container {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .user-info-section .img-container .user-info-headImg {
+  width: 150px;
+  height: 150px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  margin: 0 50px;
+}
+.user-info .user-info-section .user-info-content-container {
+  width: 60%;
+  margin: 10px;
+}
+.user-info .user-info-section .user-info-content-container .user-person {
+  display: flex;
+  align-items: center;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction {
+  display: flex;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction p {
+  margin-right: 10px;
+  background-color: rgb(235, 235, 235);
+  color: rgb(0, 0, 0);
+  padding: 5px 10px;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction P:hover {
+  background-color: rgb(201, 201, 201);
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .follow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(59, 137, 255);
+  color: rgb(255, 255, 255);
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .follow img {
+  display: none;
+  height: 15px;
+  margin-left: 10px;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .follow:hover {
+  background-color: rgb(18, 113, 255);
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .isfollowed {
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .isfollowed img {
+  margin-left: 5px;
+  width: 20px;
+}
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .set-user-data,
+.user-info .user-info-section .user-info-content-container .user-person .user-interaction .logout {
+  display: none;
+}
+.user-info .user-info-section .user-info-count-container {
+  display: flex;
+  margin: 15px 0;
+}
+.user-info .user-info-section .user-info-count-container div {
+  display: flex;
+  margin-right: 20px;
+}
+.user-info .user-info-section .user-info-count-container div li {
+  list-style: none;
+  font-weight: bold;
+}
+.user-info .user-info-section .user-info-count-container div span {
+  display: block;
+}
+.user-info .user-info-section .user-name-container p {
+  font-weight: bold;
+}
+.user-info .user-posts {
+  margin: 3% 0 5% 0;
+  width: 800px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 15px;
+  border-top: 1px solid rgba(128, 128, 128, 0.578);
+}
+.user-info .user-posts .post-card {
+  width: 240px;
+  height: 240px;
+  position: relative;
+  background-color: rgba(128, 128, 128, 0.578);
+}
+.user-info .user-posts .post-card img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  cursor: pointer;
+}
+.user-info .no-post {
+  margin-top: 30px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.user-info .no-post img {
+  width: 80px;
+}
+.user-info .no-post p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 850px) {
+  .user-info .user-info-section {
+    width: 80%;
+  }
+  .user-info .user-posts {
+    width: 80%;
+    padding: 2%;
+    grid-gap: 2%;
+  }
+  .user-info .user-posts .post-card {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+  }
+}
+.full-screen {
+  animation: showTable 0.5s;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  z-index: 101;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .fans-table,
+.full-screen .following-table {
+  display: none;
+  flex-direction: column;
+  width: 400px;
+  height: 400px;
+  background-color: white;
+  border-radius: 10px;
+}
+.full-screen .fans-table .fans-title,
+.full-screen .fans-table .following-title,
+.full-screen .following-table .fans-title,
+.full-screen .following-table .following-title {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 12%;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+}
+.full-screen .fans-table .fans-title p,
+.full-screen .fans-table .following-title p,
+.full-screen .following-table .fans-title p,
+.full-screen .following-table .following-title p {
+  font-size: 18px;
+}
+.full-screen .fans-table .fans-title .fans-close,
+.full-screen .fans-table .fans-title .following-close,
+.full-screen .fans-table .following-title .fans-close,
+.full-screen .fans-table .following-title .following-close,
+.full-screen .following-table .fans-title .fans-close,
+.full-screen .following-table .fans-title .following-close,
+.full-screen .following-table .following-title .fans-close,
+.full-screen .following-table .following-title .following-close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 15px 15px 0 0;
+  cursor: pointer;
+}
+.full-screen .fans-table ul.fans-ul,
+.full-screen .fans-table .following-ul,
+.full-screen .following-table ul.fans-ul,
+.full-screen .following-table .following-ul {
+  padding-top: 15px;
+  width: 100%;
+  height: 88%;
+  overflow-y: auto;
+}
+.full-screen .fans-table ul.fans-ul li,
+.full-screen .fans-table .following-ul li,
+.full-screen .following-table ul.fans-ul li,
+.full-screen .following-table .following-ul li {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 10px 10px 10px 20px;
+  cursor: pointer;
+}
+.full-screen .fans-table ul.fans-ul li img,
+.full-screen .fans-table .following-ul li img,
+.full-screen .following-table ul.fans-ul li img,
+.full-screen .following-table .following-ul li img {
+  width: 45px;
+  height: 45px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+.full-screen .fans-table ul.fans-ul li:hover,
+.full-screen .fans-table .following-ul li:hover,
+.full-screen .following-table ul.fans-ul li:hover,
+.full-screen .following-table .following-ul li:hover {
+  background-color: rgba(230, 230, 230, 0.7137254902);
+}
+.full-screen .edit-user-data {
+  display: none;
+  width: 435px;
+  height: 500px;
+  background-color: white;
+  border-radius: 10px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-title {
+  height: 45px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+}
+.full-screen .edit-user-data .basic-data .basic-data-title p {
+  font-size: 18px;
+  font-weight: bold;
+}
+.full-screen .edit-user-data .basic-data .basic-data-title .edit-userdata-close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 15px 15px 0 0;
+  cursor: pointer;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head .user-head-img {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  padding: 20px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head .head-img-upload {
+  display: none;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  padding: 10px;
+  background-color: rgb(235, 235, 235);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-head label:hover {
+  background-color: rgb(201, 201, 201);
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data {
+  padding: 15px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div {
+  width: 75%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div p {
+  width: 60%;
+  text-align: end;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 30px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div span,
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div input,
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data div textarea {
+  width: 70%;
+  padding: 5px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .user-data .edit-profile textarea {
+  resize: none;
+  height: 70px;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .edit-submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .edit-submit p {
+  background-color: rgb(235, 235, 235);
+  margin: 0 5px 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.full-screen .edit-user-data .basic-data .basic-data-edit .edit-submit p:hover {
+  background-color: rgb(201, 201, 201);
+}
+
+@media screen and (max-width: 500px) {
+  .user-info {
+    left: 0;
+    width: 100%;
+  }
+  .user-info .user-info-section {
+    width: 100%;
+  }
+  .user-info .user-info-section .user-info-content-container .user-person {
+    display: block;
+  }
+  .user-info .user-info-section .user-info-content-container .user-person .user-interaction {
+    margin-top: 5px;
+  }
+  .user-info .user-info-section .user-info-content-container li {
+    text-align: center;
+  }
+  .user-info .user-info-section .user-info-count-container div {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .user-info .user-posts {
+    width: 100%;
+    grid-gap: 1%;
+  }
+  .user-info .user-posts .post-card {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+  }
+}/*# sourceMappingURL=user_page.css.map */

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style/base.css" />
+    <link rel="stylesheet" href="/style/inbox.css" />
+    <title>Snapstory</title>
+  </head>
+
+  <body>
+    <% include header.ejs %>
+
+    <main>
+      <div class="inbox-table">
+        <section class="inbox-friends-zone">
+          <div class="user-inbox-name">
+            <p></p>
+            <img src="/image/edit.png" alt="" />
+          </div>
+          <div class="chat-select">
+            <p>暫無聊天對象</p>
+            <ul></ul>
+          </div>
+        </section>
+        <section class="inbox-chat-zone">
+          <div class="chat-target-name">
+            <img src="" alt="" />
+            <p></p>
+          </div>
+          <div class="chat-main-zone">
+            <ul></ul>
+            <div class="submit-caht">
+              <input type="text" placeholder="訊息..." />
+              <img src="/image/send.png" alt="" />
+            </div>
+            <div class="new-send-chat">
+              <img src="/image/send.png" alt="" />
+              <p>傳送私訊給朋友</p>
+              <p class="new-send-chat-button">發送訊息</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script src="/JS/inbox.js"></script>
+  </body>
+</html>

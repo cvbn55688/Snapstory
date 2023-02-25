@@ -1,0 +1,83 @@
+<link rel="stylesheet" href="/style/posting2.css" />
+
+<div class="show-post">
+  <div class="cancel-container">
+    <div class="cancel-table">
+      <div class="cancel-title">
+        <p class="cancel-main">捨棄貼文？</p>
+        <p class="cancel-second">系統將不會儲存編輯內容</p>
+      </div>
+
+      <div class="ensure-cancel">
+        <div class="cancel-button">
+          <p>捨棄</p>
+        </div>
+        <div class="ont-cancel-button">
+          <p>取消</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <img class="post-leave-img" src="/image/x.png" alt="" />
+  <div class="posting">
+    <div class="post-header">
+      <p class="undo">重選圖片</p>
+      <p class="undo-2">上一步</p>
+      <p class="post-title">選擇圖片</p>
+      <p class="next-step">下一步</p>
+      <p class="next-step-2">建立</p>
+      <img src="/image/loading.gif" alt="" />
+    </div>
+
+    <label for="upload" class="posting-area">
+      <div class="posting-area-div">
+        <img src="/image/gallery.png" alt="" />
+        <label for="upload">選擇圖片</label>
+        <input id="upload" class="post-image" type="file" multiple="multiple" />
+      </div>
+    </label>
+
+    <div class="cutting">
+      <div class="preview-image-container">
+        <img class="previous-arrow" src="/image/leftArrow.png" alt="" />
+        <img class="next-arrow" src="/image/rightArrow.png" alt="" />
+        <div class="dot"></div>
+      </div>
+
+      <div class="post-message">
+        <textarea
+          class="user-message-textarea"
+          placeholder="填寫說明文字"
+        ></textarea>
+        <div class="post-message-tag">
+          <ul></ul>
+          <img
+            class="tag-name-search-loadingImg"
+            src="/image/loading.gif"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+    <hr class="post-hr" />
+
+    <div class="post-hashtag">
+      <div class="post-hashtag-div" tabindex="0">
+        <img class="hashImg" src="/image/hashtag.png" />
+        <input placeholder="為貼文增新標籤" type="text" />
+      </div>
+      <div class="hashtag-container">
+        <div class="hashtag-search-talbe">
+          <ul></ul>
+          <img
+            class="hashtag-search-loadingImg"
+            src="/image/loading.gif"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/JS/posting.js"></script>
