@@ -39,17 +39,34 @@ function getChatMember() {
           chatNoData.style.display = "block";
         }
         createChatSelectLi(chatMembers, userData.userID);
+        // listenPrivateMessageInbox();
 
         socket.on("private message", (data) => {
           if (data.from == chatTargetID) {
             createChatLi(data.mes, "chat-target", "text");
+            changeLiSort("inside", data.from);
           } else {
-            console.log(data);
+            changeLiSort("receive", data.from);
           }
         });
         submitChat();
       }
     });
+}
+
+function changeLiSort(func, targetID) {
+  let targetUserLi = document.getElementById(targetID);
+  let targetUserUnreadCount = targetUserLi.querySelector(".chat-select-unread");
+  if (func == "receive") {
+    targetUserUnreadCount.textContent =
+      Number(targetUserUnreadCount.textContent) + 1;
+    targetUserUnreadCount.style.display = "block";
+    chatUnreadMessage.style.display = "block";
+    chatUnreadMessage.textContent = Number(chatUnreadMessage.textContent) + 1;
+  }
+
+  chatSelectUl.prepend(targetUserLi);
+  // targetUserLi.remove();
 }
 
 function submitChat() {
@@ -90,9 +107,9 @@ function createChatSelectLi(chatMembers, userID) {
     } else {
       chatTarget = chatMember.members[1];
     }
-
     let newChatLi = document.createElement("li");
     newChatLi.classList.add("chat-select-target");
+    newChatLi.id = chatTarget._id;
     chatSelectUl.appendChild(newChatLi);
 
     let newChatTargetHead = document.createElement("img");
@@ -107,7 +124,6 @@ function createChatSelectLi(chatMembers, userID) {
     let newUnreadMessage;
     let newUnreadCount = 0;
 
-    console.log(chatMember.messages);
     chatMember.messages.forEach((contentData) => {
       if (contentData.receiver == userID) {
         newUnreadCount++;
@@ -133,10 +149,11 @@ function createChatSelectLi(chatMembers, userID) {
         chatTargetImg.style.display = "block";
         chatInputDiv.style.display = "flex";
         newSendChat.style.display = "none";
-        newUnreadMessage.remove();
         chatUnreadMessage.textContent =
           Number(chatUnreadMessage.textContent) -
           Number(newUnreadMessage.textContent);
+        newUnreadMessage.textContent = 0;
+        newUnreadMessage.style.display = "none";
         if (chatUnreadMessage.textContent == 0) {
           chatUnreadMessage.style.display = "none";
         }
@@ -211,6 +228,7 @@ function createChatLi(message, className, mesType) {
 
     let newShareP = document.createElement("p");
     newShareP.textContent = "點擊檢視文章";
+    newShareP.classList.add("share-click");
     newShareClick.appendChild(newShareP);
 
     newChatLi.addEventListener("click", () => {
@@ -230,6 +248,7 @@ function sendChat(userID, targetID, message) {
     });
     createChatLi(message, "chat-user", "text");
     uploadChatData(targetID, message, false);
+    changeLiSort("send", targetID);
   }
 }
 

@@ -113,8 +113,8 @@ main .inbox-table .inbox-chat-zone .chat-target-name {
 }
 main .inbox-table .inbox-chat-zone .chat-target-name img {
   display: none;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   -o-object-fit: cover;
      object-fit: cover;
@@ -163,6 +163,7 @@ main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-me
   cursor: pointer;
   width: 220px;
   border: 1px solid rgba(128, 128, 128, 0.578);
+  background-color: rgba(239, 239, 239, 0.7137254902);
   border-radius: 10px;
   margin-bottom: 20px;
 }
@@ -171,14 +172,17 @@ main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-me
   padding: 0;
   margin: 0;
 }
+main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-click {
+  padding: 15px;
+}
 main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-user {
   display: flex;
   align-items: center;
   padding: 10px;
 }
 main .inbox-table .inbox-chat-zone .chat-main-zone ul .share-post .share-post-mes-container .share-user img {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 50%;

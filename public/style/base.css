@@ -119,6 +119,7 @@ header .serch-bar .search-table {
   width: 90%;
   height: 300px;
   border-radius: 5px;
+  z-index: 102;
 }
 header .serch-bar .search-table ul {
   padding-top: 10px;
