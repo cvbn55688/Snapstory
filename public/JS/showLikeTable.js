@@ -3,7 +3,9 @@ const postLikeTable = document.querySelector(".post-like-table");
 const likeClose = document.querySelector(".like-close");
 
 function getPostLike(postID) {
-  console.log(postID);
+  likeBlackscreen.style.display = "flex";
+
+  // console.log(postID);
   fetch(`/getParticularPost?postID=${postID}`, {
     method: "GET",
   })
@@ -16,14 +18,12 @@ function getPostLike(postID) {
     })
     .then(function (data) {
       if (data.ok) {
-        likeBlackscreen.style.display = "flex";
-
         let newLikeUl = document.createElement("ul");
         newLikeUl.classList.add("like-ul");
         postLikeTable.appendChild(newLikeUl);
 
         data.postData.likes.forEach((liker) => {
-          console.log(liker);
+          // console.log(liker);
           let newLi = document.createElement("li");
           newLikeUl.appendChild(newLi);
           rediectToPersonalPage(newLi, liker.userID._id);
@@ -36,6 +36,16 @@ function getPostLike(postID) {
           newLikerName.textContent = liker.userID.username;
           newLi.appendChild(newLikerName);
         });
+
+        document.addEventListener("click", closeBlackScreen);
+
+        function closeBlackScreen(e) {
+          if (e.target.classList.contains("like-blackscreen")) {
+            newLikeUl.remove();
+            likeBlackscreen.style.display = "none";
+            document.removeEventListener("click", closeBlackScreen);
+          }
+        }
 
         likeClose.addEventListener("click", () => {
           newLikeUl.remove();

@@ -34,7 +34,6 @@ router.put("/signin", async (req, res) => {
 });
 
 router.delete("/logout", async (req, res) => {
-  console.log("test");
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });

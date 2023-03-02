@@ -4,24 +4,83 @@
   box-sizing: border-box;
 }
 
+main {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/image/Untitled.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+main .chat-img {
+  position: absolute;
+}
+main .camara-img {
+  position: absolute;
+}
+main .heart-img {
+  position: absolute;
+  right: -50px;
+  bottom: -350px;
+  border: 15px solid rgb(125, 125, 125);
+  width: 850px;
+  height: 850px;
+  border-radius: 50%;
+  z-index: -1;
+}
+main .pic-zone {
+  position: relative;
+  margin-right: 30px;
+  height: 400px;
+  width: 300px;
+}
+main .pic-zone .user-page-pic {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  right: 30%;
+  bottom: 20%;
+}
+main .pic-zone .post-pic {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+main .pic-zone img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+main .sign-zone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 0;
+}
 main .login,
 main .signup {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 80px;
 }
 main .login .login-container,
 main .login .signup-container,
 main .signup .login-container,
 main .signup .signup-container {
   border: 1px solid rgba(178, 178, 178, 0.712);
-  width: 350px;
+  width: 21%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 20px;
+  padding-bottom: 1%;
   border-radius: 5px;
 }
 main .login .login-container .title,
@@ -30,7 +89,7 @@ main .signup .login-container .title,
 main .signup .signup-container .title {
   font-size: 36px;
   font-weight: bold;
-  margin: 40px 0;
+  margin: 7% 0;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
@@ -39,8 +98,8 @@ main .login .login-container input,
 main .login .signup-container input,
 main .signup .login-container input,
 main .signup .signup-container input {
-  width: 250px;
-  height: 40px;
+  width: 80%;
+  height: 6vh;
   margin-bottom: 10px;
   padding: 5px;
   border: 1px solid rgba(216, 216, 216, 0.578);
@@ -87,14 +146,24 @@ main .login .login-container button,
 main .login .signup-container button,
 main .signup .login-container button,
 main .signup .signup-container button {
-  margin: 10px 0 20px 0;
-  width: 250px;
+  margin: 10px 0 5% 0;
+  width: 80%;
   height: 30px;
   border-radius: 5px;
   cursor: pointer;
   border: none;
   background-color: rgb(40, 154, 255);
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+main .login .login-container button img,
+main .login .signup-container button img,
+main .signup .login-container button img,
+main .signup .signup-container button img {
+  height: 25px;
+  display: none;
 }
 main .login .no-account,
 main .login .have-account,
@@ -104,8 +173,8 @@ main .signup .have-account {
   justify-content: center;
   align-items: center;
   border: 1px solid rgba(178, 178, 178, 0.712);
-  width: 350px;
-  height: 60px;
+  width: 21%;
+  height: 8vh;
   margin-top: 15px;
   border-radius: 5px;
 }
@@ -131,4 +200,13 @@ main .signup .have-account .login-button {
 }
 main .signup {
   display: none;
+}
+main .signup .signup-container input {
+  height: 6vh;
+  margin-bottom: 5px;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
 }/*# sourceMappingURL=login_page.css.map */

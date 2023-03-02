@@ -190,6 +190,7 @@ textarea {
     }
 
     .cutting {
+      overflow: hidden;
       display: none;
       width: 100%;
       height: 580px;
@@ -238,43 +239,51 @@ textarea {
 
         @keyframes showRight {
           0% {
-            left: 5%;
+            // left: 5%;
+            transform: translateX(120%);
             opacity: 0;
           }
           100% {
-            left: 0;
+            // left: 0;
+            transform: translateX(0%);
             opacity: 1;
           }
         }
 
         @keyframes hideRight {
           0% {
-            left: 0;
+            // left: 0;
+            transform: translateX(0%);
             opacity: 1;
           }
           100% {
-            left: -5%;
+            // left: -5%;
+            transform: translateX(-120%);
             opacity: 0;
           }
         }
 
         @keyframes showLeft {
           0% {
-            left: -5%;
+            // left: -5%;
+            transform: translateX(-120%);
             opacity: 0;
           }
           100% {
-            left: 0;
+            // left: 0;
+            transform: translateX(0%);
             opacity: 1;
           }
         }
         @keyframes hideLeft {
           0% {
-            left: 0;
+            // left: 0;
+            transform: translateX(0%);
             opacity: 1;
           }
           100% {
-            left: 5%;
+            // left: 5%;
+            transform: translateX(120%);
             opacity: 0;
           }
         }
@@ -285,8 +294,11 @@ textarea {
           z-index: 999;
           left: -10%;
           margin-left: 10px;
-          height: 25px;
+          width: 30px;
           cursor: pointer;
+          background-color: #ffffff98;
+          padding: 5px;
+          border-radius: 50%;
         }
         .next-arrow {
           display: none;
@@ -294,8 +306,11 @@ textarea {
           z-index: 999;
           right: -10%;
           margin-right: 10px;
-          height: 25px;
+          width: 30px;
           cursor: pointer;
+          background-color: #ffffff98;
+          padding: 5px;
+          border-radius: 50%;
         }
       }
 

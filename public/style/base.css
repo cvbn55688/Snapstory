@@ -65,7 +65,7 @@ header {
   background-color: white;
 }
 header .tittle {
-  margin: 20px 0 50px 0;
+  margin: 40px 0 40px 0;
   padding-left: 5%;
   width: 100%;
   cursor: pointer;
@@ -138,8 +138,8 @@ header .serch-bar .search-table ul li img {
   width: 45px;
   height: 45px;
   margin: 0 15px;
-  -o-object-fit: contain;
-     object-fit: contain;
+  -o-object-fit: cover;
+     object-fit: cover;
   border-radius: 50%;
   margin-right: 15px;
 }
@@ -200,12 +200,13 @@ header .nav li {
   align-items: center;
   list-style-type: none;
   width: 100%;
-  height: 80px;
+  height: 65px;
   padding: 0 5%;
   cursor: pointer;
 }
 header .nav li img {
   width: 30px;
+  margin-left: 5px;
 }
 header .nav li span {
   font-size: 16px;

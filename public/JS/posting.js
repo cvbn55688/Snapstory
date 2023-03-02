@@ -1,6 +1,5 @@
 function inputLoad(eve) {
   let imageFiles = Array.from(eve.target.files);
-  console.log(imageFiles);
   setTimeout(() => {
     postImageInput.value = "";
   }, 100);
@@ -9,11 +8,17 @@ function inputLoad(eve) {
     alert("只能上傳五張圖片!!");
     return;
   }
+  let isPass = true;
   imageFiles.forEach((data) => {
     if (data.size > 1024 * 1024 * 2) {
       alert("一張圖片不得超過2mb!!");
+      isPass = false;
       return;
-    } else {
+    }
+  });
+
+  if (isPass) {
+    imageFiles.forEach((data) => {
       let reader = new FileReader();
       reader.readAsDataURL(data);
       reader.addEventListener("load", () => {
@@ -50,8 +55,8 @@ function inputLoad(eve) {
       postUndo.style.display = "flex";
       postUndo.addEventListener("click", handelPostUndo);
       postNextStep.addEventListener("click", handelPostNextStep);
-    }
-  });
+    });
+  }
 
   function handelPostUndo() {
     let previewImgs = document.querySelectorAll(".preview");
@@ -156,7 +161,7 @@ function inputLoad(eve) {
       })
       .then(function (data) {
         if (data.ok == true) {
-          console.log(data);
+          // console.log(data);
           let tagNameArr = postMessageTextarea.value.match(/@\w+/g);
           if (tagNameArr != null) {
             tagNameArr.forEach((tagName) => {
@@ -179,7 +184,7 @@ function inputLoad(eve) {
             });
           }
           postHashtagArr.forEach((hashtagName) => {
-            console.log(hashtagName);
+            // console.log(hashtagName);
             uploadHashtag(hashtagName, data.result._id);
           });
 
@@ -200,7 +205,7 @@ function changePicOrder(value, dots, previousArrow, nextArrow) {
   function nextPic() {
     value[current].style.animation = "hideRight 0.25s forwards";
     value[current >= value.length - 1 ? 0 : current + 1].style.animation =
-      "showRight 1s forwards";
+      "showRight 0.25s forwards";
     dots[current].style.backgroundColor = "#ffffff";
     if (current < value.length - 1) {
       current++;
@@ -213,7 +218,7 @@ function changePicOrder(value, dots, previousArrow, nextArrow) {
   function preciousPic() {
     value[current].style.animation = "hideLeft  0.25s forwards";
     value[current > 0 ? current - 1 : value.length - 1].style.animation =
-      "showLeft 1s forwards";
+      "showLeft 0.25s forwards";
     dots[current].style.backgroundColor = "#ffffff";
     if (current > 0) {
       current--;
@@ -248,7 +253,7 @@ function uploadHashtag(hashtagName, postID) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
     });
 }
 
@@ -267,6 +272,6 @@ function deleteHashtag(hashtagName, postID) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
     });
 }

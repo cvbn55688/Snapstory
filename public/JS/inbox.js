@@ -11,9 +11,9 @@ const newSendChatButton = document.querySelector(".new-send-chat-button");
 const newSendChatButtonImg = document.querySelector(".user-inbox-name img");
 const userInboxName = document.querySelector(".user-inbox-name p");
 let chatTargetID;
-let choiceChat = false;
-let nowChat;
+let targetInRoom = false;
 let nowUserID;
+let joinRoom;
 
 newSendChatButton.addEventListener("click", () => {
   openSendChatTable();
@@ -21,6 +21,29 @@ newSendChatButton.addEventListener("click", () => {
 newSendChatButtonImg.addEventListener("click", () => {
   openSendChatTable();
 });
+
+socket.on("both in room", (data) => {
+  if (data.both == true) {
+    targetInRoom = true;
+  } else {
+    targetInRoom = false;
+  }
+});
+
+function socketJoinRoom(room, isJoin) {
+  let func;
+
+  if (isJoin == true) {
+    func = "join room";
+    // console.log(room, "join");
+  } else {
+    func = "leave room";
+    // console.log(room, "leave");
+  }
+  socket.emit(func, {
+    room,
+  });
+}
 
 function getChatMember() {
   fetch(`/getChatMember`, {
@@ -43,7 +66,7 @@ function getChatMember() {
 
         socket.on("private message", (data) => {
           if (data.from == chatTargetID) {
-            createChatLi(data.mes, "chat-target", "text");
+            createChatLi(data.mes, "chat-target", data.mesType);
             changeLiSort("inside", data.from);
           } else {
             changeLiSort("receive", data.from);
@@ -66,7 +89,6 @@ function changeLiSort(func, targetID) {
   }
 
   chatSelectUl.prepend(targetUserLi);
-  // targetUserLi.remove();
 }
 
 function submitChat() {
@@ -107,13 +129,14 @@ function createChatSelectLi(chatMembers, userID) {
     } else {
       chatTarget = chatMember.members[1];
     }
+
     let newChatLi = document.createElement("li");
     newChatLi.classList.add("chat-select-target");
     newChatLi.id = chatTarget._id;
     chatSelectUl.appendChild(newChatLi);
 
     let newChatTargetHead = document.createElement("img");
-    newChatTargetHead.src = chatTarget.headImg;
+    newChatTargetHead.src = chatTarget.headImg + vTime;
     newChatLi.setAttribute("hold", "false");
     newChatLi.appendChild(newChatTargetHead);
 
@@ -145,7 +168,6 @@ function createChatSelectLi(chatMembers, userID) {
           holdingLi.setAttribute("hold", "false");
         }
         newChatLi.setAttribute("hold", "true");
-        console.log(chatTarget);
         chatTargetImg.style.display = "block";
         chatInputDiv.style.display = "flex";
         newSendChat.style.display = "none";
@@ -157,11 +179,18 @@ function createChatSelectLi(chatMembers, userID) {
         if (chatUnreadMessage.textContent == 0) {
           chatUnreadMessage.style.display = "none";
         }
-        chatTargetImg.src = chatTarget.headImg;
+        chatTargetImg.src = chatTarget.headImg + vTime;
         chatTargetName.textContent = chatTarget.username;
         chatTargetID = chatTarget._id;
-        getChatData(chatTarget._id);
+        if (joinRoom != undefined) {
+          socketJoinRoom(joinRoom, false);
+        }
+        joinRoom = chatMember._id;
+        socketJoinRoom(joinRoom, true);
+        getChatData(chatTargetID);
         updateUnreadStatus(chatTargetID);
+        rediectToPersonalPage(chatTargetImg, chatTargetID);
+        rediectToPersonalPage(chatTargetName, chatTargetID);
       }
     });
   });
@@ -181,7 +210,7 @@ function updateUnreadStatus(targetID) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
     });
 }
 
@@ -195,7 +224,9 @@ function createChatLi(message, className, mesType) {
     newChatP.textContent = message;
     newChatLi.appendChild(newChatP);
   } else {
-    message = JSON.parse(message);
+    if (typeof message == "string") {
+      message = JSON.parse(message);
+    }
 
     let newChatLi = document.createElement("li");
     newChatLi.classList.add(className);
@@ -211,7 +242,7 @@ function createChatLi(message, className, mesType) {
     newSharePostContainer.appendChild(newShareUser);
 
     let newShareUserHead = document.createElement("img");
-    newShareUserHead.src = message.poster.headerImg;
+    newShareUserHead.src = message.poster.headerImg + vTime;
     newShareUser.appendChild(newShareUserHead);
 
     let newShareUserName = document.createElement("p");
@@ -231,7 +262,7 @@ function createChatLi(message, className, mesType) {
     newShareP.classList.add("share-click");
     newShareClick.appendChild(newShareP);
 
-    newChatLi.addEventListener("click", () => {
+    newSharePostContainer.addEventListener("click", () => {
       createParticularPost(message.postID);
     });
   }
@@ -247,7 +278,7 @@ function sendChat(userID, targetID, message) {
       message,
     });
     createChatLi(message, "chat-user", "text");
-    uploadChatData(targetID, message, false);
+    uploadChatData(targetID, message, false, targetInRoom);
     changeLiSort("send", targetID);
   }
 }

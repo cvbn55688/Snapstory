@@ -41,7 +41,8 @@
   display: none;
 }
 .show-post-blacksreen .post-table .post-image-container {
-  background-color: #000;
+  overflow: hidden;
+  background-color: white;
   position: relative;
   width: 60%;
   height: 100%;
@@ -64,10 +65,14 @@
 .show-post-blacksreen .post-table .post-image-container .particular-show-post-previous-arrow,
 .show-post-blacksreen .post-table .post-image-container .particular-show-post-next-arrow {
   display: none;
+  width: 30px;
   position: absolute;
   cursor: pointer;
   margin: 0 10px;
   z-index: 999;
+  background-color: rgba(255, 255, 255, 0.5960784314);
+  padding: 5px;
+  border-radius: 50%;
 }
 .show-post-blacksreen .post-table .post-image-container .particular-show-post-previous-arrow {
   left: 0;
@@ -113,8 +118,8 @@
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  -o-object-fit: contain;
-     object-fit: contain;
+  -o-object-fit: cover;
+     object-fit: cover;
   cursor: pointer;
 }
 .show-post-blacksreen .post-table .comment-container .poster .poster-title .poster-content {

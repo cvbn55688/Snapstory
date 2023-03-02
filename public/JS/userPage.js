@@ -35,6 +35,7 @@ const editUserProfileTextarea = document.querySelector(
 );
 const editSubmit = document.querySelector(".edit-userdata-submit");
 const editCancel = document.querySelector(".edit-userdate-cancel");
+const editLoading = document.querySelector(".edit-submit img");
 
 let headimgReload = false;
 function headImgLoad(eve) {
@@ -51,6 +52,14 @@ function headImgLoad(eve) {
 function editUserDateOpen() {
   fullBlackScreen.style.display = "flex";
   editUserDataTable.style.display = "block";
+
+  function closeBlackScreen(e) {
+    if (e.target.classList.contains("full-screen")) {
+      editUserDateClose();
+      document.removeEventListener("click", closeBlackScreen);
+    }
+  }
+  document.addEventListener("click", closeBlackScreen);
 }
 
 function editUserDateClose() {
@@ -97,6 +106,14 @@ function createFansFollowingLi(dataArray, table, ul) {
     // });
     rediectToPersonalPage(newLi, fanID);
   });
+  function closeBlackScreen(e) {
+    if (e.target.classList.contains("full-screen")) {
+      fullBlackScreen.style.display = "none";
+      table.style.display = "none";
+      document.removeEventListener("click", closeBlackScreen);
+    }
+  }
+  document.addEventListener("click", closeBlackScreen);
 }
 
 function loadPostImg(postArray, userData) {
@@ -140,8 +157,8 @@ function getUserData() {
           }
         } catch {}
 
-        userInfoHeadImg.src = userData.headImg + `?v=${new Date().getTime()}`;
-        editUserHeadImg.src = userData.headImg + `?v=${new Date().getTime()}`;
+        userInfoHeadImg.src = userData.headImg + vTime;
+        editUserHeadImg.src = userData.headImg + vTime;
         editUserAccount.textContent = userData.account;
         userName.textContent = userData.username;
         editUserNameInput.value = userData.username;
@@ -166,9 +183,15 @@ function getUserData() {
             sendMessageButton.style.display = "none";
             setUserData.style.display = "flex";
             logoutButton.style.display = "flex";
+            console.log(logoutButton);
             logoutButton.addEventListener("click", () => {
               let yes = confirm("確定要登出?");
               if (yes) {
+                logoutButton.textContent = "";
+                let logoutLoading = document.createElement("img");
+                logoutLoading.src = "/image/loading.gif";
+                logoutButton.appendChild(logoutLoading);
+
                 fetch(`/logout`, {
                   method: "DELETE",
                   body: JSON.stringify({
@@ -187,7 +210,7 @@ function getUserData() {
                     return response.json();
                   })
                   .then(function (data) {
-                    console.log(data);
+                    // console.log(data);
                   });
               }
             });
@@ -204,6 +227,8 @@ function getUserData() {
               let newUsername = editUserNameInput.value;
               let newUserProfile = editUserProfileTextarea.value;
               let newUserHeadImg = editUserHeadImg.src;
+              editLoading.style.display = "block";
+              editSubmit.style.display = "none";
 
               fetch(`/updateUserData`, {
                 method: "PATCH",
@@ -271,7 +296,7 @@ function follow(followedUser, fansAmountText, followTrue) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.ok == true && data.follow == true) {
         isfollowedButton.style.display = "flex";
         followButton.style.display = "none";

@@ -41,7 +41,8 @@
     display: none;
 
     .post-image-container {
-      background-color: #000;
+      overflow: hidden;
+      background-color: #ffff;
       position: relative;
       width: 60%;
       height: 100%;
@@ -62,10 +63,14 @@
       .particular-show-post-previous-arrow,
       .particular-show-post-next-arrow {
         display: none;
+        width: 30px;
         position: absolute;
         cursor: pointer;
         margin: 0 10px;
         z-index: 999;
+        background-color: #ffffff98;
+        padding: 5px;
+        border-radius: 50%;
       }
       .particular-show-post-previous-arrow {
         left: 0;
@@ -113,7 +118,7 @@
             height: 40px;
             width: 40px;
             border-radius: 50%;
-            object-fit: contain;
+            object-fit: cover;
             cursor: pointer;
           }
           .poster-content {

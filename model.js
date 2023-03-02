@@ -78,7 +78,7 @@ function deleteImgS3(imageArr) {
     );
   });
 }
-async function createNewChat(sender, receiver, message) {
+async function createNewChat(sender, receiver, message, mesType) {
   const chat = new Chat({
     members: [sender, receiver],
     messages: [
@@ -87,12 +87,33 @@ async function createNewChat(sender, receiver, message) {
         receiver,
         content: message,
         time: new Date(),
+        mesType,
       },
     ],
   });
   chat.save().then((data) => {
     console.log(data);
     return data;
+  });
+}
+
+function createRedisUserList() {
+  const redis = require("redis");
+  const client = redis.createClient({
+    host: envData.host_name,
+    port: 6379,
+  });
+  client.connect();
+
+  Member.find().then((data) => {
+    data.forEach((result) => {
+      let redisData = {
+        _id: result._id,
+        username: result.username,
+        headImg: result.headImg,
+      };
+      client.set(`${result.username}:${result._id}`, JSON.stringify(redisData));
+    });
   });
 }
 
@@ -126,7 +147,16 @@ class model {
               notification.save().then((mes) => {
                 console.log(mes);
               });
-              return { ok: true, mes: "註冊成功", status: 200 };
+              return {
+                ok: true,
+                mes: "註冊成功",
+                data: {
+                  _id: mes._id,
+                  username: mes.username,
+                  headImg: mes.headImg,
+                },
+                status: 200,
+              };
             })
             .catch((e) => {
               console.log(e);
@@ -147,6 +177,7 @@ class model {
     let result = await Member.findOne({
       $and: [{ account: account }, { password: password }],
     })
+      .select("_id account username headImg")
       .then((data) => {
         if (data != null) {
           return { ok: true, status: 200, mes: "登入成功", data };
@@ -483,7 +514,7 @@ class model {
             $set: { username: newUsername, profile: newUserProfile },
           }
         ).exec();
-        return { ok: true, result };
+        return { ok: true, result, headImgAM: newHeadImg };
       }
     } catch (error) {
       console.log(error);
@@ -556,8 +587,10 @@ class model {
 
   async userSeacher(searchValue) {
     try {
+      searchValue = searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
       let result = await Member.find({
-        username: { $regex: searchValue },
+        username: { $regex: "^" + searchValue },
       })
         .select("headImg username _id")
         .exec();
@@ -582,15 +615,15 @@ class model {
     try {
       let time = new Date().getTime();
       let notification = await Notification.updateOne(
-        { userID: notificationData.targetId },
+        { userID: notificationData.targetID },
         {
           $set: { status: "1" },
           $push: {
             notifications: {
-              func: notificationData.fuc,
-              sendUserId: notificationData.sendUserId,
+              func: notificationData.func,
+              sendUserId: notificationData.senderID,
               notificationMessage: notificationData.message,
-              time: time,
+              time,
               postImg: notificationData.postImg,
               postID: notificationData.postID,
             },
@@ -633,7 +666,6 @@ class model {
         },
         { status: "0" }
       ).exec();
-      console.log(result);
       return { ok: true, result };
     } catch (error) {
       console.log(error);
@@ -681,11 +713,15 @@ class model {
     }
   }
 
-  async uploadChatData(userID, targetID, message, isPost) {
+  async uploadChatData(userID, targetID, message, isPost, targetInRoom) {
     try {
       let mesType = "text";
+      let isRead = false;
       if (isPost == true) {
         mesType = "post";
+      }
+      if (targetInRoom == true) {
+        isRead = true;
       }
       let result = await Chat.updateOne(
         {
@@ -698,6 +734,7 @@ class model {
               receiver: targetID,
               content: message,
               time: new Date(),
+              read: isRead,
               mesType,
             },
           },
@@ -705,7 +742,7 @@ class model {
         }
       ).exec();
       if (result.matchedCount == 0) {
-        let result = await createNewChat(userID, targetID, message);
+        let result = await createNewChat(userID, targetID, message, mesType);
         return { ok: true, result };
       } else {
         return { ok: true, result };
@@ -762,166 +799,3 @@ class model {
 }
 
 module.exports = model;
-
-// Chat.findOne(
-//   { members: "63c76d88d55533e391061346" },
-//   {
-//     messages: {
-//       $filter: {
-//         input: "$messages",
-//         as: "message",
-//         cond: {
-//           // $eq: ["$$message.read", true],
-//         },
-//       },
-//     },
-//   }
-// )
-//   .select("messages")
-//   .then((data) => {
-//     console.log(data);
-//   });
-
-// Chat.updateOne(
-//   {
-//     members: { $all: ["63c76d88d55533e391061346", "63c77bd3c3731b2b43ec86b5"] },
-//   },
-//   {
-//     $push: {
-//       messages: {
-//         sender: "63c76d88d55533e391061346",
-//         receiver: "63c77bd3c3731b2b43ec86b5",
-//         content: "若不存在則新增",
-//         time: new Date(),
-//       },
-//     },
-//   }
-// ).then((data) => {
-//   // console.log(typeof data.matchedCount);
-//   if (data.matchedCount == 0) {
-//     createNewChat(
-//       "63c76d88d55533e391061346",
-//       "63c77bd3c3731b2b43ec86b5",
-//       "若不存在則新增"
-//     );
-//   }
-// });
-
-// Chat.updateOne(
-//   {
-//     members: { $all: ["63c76d88d55533e391061346", "63ceb9f42bcaf0a79ea85c58"] },
-//   },
-//   {
-//     $push: {
-//       messages: {
-//         sender: "63ceb9f42bcaf0a79ea85c58",
-//         receiver: "63c76d88d55533e391061346",
-//         content: "回覆訊息測試",
-//         time: new Date(),
-//       },
-//     },
-//   }
-// ).exec();
-
-// Post.updateOne(
-//   { _id: "63edd9c0f917095fab9d02c4" },
-//   { $set: { content: "編輯貼文內容", hashtags: ["wehelp", "test"] } }
-// ).then((mes) => {
-//   console.log(mes);
-// });
-
-// Post.findOne(
-//   { _id: "63e98c88325041fd6d7cccfa" },
-//   {
-//     $set: {
-//       comments: {
-//         _id: "63eb5b699715db9de409f0e4",
-//         userID: "63c76d88d55533e391061346",
-//         content: "修改後留言part22",
-//         time,
-//       },
-//     },
-//   }
-// ).then((mes) => {
-//   console.log(mes);
-// });
-
-// Post.find({ _id: "63df3b6883f9f1265b5fc875" }).then((posts) => {
-//   console.log(posts);
-// });
-
-// Tag.updateOne(
-//   { tagName: "anime" },
-//   { $push: { posts: { postID: "63cae12e8d7e4f7cf4d273b3" } } },
-//   { upsert: true }
-// ).then((res) => {
-//   console.log(res);
-// });
-
-// Tag.findOne({ tagName: "anime" })
-//   .populate("posts.postID")
-//   .then((data) => {
-//     console.log(data.posts[0]);
-//   });
-
-// Notification.updateOne(
-//   { userID: "63ceb9f42bcaf0a79ea85c58" },
-//   {
-//     $pop: { notifications: -1 },
-//   }
-// ).then((mes) => {
-//   console.log(mes);
-// });
-
-// Notification.find().then((mes) => {
-//   mes.forEach((notice) => {
-//     console.log(notice);
-//     notice.notifications = [];
-//     notice.save();
-//   });
-// });
-
-// Member.find({ _id: "63ceb9f42bcaf0a79ea85c58" }).populate("fans.userID").exec();
-
-// Member.findOne({ _id: "63c76db4a1c5e35742e4195d" }).then((mes) => {
-//   console.log(mes);
-// });
-
-// Member.updateOne(
-//   { _id: "63c76d88d55533e391061346" },
-//   {
-//     $push: {
-//       fans: { userID: "63ceb9f42bcaf0a79ea85c58" },
-//     },
-//   }
-// ).then((mes) => {
-//   console.log(mes);
-// });
-
-// Post.findOne({ _id: "63c8a87602bd142311bee613" })
-//   .populate("comments.userID")
-//   .exec((err, post) => {
-//     console.log(post.comments);
-//   });
-
-// Post.updateOne(
-//   { _id: "63c8a87602bd142311bee613" },
-//   {
-//     $set: {
-//       comments: {
-//         _id: "63c8b62eeb0bf5c1a97aebad",
-//         userID: "63c76d88d55533e391061346",
-//         content: "修改後留言",
-//       },
-//     },
-//   }
-// ).then((mes) => {
-//   console.log(mes);
-// });
-
-// Post.updateOne(
-//   { _id: "63d72503ed783de92a834985" },
-//   {
-//     $set: { time: "Thu Jan 29 2023 21:34:03 GMT+0800 (台北標準時間)" },
-//   }
-// ).exec();

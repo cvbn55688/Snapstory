@@ -9,8 +9,23 @@ const signupUsernameInput = document.querySelector(".user-name");
 const sugnupPasswordInput = document.querySelector(".signup-password");
 const loginSubmitButton = document.querySelector(".login-submit");
 const signupSubmitButton = document.querySelector(".signup-submit");
+const loginSubmitButtonP = document.querySelector(".login-submit p");
+const signupSubmitButtonP = document.querySelector(".signup-submit p");
+const loginSubmitButtonLoading = document.querySelector(".login-submit img");
+const signupSubmitButtonLoading = document.querySelector(".signup-submit img");
+
 const loginContainer = document.querySelector(".login-container");
 const signupContainer = document.querySelector(".signup-container");
+
+fetch(`/checkLogin`, {
+  method: "GET",
+}).then(function (response) {
+  if (response.status == 200) {
+    location.href = "/";
+    return;
+  }
+  return response.json();
+});
 
 function createErrorMes(mes, container, style) {
   let errorMes = document.createElement("p");
@@ -31,6 +46,8 @@ showLogin.addEventListener("click", () => {
 });
 
 signupSubmitButton.addEventListener("click", () => {
+  signupSubmitButtonP.style.display = "none";
+  signupSubmitButtonLoading.style.display = "block";
   let errorMesCheck = document.querySelector(".signup-error");
   if (errorMesCheck != null) {
     errorMesCheck.remove();
@@ -45,6 +62,8 @@ signupSubmitButton.addEventListener("click", () => {
       signupContainer,
       "signup-error"
     );
+    signupSubmitButtonP.style.display = "block";
+    signupSubmitButtonLoading.style.display = "none";
     return;
   }
   fetch(`/signup`, {
@@ -62,9 +81,11 @@ signupSubmitButton.addEventListener("click", () => {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.ok == false) {
         createErrorMes(data.mes, signupContainer, "signup-error");
+        signupSubmitButtonP.style.display = "block";
+        signupSubmitButtonLoading.style.display = "none";
       } else {
         alert("註冊成功");
         login(signupAccountInput.value, sugnupPasswordInput.value);
@@ -73,12 +94,16 @@ signupSubmitButton.addEventListener("click", () => {
 });
 
 loginSubmitButton.addEventListener("click", () => {
+  loginSubmitButtonP.style.display = "none";
+  loginSubmitButtonLoading.style.display = "block";
   let errorMesCheck = document.querySelector(".login-error");
   if (errorMesCheck != null) {
     errorMesCheck.remove();
   }
   if (loginAccountInput.value == "" || loginPasswordInput.value == "") {
     createErrorMes("帳號、密碼不可空白", loginContainer, "login-error");
+    loginSubmitButtonP.style.display = "block";
+    loginSubmitButtonLoading.style.display = "none";
     return;
   }
   login(loginAccountInput.value, loginPasswordInput.value);
@@ -99,9 +124,11 @@ function login(account, password) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.ok == false) {
         createErrorMes(data.mes, loginContainer, "login-error");
+        loginSubmitButtonP.style.display = "block";
+        loginSubmitButtonLoading.style.display = "none";
       } else {
         location.href = "/";
       }

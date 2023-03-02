@@ -4,18 +4,57 @@ const Model = new modelJS();
 require("dotenv").config();
 const envData = process.env;
 const JWTsecret = envData.jwtKey;
+const redis = require("redis");
+
+const client = redis.createClient({
+  host: envData.host_name,
+  port: 6379,
+});
+client.connect();
+
+client.on("connect", function () {
+  console.log("Redis client connected");
+});
+
+client.on("error", function (err) {
+  console.log("Something went wrong " + err);
+});
+
+async function searchRedis(searcchValue) {
+  let userDatas = [];
+  let result = await client.keys(`${searcchValue}*`);
+  for (let userdata of result) {
+    await client.get(userdata).then((dt) => {
+      userDatas.push(dt);
+    });
+  }
+  return userDatas;
+}
 
 class controller {
   async signup(data) {
     try {
-      let returnStatus = await Model.signup(data);
-      console.log(returnStatus);
-      if (returnStatus.ok == true) {
-        return { ok: true, status: 200, mes: returnStatus.mes };
-      } else if (returnStatus.status == 400) {
-        return { ok: false, status: 400, mes: returnStatus.mes };
+      let result = await Model.signup(data);
+      if (result.ok == true) {
+        let redisData = {
+          _id: result.data._id,
+          username: result.data.username,
+          headImg: result.data.headImg,
+        };
+        try {
+          client.set(
+            `${result.data.username}:${result.data._id}`,
+            JSON.stringify(redisData)
+          );
+        } catch (err) {
+          console.log(err);
+        }
+
+        return { ok: true, status: 200, mes: result.mes };
+      } else if (result.status == 400) {
+        return { ok: false, status: 400, mes: result.mes };
       } else {
-        return { ok: false, status: 500, mes: returnStatus.mes };
+        return { ok: false, status: 500, mes: result.mes };
       }
     } catch (error) {
       return { ok: false, mes: error, status: 500 };
@@ -31,6 +70,7 @@ class controller {
       }
 
       let result = await Model.signin(account, password);
+
       if (result.ok) {
         let payload = {
           account: result.data.account,
@@ -172,7 +212,6 @@ class controller {
 
   async getIndexData(page, userData) {
     if (!/^\d+$/.test(page)) {
-      console.log("testestest");
       return { ok: false, status: 400 };
     }
     try {
@@ -364,6 +403,24 @@ class controller {
           headImgReload
         );
         if (result.ok) {
+          let redisData = {
+            _id: userID,
+            username: editNewUsername,
+            headImg: result.headImgAM,
+          };
+          try {
+            client
+              .rename(`${username}:${userID}`, `${editNewUsername}:${userID}`)
+              .then(() => {
+                client.set(
+                  `${editNewUsername}:${userID}`,
+                  JSON.stringify(redisData)
+                );
+              });
+          } catch (err) {
+            console.log(err);
+          }
+
           let payload = {
             name: editNewUsername,
             userID: userID,
@@ -445,7 +502,19 @@ class controller {
       if (searchValue == "") {
         return { ok: true, data: null, status: 200 };
       }
-      let searchData = await Model.userSeacher(searchValue);
+      let searchData;
+      try {
+        let redisRes = await searchRedis(searchValue);
+        if (redisRes.length == 0) {
+          searchData = await Model.userSeacher(searchValue);
+        } else {
+          searchData = { ok: true, result: redisRes.map(JSON.parse) };
+        }
+      } catch (err) {
+        searchData = { ok: true, result: redisRes.map(JSON.parse) };
+        console.log(err);
+      }
+
       if (searchData.ok) {
         return { ok: true, data: searchData.result, status: 200 };
       } else {
@@ -547,11 +616,13 @@ class controller {
       let targetID = chatData.targetID;
       let message = chatData.message;
       let isPost = chatData.isPost;
+      let targetInRoom = chatData.targetInRoom;
       let result = await Model.uploadChatData(
         userID,
         targetID,
         message,
-        isPost
+        isPost,
+        targetInRoom
       );
       if (result.ok) {
         return { ok: true, data: result.result, status: 200 };

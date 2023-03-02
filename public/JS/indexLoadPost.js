@@ -187,7 +187,7 @@ function createPost(
     newCommentAmount.addEventListener("click", (e) => {
       postBlacksreenIndex.style.display = "flex";
       newPostTable.style.display = "flex";
-      // createParticularPost(postID);
+      document.addEventListener("click", closeBlackScreen);
     });
   }
 
@@ -387,11 +387,20 @@ function createPost(
   newMessage.addEventListener("click", (e) => {
     postBlacksreenIndex.style.display = "flex";
     newPostTable.style.display = "flex";
+    document.addEventListener("click", closeBlackScreen);
   });
   closePostButtonIndex.addEventListener("click", () => {
     postBlacksreenIndex.style.display = "none";
     newPostTable.style.display = "none";
   });
+
+  function closeBlackScreen(e) {
+    if (e.target.classList.contains("show-post-blacksreen-index")) {
+      postBlacksreenIndex.style.display = "none";
+      newPostTable.style.display = "none";
+      document.removeEventListener("click", closeBlackScreen);
+    }
+  }
 
   likePostIndex(
     postID,
@@ -404,14 +413,14 @@ function createPost(
     newLikeAmountPost
   );
 
-  submitComment(
+  submitCommentIndex(
     newUl,
     postID,
     newLeaveComment,
     newSubmitComment,
     currentUserID
   );
-  createComment(
+  createCommentIndex(
     postID,
     newLeaveComment,
     newUl,
@@ -440,7 +449,7 @@ function createPost(
   });
 }
 
-function createComment(
+function createCommentIndex(
   postID,
   input,
   newUl,
@@ -548,7 +557,7 @@ function createComment(
   });
 }
 
-function submitComment(
+function submitCommentIndex(
   newUl,
   postID,
   commentInput,
@@ -590,7 +599,7 @@ function submitComment(
           if (tagNameArr != null) {
             tagNameArr.forEach((tagName) => {
               searchUser(tagName.replace(/@/, "")).then((tagData) => {
-                console.log(tagData);
+                // console.log(tagData);
                 let tagedUserID = tagData.data[0]._id;
                 sendNotice(
                   "tag",
@@ -607,7 +616,13 @@ function submitComment(
             });
           }
 
-          createComment(postID, commentInput, newUl, comments, currentUserID);
+          createCommentIndex(
+            postID,
+            commentInput,
+            newUl,
+            comments,
+            currentUserID
+          );
           sendNotice(
             "comment",
             data.username,
@@ -642,7 +657,7 @@ function fetchLikePostIndex(postID, dislike, likeUl) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.like == true) {
         checkLonin().then(function (senderData) {
           sendNotice(

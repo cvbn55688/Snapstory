@@ -33,7 +33,6 @@ function getUnreadMessage() {
       data.forEach((messageData) => {
         messageData.messages.forEach((contentData) => {
           if (contentData.receiver == userID && contentData.read == false) {
-            console.log(contentData);
             unread++;
           }
         });
@@ -134,13 +133,14 @@ function createSencChatTarget(userData) {
   });
 }
 
-async function uploadChatData(targetID, message, isPost) {
+async function uploadChatData(targetID, message, isPost, targetInRoom) {
   return fetch(`/uploadChatData`, {
     method: "POST",
     body: JSON.stringify({
       targetID,
       message,
       isPost,
+      targetInRoom,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -157,7 +157,6 @@ async function uploadChatData(targetID, message, isPost) {
 function sendChatMessage(sharePostData) {
   let targetsLi = sendChatTargetUl.childNodes;
   let submitValue = sendChatMessageInput.value;
-  console.log(sharePostData);
   if (submitValue == "" && sharePostData == undefined) {
     alert("請輸入要傳送的訊息");
   } else if (targetsLi.length != 0) {
@@ -167,7 +166,7 @@ function sendChatMessage(sharePostData) {
         socket.emit("private message", {
           targetID,
           message: sharePostData,
-          mestype: "post",
+          mesType: "post",
         });
         uploadChatData(targetID, JSON.stringify(sharePostData), true).then(
           (data) => {
@@ -185,7 +184,7 @@ function sendChatMessage(sharePostData) {
         socket.emit("private message", {
           targetID,
           message: submitValue,
-          mestype: "text",
+          mesType: "text",
         });
         uploadChatData(targetID, submitValue, false).then((data) => {
           if (data.ok) {
@@ -202,7 +201,7 @@ function sendChatMessage(sharePostData) {
     sendChatBlackScreen.style.display = "none";
     sendChatMessageLoading.style.display = "none";
     sendChatMessageSubmit.style.display = "block";
-    if ((location.pathname = "/innbox")) {
+    if (location.pathname == "/innbox") {
       location.reload();
     }
   } else {
@@ -216,7 +215,6 @@ function sharePost(postData) {
 }
 
 sendChatMessageSubmit.addEventListener("click", () => {
-  console.log(sharePostData);
   sendChatMessageLoading.style.display = "block";
   sendChatMessageSubmit.style.display = "none";
   if (sharePostData != undefined) {
