@@ -12,7 +12,7 @@ const noPostDiv = document.querySelector(".no-post");
 function loadPostImg(postArray) {
   tagsPostsAmount.textContent = postArray.length;
   postArray.forEach((post) => {
-    console.log(post);
+    // console.log(post);
     let newPostCard = document.createElement("a");
     newPostCard.classList.add("post-card");
     tagsPostsSection.prepend(newPostCard);
@@ -35,14 +35,14 @@ function getTagsData() {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.ok == true) {
         if (data.data == null) {
           noPostDiv.style.display = "flex";
           return;
         }
         tagsPosts = data.data.posts;
-        console.log(tagsPosts);
+        // console.log(tagsPosts);
         loadPostImg(tagsPosts);
         tagsInfoHeadImg.src =
           tagsPosts[tagsPosts.length - 1].postID.imageUrl[0];

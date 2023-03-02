@@ -4,4 +4,9 @@ WORKDIR /app
 
 COPY . . 
 RUN npm install 
-CMD ["node", "server.js"]
+RUN apk update
+RUN apk add redis
+RUN redis-server &
+# CMD ["node", "server.js"]
+# CMD ["redis-server"]
+CMD ["sh", "-c", "redis-server & node server.js"]
