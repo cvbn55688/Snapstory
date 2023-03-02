@@ -109,8 +109,8 @@ main {
         height: 12%;
         img {
           display: none;
-          width: 50px;
-          height: 50px;
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
           object-fit: cover;
           margin: 0 20px 0 30px;
@@ -157,6 +157,7 @@ main {
               cursor: pointer;
               width: 220px;
               border: 1px solid rgba(128, 128, 128, 0.578);
+              background-color: #efefefb6;
               border-radius: 10px;
               margin-bottom: 20px;
               p {
@@ -164,13 +165,16 @@ main {
                 padding: 0;
                 margin: 0;
               }
+              .share-click {
+                padding: 15px;
+              }
               .share-user {
                 display: flex;
                 align-items: center;
                 padding: 10px;
                 img {
-                  width: 40px;
-                  height: 40px;
+                  width: 30px;
+                  height: 30px;
                   object-fit: cover;
                   border-radius: 50%;
                 }

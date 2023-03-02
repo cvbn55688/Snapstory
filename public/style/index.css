@@ -370,8 +370,8 @@ main article .container .poster {
 main article .container .poster .poster-header-img {
   z-index: 20;
   border-radius: 50%;
-  height: 45px;
-  height: 45px;
+  height: 40px;
+  width: 40px;
   -o-object-fit: cover;
      object-fit: cover;
   cursor: pointer;

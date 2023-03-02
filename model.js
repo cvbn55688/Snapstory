@@ -734,7 +734,6 @@ class model {
       )
         .select("messages")
         .exec();
-      console.log(result);
       return { ok: true, result };
     } catch (error) {
       console.log(error);
@@ -764,24 +763,24 @@ class model {
 
 module.exports = model;
 
-Chat.findOne(
-  { members: "63c76d88d55533e391061346" },
-  {
-    messages: {
-      $filter: {
-        input: "$messages",
-        as: "message",
-        cond: {
-          // $eq: ["$$message.read", true],
-        },
-      },
-    },
-  }
-)
-  .select("messages")
-  .then((data) => {
-    console.log(data);
-  });
+// Chat.findOne(
+//   { members: "63c76d88d55533e391061346" },
+//   {
+//     messages: {
+//       $filter: {
+//         input: "$messages",
+//         as: "message",
+//         cond: {
+//           // $eq: ["$$message.read", true],
+//         },
+//       },
+//     },
+//   }
+// )
+//   .select("messages")
+//   .then((data) => {
+//     console.log(data);
+//   });
 
 // Chat.updateOne(
 //   {

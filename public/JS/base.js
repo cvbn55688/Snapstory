@@ -190,6 +190,7 @@ function createNotificationLi(
 
   let newNotificationHeadImg = document.createElement("img");
   newNotificationHeadImg.src = likerHeadImg;
+  newNotificationHeadImg.classList.add("notice-click");
   newNotificationLi.appendChild(newNotificationHeadImg);
   newNotificationHeadImg.addEventListener("mousedown", () => {
     rediectToPersonalPage(newNotificationHeadImg, likerID);
@@ -197,6 +198,7 @@ function createNotificationLi(
 
   let newNotificationMesContainer = document.createElement("div");
   newNotificationMesContainer.classList.add("notification-mes-container");
+  newNotificationMesContainer.classList.add("notice-click");
   newNotificationLi.appendChild(newNotificationMesContainer);
 
   let notificationMes;
@@ -214,30 +216,37 @@ function createNotificationLi(
 
   let newNotificationMesMain = document.createElement("p");
   newNotificationMesMain.classList.add("notification-message-main");
+  newNotificationMesMain.classList.add("notice-click");
   newNotificationMesMain.textContent = likername + notificationMes;
   newNotificationMesContainer.appendChild(newNotificationMesMain);
 
   let newNotificationMesSecond = document.createElement("p");
   newNotificationMesSecond.classList.add("notification-message-second");
+  newNotificationMesSecond.classList.add("notice-click");
   newNotificationMesSecond.textContent = likernotificationMes;
   newNotificationMesContainer.appendChild(newNotificationMesSecond);
 
   let newNotificationTime = document.createElement("span");
   newNotificationTime.classList.add("notification-time");
+  newNotificationTime.classList.add("notice-click");
   newNotificationTime.textContent = timeDifference(notificationTime);
   newNotificationMesSecond.appendChild(newNotificationTime);
 
   let newNotificationImgContainer = document.createElement("div");
   newNotificationImgContainer.classList.add("notification-img-preview");
+  newNotificationImgContainer.classList.add("notice-click");
   newNotificationLi.appendChild(newNotificationImgContainer);
 
   let newNotificationImg = document.createElement("img");
   if (func != "follow") {
     newNotificationImg.src = postImg[0];
+    newNotificationImg.classList.add("notice-click");
     newNotificationImgContainer.appendChild(newNotificationImg);
     newNotificationLi.addEventListener("click", () => {
       createParticularPost(postID);
     });
+  } else {
+    newNotificationLi.classList.add("notice-click");
   }
 }
 
@@ -256,13 +265,17 @@ function sendNotice(
   if (sendUserId == targetUserId) {
     return;
   }
+  let postImgUrl;
+  if (postImg != null) {
+    postImgUrl = postImg[0];
+  }
   ws.send(
     JSON.stringify({
       fuc: func,
       name: sendUserName,
       sendUserImg,
       id: sendUserId,
-      postImg: postImg[0],
+      postImg: postImgUrl,
       message: sendMessage,
       time: notificationTime,
       targetId: targetUserId,
@@ -275,7 +288,7 @@ function sendNotice(
     body: JSON.stringify({
       fuc: func,
       sendUserId,
-      postImg: postImg[0],
+      postImg: postImgUrl,
       message: sendMessage,
       time: notificationTime,
       targetId: targetUserId,
@@ -534,7 +547,7 @@ function searchBarFuction() {
         }
         searchTags(searchBar.value.replace("#", "")).then((data) => {
           let searchDataArray = data.data;
-          console.log(searchDataArray);
+          // console.log(searchDataArray);
           if (searchDataArray.length == 0) {
             searchBarLoadingImg.style.display = "none";
             searchTableLoadImg.style.display = "none";
@@ -548,7 +561,7 @@ function searchBarFuction() {
               let tagAmount = tagData.posts.length;
               let tagImg = "/image/hashtag2.png";
               createSearchLi("hashtag", tagImg, tagName);
-              console.log(tagName, tagAmount);
+              // console.log(tagName, tagAmount);
             });
           }
         });
@@ -574,7 +587,7 @@ async function searchUser(searchValue) {
 }
 
 async function searchTags(searchValue) {
-  console.log(searchValue);
+  // console.log(searchValue);
   return fetch(`/tagSearch/${searchValue}`, {
     method: "GET",
   })
@@ -627,7 +640,7 @@ function openTagTable(table, ul, loadingImg, input) {
 
     if (tagName != "") {
       searchUser(tagName).then((data) => {
-        console.log(data);
+        // console.log(data);
         data.data.forEach((user) => {
           // console.log(user);
           let newSearchLi = document.createElement("li");
@@ -643,7 +656,7 @@ function openTagTable(table, ul, loadingImg, input) {
 
           newSearchLi.addEventListener("click", () => {
             cursorPos = input.selectionStart;
-            console.log(closestAt, cursorPos);
+            // console.log(closestAt, cursorPos);
 
             input.value =
               input.value.slice(0, closestAt) +
@@ -680,7 +693,7 @@ postHashTagInput.addEventListener(
     let searchValue = postHashTagInput.value.replace("#", "");
     if (searchValue != "") {
       searchTags(searchValue).then((data) => {
-        console.log(data);
+        // console.log(data);
 
         if (data.data.length == 0) {
           let newHashtagLi = document.createElement("li");
@@ -699,7 +712,7 @@ postHashTagInput.addEventListener(
         } else {
           let hashTagArr = data.data;
           hashTagArr.forEach((hashtagData) => {
-            console.log(hashtagData);
+            // console.log(hashtagData);
 
             let newHashtagLi = document.createElement("li");
             newHashtagLi.textContent = "#" + hashtagData.tagName;
@@ -779,7 +792,28 @@ function headerIconFuction() {
   let heartCount = 0;
   heart.addEventListener("click", () => {
     if (heartCount == 0) {
+      heartCount++;
       changeIcon("heartImg");
+
+      let ct = 0;
+      document.addEventListener("click", closeNoticeTable);
+      function closeNoticeTable(e) {
+        ct++;
+        if (!e.target.classList.contains("notice-click") && ct > 1) {
+          checkPathIcon();
+          heartImg.src = "../image/heaart.png";
+          notificationTable.style.animation = "closeNotice 1s forwards";
+          header.style.animation = "showHeader 1s forwards";
+          headerNav.style.width = "100%";
+          headerTitle.style.opacity = "1";
+          searchBar.style.display = "flex";
+          headerNavSpan.forEach((span) => {
+            span.style.display = "block";
+          });
+          document.removeEventListener("click", closeNoticeTable);
+          heartCount--;
+        }
+      }
 
       heartImg.src = "../image/heart2.png";
       notificationTable.style.display = "block";
@@ -791,7 +825,7 @@ function headerIconFuction() {
       headerNavSpan.forEach((span) => {
         span.style.display = "none";
       });
-      heartCount++;
+
       if (notificationCount == 0) {
         fetch(`/changeNotificationStatus`, {
           method: "POST",
@@ -800,7 +834,7 @@ function headerIconFuction() {
             return response.json();
           })
           .then(function (data) {
-            console.log(data);
+            // console.log(data);
             notificationCount++;
           });
       }
@@ -846,14 +880,16 @@ async function checkLonin() {
 }
 
 checkLonin().then((data) => {
-  console.log(data);
+  // console.log(data);
   personalImg.src = data.headImg + `?v=${new Date().getTime()}`;
   personal.addEventListener("click", () => {
     location.href = `/personal/${data.userID}`;
   });
 
   let userData = { fuc: 0, name: data.name, id: data.userID };
-  ws.send(JSON.stringify(userData));
+  setTimeout(() => {
+    ws.send(JSON.stringify(userData));
+  }, 1000);
 
   socket.emit("join", { userID: data.userID });
   socket.on("connectionSuccess", (data) => {

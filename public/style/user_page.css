@@ -37,8 +37,8 @@
   align-items: center;
 }
 .user-info .user-info-section .img-container .user-info-headImg {
-  width: 150px;
-  height: 150px;
+  width: 125px;
+  height: 125px;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 50%;

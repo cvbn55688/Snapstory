@@ -48,7 +48,8 @@ function getUnreadMessage() {
 function listenPrivateMessage() {
   if (location.pathname != "/inbox") {
     socket.on("private message", (data) => {
-      console.log(data);
+      chatUnreadMessage.style.display = "block";
+      chatUnreadMessage.textContent = Number(chatUnreadMessage.textContent) + 1;
     });
   }
 }
