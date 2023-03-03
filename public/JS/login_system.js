@@ -16,7 +16,7 @@ const signupSubmitButtonLoading = document.querySelector(".signup-submit img");
 
 const loginContainer = document.querySelector(".login-container");
 const signupContainer = document.querySelector(".signup-container");
-
+const passwordLimit = /^[a-zA-Z0-9]+$/;
 fetch(`/checkLogin`, {
   method: "GET",
 }).then(function (response) {
@@ -65,6 +65,16 @@ signupSubmitButton.addEventListener("click", () => {
     signupSubmitButtonP.style.display = "block";
     signupSubmitButtonLoading.style.display = "none";
     return;
+  } else if (sugnupPasswordInput.value.length < 8) {
+    createErrorMes("密碼不可少於8個字", signupContainer, "signup-error");
+    signupSubmitButtonP.style.display = "block";
+    signupSubmitButtonLoading.style.display = "none";
+    return;
+  } else if (!passwordLimit.test(sugnupPasswordInput.value)) {
+    createErrorMes("密碼只得包含數字和英文", signupContainer, "signup-error");
+    signupSubmitButtonP.style.display = "block";
+    signupSubmitButtonLoading.style.display = "none";
+    return;
   }
   fetch(`/signup`, {
     method: "POST",
@@ -81,7 +91,7 @@ signupSubmitButton.addEventListener("click", () => {
       return response.json();
     })
     .then(function (data) {
-      // console.log(data);
+      console.log(data);
       if (data.ok == false) {
         createErrorMes(data.mes, signupContainer, "signup-error");
         signupSubmitButtonP.style.display = "block";
@@ -124,7 +134,7 @@ function login(account, password) {
       return response.json();
     })
     .then(function (data) {
-      // console.log(data);
+      console.log(data);
       if (data.ok == false) {
         createErrorMes(data.mes, loginContainer, "login-error");
         loginSubmitButtonP.style.display = "block";

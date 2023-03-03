@@ -375,6 +375,7 @@ header .notification-table .notification-no-data {
     margin-left: 25px;
     padding: 0;
     height: 60px;
+    width: 20px;
     cursor: pointer;
   }
   header .nav li img {

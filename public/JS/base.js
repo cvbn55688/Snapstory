@@ -70,18 +70,20 @@ const vTime = `?v=${new Date().getTime()}`;
 let historicalSearch = window.localStorage.getItem("historicalSearch");
 let notificationCount = 0;
 
-searchImg.addEventListener("click", () => {
-  setTimeout(() => {
-    searchBar.focus();
-    searchBar.setAttribute("placeholder", "搜尋");
-  }, 1);
+function activateSearchBar() {
+  searchImg.addEventListener("click", () => {
+    setTimeout(() => {
+      searchBar.focus();
+      searchBar.setAttribute("placeholder", "搜尋");
+    }, 1);
 
-  searchBarContainer.style.display = "flex";
+    searchBarContainer.style.display = "flex";
 
-  searchBar.addEventListener("blur", () => {
-    searchBarContainer.style.display = "none";
+    searchBar.addEventListener("blur", () => {
+      searchBarContainer.style.display = "none";
+    });
   });
-});
+}
 
 function rediectToPersonalPage(container, targetID) {
   container.addEventListener("click", () => {
@@ -243,7 +245,7 @@ function createSearchLi(func, headImg, searchValue, userID) {
   });
 }
 
-function searchBarFuction() {
+function searchBarFunction() {
   searchBar.addEventListener("focus", () => {
     searchBar.style.backgroundImage = "none";
     searchTable.style.display = "flex";
@@ -370,7 +372,6 @@ async function searchUser(searchValue) {
 }
 
 async function searchTags(searchValue) {
-  // console.log(searchValue);
   return fetch(`/tagSearch/${searchValue}`, {
     method: "GET",
   })
@@ -681,8 +682,6 @@ checkLonin().then((data) => {
     location.href = `/personal/${data.userID}`;
   });
 
-  let userData = { fuc: 0, name: data.name, id: data.userID };
-
   setTimeout(() => {
     socket.emit("join web", { userID: data.userID, username: data.name });
     socket.on("connectionSuccess", (data) => {
@@ -692,7 +691,8 @@ checkLonin().then((data) => {
   }, 1000);
 });
 
+activateSearchBar();
 getNotification();
 checkPathIcon();
-searchBarFuction();
+searchBarFunction();
 headerIconFuction();

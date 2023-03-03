@@ -565,6 +565,9 @@ function submitCommentIndex(
   currentUserID
 ) {
   commentSubmitButton.addEventListener("click", () => {
+    if (commentInput.value == "") {
+      return;
+    }
     fetch(`/newComment`, {
       method: "POST",
       body: JSON.stringify({

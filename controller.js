@@ -1,10 +1,11 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const modelJS = require("./model");
 const Model = new modelJS();
-require("dotenv").config();
 const envData = process.env;
 const JWTsecret = envData.jwtKey;
 const redis = require("redis");
+const passwordLimit = /^[a-zA-Z0-9]+$/;
 
 const client = redis.createClient({
   host: envData.host_name,
@@ -34,7 +35,27 @@ async function searchRedis(searcchValue) {
 class controller {
   async signup(data) {
     try {
+      if (data.account == "" || data.username == "" || data.password == "") {
+        return {
+          ok: false,
+          mes: "帳號、用戶名稱、密碼皆不可空白",
+          status: 400,
+        };
+      } else if (data.password.value < 8) {
+        return {
+          ok: false,
+          mes: "密碼不可少於8個字",
+          status: 400,
+        };
+      } else if (!passwordLimit.test(data.password)) {
+        return {
+          ok: false,
+          mes: "密碼只得包含數字和英文",
+          status: 400,
+        };
+      }
       let result = await Model.signup(data);
+
       if (result.ok == true) {
         let redisData = {
           _id: result.data._id,
@@ -79,7 +100,13 @@ class controller {
           headImg: result.data.headImg,
         };
         let token = jwt.sign(payload, JWTsecret);
-        return { ok: true, status: 200, mes: result.mes, token: token };
+        return {
+          ok: true,
+          status: 200,
+          mes: result.mes,
+          token: token,
+          data: result,
+        };
       } else if (result.status == 400) {
         return { ok: false, status: 400, mes: result.mes };
       } else {
@@ -102,6 +129,20 @@ class controller {
       });
     } else {
       return { ok: false, status: 400, mes: "使用者未登入" };
+    }
+  }
+
+  async getUserFansFollower(userData) {
+    try {
+      let userID = userData.userID;
+      let result = await Model.getUserFansFollower(userID);
+      if (result.ok) {
+        return { ok: true, data: result.result, status: 200 };
+      } else {
+        return { ok: false, data: result.mes, status: 500 };
+      }
+    } catch (error) {
+      return { ok: false, mes: error, status: 500 };
     }
   }
 

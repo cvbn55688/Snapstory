@@ -21,6 +21,7 @@ router.put("/signin", async (req, res) => {
   try {
     let signinData = await controller.signin(req.body);
     if (signinData.status == 200) {
+      console.log(signinData);
       res
         .cookie("JWTtoken", signinData.token, { httpOnly: true })
         .status(signinData.status)
@@ -42,6 +43,20 @@ router.delete("/logout", async (req, res) => {
       .status(200)
       .clearCookie("JWTtoken")
       .json({ ok: true, mes: "已刪除cookie" });
+  } catch (error) {
+    res.status(500).json({ ok: false, mes: error });
+  }
+});
+
+router.get("/getUserFansFollower", async (req, res) => {
+  try {
+    if (req.cookies.JWTtoken == undefined) {
+      res.status(400).json({ ok: false, mes: "使用者未登入" });
+    } else {
+      let userData = jwtDecode(req.cookies.JWTtoken);
+      let result = await controller.getUserFansFollower(userData);
+      res.status(result.status).json(result);
+    }
   } catch (error) {
     res.status(500).json({ ok: false, mes: error });
   }

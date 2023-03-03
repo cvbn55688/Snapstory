@@ -56,4 +56,25 @@ function getData() {
     });
 }
 
+function getUserDatas() {
+  fetch(`/getUserFansFollower`, {
+    method: "GET",
+  })
+    .then(function (response) {
+      if (response.status == 400) {
+        location.href = "/login";
+        return;
+      }
+      if (response.status != 200) {
+        alert("讀取失敗");
+        return;
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+    });
+}
+
 getData();
+getUserDatas();

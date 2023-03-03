@@ -62,6 +62,15 @@ function openSendChatTable(target) {
   if (target != null) {
     createSencChatTarget(target);
   }
+
+  document.addEventListener("click", closeBlackScreen);
+
+  function closeBlackScreen(e) {
+    if (e.target.classList.contains("show-send-chat-blacksreen")) {
+      sendChatBlackScreen.style.display = "none";
+      document.removeEventListener("click", closeBlackScreen);
+    }
+  }
 }
 
 function searchChatUser() {
@@ -159,6 +168,8 @@ function sendChatMessage(sharePostData) {
   let submitValue = sendChatMessageInput.value;
   if (submitValue == "" && sharePostData == undefined) {
     alert("請輸入要傳送的訊息");
+    sendChatMessageLoading.style.display = "none";
+    sendChatMessageSubmit.style.display = "block";
   } else if (targetsLi.length != 0) {
     targetsLi.forEach((li) => {
       let targetID = li.id;
@@ -191,6 +202,7 @@ function sendChatMessage(sharePostData) {
             li.remove();
           } else {
             alert("傳送失敗!請再試一次");
+
             location.reload();
           }
         });
@@ -201,7 +213,7 @@ function sendChatMessage(sharePostData) {
     sendChatBlackScreen.style.display = "none";
     sendChatMessageLoading.style.display = "none";
     sendChatMessageSubmit.style.display = "block";
-    if (location.pathname == "/innbox") {
+    if (location.pathname == "/inbox") {
       location.reload();
     }
   } else {

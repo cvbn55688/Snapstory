@@ -484,7 +484,8 @@ main article .container .comment .user-likes span {
 }
 main article .container .comment .comment-amount {
   margin: 5px 0;
-  width: 130px;
+  width: -moz-fit-content;
+  width: fit-content;
   cursor: pointer;
 }
 main article .container .comment .comment-amount p {
@@ -509,13 +510,28 @@ main article .container .comment .post-message .post-time {
   color: rgb(105, 105, 105);
   width: 60px;
 }
-main .intersectionDetection {
-  position: absolute;
-  right: 50%;
-  bottom: 30%;
-  width: 50px;
-  height: 100px;
-  opacity: 1;
+main .right-bar {
+  border-left: 1px solid rgba(128, 128, 128, 0.578);
+  top: 0;
+  width: 20%;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+main .right-bar .fans-box {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.578);
+}
+main .right-bar .fans-box p {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px;
+}
+main .right-bar .follower-box p {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px;
 }
 
 @media screen and (max-width: 500px) {
