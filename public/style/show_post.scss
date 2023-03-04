@@ -248,6 +248,7 @@
               width: 250px;
               display: flex;
               li {
+                white-space: nowrap;
                 list-style: none;
                 display: flex;
                 border: 2px solid rgba(227, 227, 227, 0.773);

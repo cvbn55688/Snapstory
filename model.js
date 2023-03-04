@@ -191,10 +191,9 @@ class model {
     try {
       let result = await Member.findOne({ _id: userID })
         .select("_id fans follower")
-        .populate("fans.userID")
-        .populate("following.userID")
+        .populate({ path: "fans.userID", select: "_id username headImg " })
+        .populate({ path: "following.userID", select: "_id username headImg " })
         .exec();
-      console.log(result);
       return { ok: true, result };
     } catch (error) {
       console.log(error);

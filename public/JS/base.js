@@ -692,7 +692,9 @@ checkLonin().then((data) => {
 });
 
 activateSearchBar();
-getNotification();
 checkPathIcon();
 searchBarFunction();
 headerIconFuction();
+setTimeout(() => {
+  getNotification();
+}, 1500);
