@@ -7,12 +7,24 @@ Snapstory is a social networking website where users can post articles, leave co
 + Password: test0000
 
 ## Main Features
-*
-*
-*
-*
-*
-*
++ Posting
++ Hashtag
++ Tag people
+![](https://i.imgur.com/Pes7WxS.gif)
+
++ like
++ comment
++ share
+
++ Notification
+
++ Chat
+
++ Search people
++ Search hashtag
+
++ 
+
 
 ## Backend Architecture
 ![](https://i.imgur.com/mCyYdrV.png)
