@@ -9,13 +9,13 @@
     opacity: 0;
   }
   100% {
-    left: 50px;
+    left: 48px;
     opacity: 1;
   }
 }
 @keyframes closeNotice {
   0% {
-    left: 50px;
+    left: 48px;
     opacity: 1;
   }
   100% {
@@ -54,7 +54,7 @@ header {
   position: fixed;
   top: 0;
   z-index: 100;
-  border: 1px solid rgba(128, 128, 128, 0.578);
+  border: 2px solid rgba(128, 128, 128, 0.578);
   width: 20%;
   height: 100vh;
   display: flex;
@@ -203,7 +203,7 @@ header {
       padding: 0 5%;
       cursor: pointer;
       img {
-        width: 30px;
+        width: 25px;
         margin-left: 5px;
       }
       span {
@@ -314,10 +314,16 @@ header {
       right: 33%;
       top: 48%;
     }
+    .notification-loading {
+      position: absolute;
+      height: 25px;
+      right: 48%;
+      top: 48%;
+    }
   }
 }
 
-@media screen and (max-width: 970px) {
+@media screen and (max-width: 840px) {
   header {
     position: sticky;
     top: 0;
@@ -376,6 +382,7 @@ header {
       margin-left: 25px;
       padding: 0;
       height: 60px;
+      width: 20px;
       cursor: pointer;
       img {
         width: 25px;

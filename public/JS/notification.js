@@ -1,5 +1,5 @@
 const notificationUl = document.querySelector(".notification-ul");
-
+const notificationLoading = document.querySelector(".notification-loading");
 function createNotificationLi(
   func,
   likerHeadImg,
@@ -144,6 +144,7 @@ function getNotification() {
             post
           );
         });
+        notificationLoading.style.display = "none";
       }
     });
 }

@@ -7,7 +7,6 @@ const cookieParser = require("cookie-parser");
 const http = require("http");
 const app = express();
 const router = require("./router");
-const websocket = require("./websocket.js");
 const server = http.createServer(app);
 const socketIO = require("./socketIO");
 
@@ -18,7 +17,6 @@ app.use(express.static("public"));
 app.engine("ejs", engine);
 app.set("views", "./views");
 app.set("view engine", "ejs");
-websocket.start();
 socketIO.start(server);
 
 app.use("/", router);

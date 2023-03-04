@@ -116,16 +116,12 @@ function createRedisUserList() {
     });
   });
 }
-
+createRedisUserList();
 class model {
   async signup(data) {
-    if (data.account == "" || data.username == "" || data.password == "") {
-      return { ok: false, mes: "帳號、用戶名稱、密碼皆不可空白", status: 400 };
-    }
     let account = data.account;
     let username = data.username;
     let password = data.password;
-
     try {
       let result = await Member.findOne({ account: account }).then((data) => {
         if (data == null) {
@@ -134,7 +130,6 @@ class model {
             username: username,
             password: password,
           });
-
           return member
             .save()
             .then((mes) => {
@@ -177,7 +172,7 @@ class model {
     let result = await Member.findOne({
       $and: [{ account: account }, { password: password }],
     })
-      .select("_id account username headImg")
+      .select("_id account username headImg fans following")
       .then((data) => {
         if (data != null) {
           return { ok: true, status: 200, mes: "登入成功", data };
@@ -190,6 +185,20 @@ class model {
         return { ok: false, status: 500, mes: error };
       });
     return result;
+  }
+
+  async getUserFansFollower(userID) {
+    try {
+      let result = await Member.findOne({ _id: userID })
+        .select("_id fans follower")
+        .populate({ path: "fans.userID", select: "_id username headImg " })
+        .populate({ path: "following.userID", select: "_id username headImg " })
+        .exec();
+      return { ok: true, result };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, mes: error };
+    }
   }
 
   async uploadPost(userID, imagesArr, message, hashtagArr) {

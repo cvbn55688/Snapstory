@@ -151,7 +151,8 @@
       .send-chat-no-data {
         position: absolute;
         top: 45%;
-        left: 42%;
+        width: 100%;
+        text-align: center;
         color: rgba(128, 128, 128, 0.578);
         display: none;
       }

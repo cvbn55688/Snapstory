@@ -6,6 +6,12 @@
     opacity: 100%;
   }
 }
+main {
+  position: relative;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
 .user-info {
   position: relative;
   left: 20%;

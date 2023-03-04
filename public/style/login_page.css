@@ -11,9 +11,13 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("/image/Untitled.png");
-  background-repeat: no-repeat;
-  background-size: cover;
+}
+main .background-img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  position: absolute;
 }
 main .chat-img {
   position: absolute;
@@ -209,4 +213,21 @@ main .signup .signup-container input {
 footer {
   position: absolute;
   bottom: 0;
+}
+
+@media screen and (max-width: 650px) {
+  main .login .login-container,
+  main .login .signup-container,
+  main .signup .login-container,
+  main .signup .signup-container {
+    width: 90%;
+    background-color: white;
+  }
+  main .login .no-account,
+  main .login .have-account,
+  main .signup .no-account,
+  main .signup .have-account {
+    width: 90%;
+    background-color: white;
+  }
 }/*# sourceMappingURL=login_page.css.map */

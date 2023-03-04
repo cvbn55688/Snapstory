@@ -7,6 +7,11 @@
   }
 }
 
+main {
+  position: relative;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
 .user-info {
   position: relative;
   left: 20%;
@@ -15,6 +20,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   .user-info-section {
     // width: 60%;
     width: 800px;

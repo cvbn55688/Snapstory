@@ -11,10 +11,13 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("/image/Untitled.png");
-  background-repeat: no-repeat;
-  background-size: cover;
 
+  .background-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+  }
   .chat-img {
     position: absolute;
   }
@@ -171,4 +174,22 @@ main {
 footer {
   position: absolute;
   bottom: 0;
+}
+
+@media screen and (max-width: 650px) {
+  main .login .login-container,
+  main .login .signup-container,
+  main .signup .login-container,
+  main .signup .signup-container {
+    width: 90%;
+    background-color: #ffff;
+  }
+
+  main .login .no-account,
+  main .login .have-account,
+  main .signup .no-account,
+  main .signup .have-account {
+    width: 90%;
+    background-color: #ffff;
+  }
 }
