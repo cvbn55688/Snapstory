@@ -14,6 +14,9 @@ Snapstory is a social networking website where users can post articles, leave co
 *
 *
 
+## Backend Architecture
+![](https://i.imgur.com/mCyYdrV.png)
+
 ## Backend Technique
 #### Deployment
 + Docker
