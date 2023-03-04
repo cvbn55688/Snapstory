@@ -2,9 +2,9 @@
 Snapstory is a social networking website where users can post articles, leave comments, share their daily lives, as well as follow friends, chat with them privately, and interact with them anytime.
 
 ##    Live Demo
-+ Website: https://zhan-tw.com/
-    + Test account: test@user.com
-    + Password: test0000
+Website: https://zhan-tw.com/
+Test account: test@user.com
+Password: test0000
 
 ## Main Features
 *
