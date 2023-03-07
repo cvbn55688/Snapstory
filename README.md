@@ -14,7 +14,7 @@ Snapstory is a social networking website where users can post articles, leave co
 ![](https://i.imgur.com/Gpebrk8.gif)
 + Notification
 
-![](https://i.imgur.com/SGJ1OdZ.gif)
+![](https://i.imgur.com/nVJXF47.gif)
 + Share Post
 
 ![](https://i.imgur.com/KRsN0V1.gif)
