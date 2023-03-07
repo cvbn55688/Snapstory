@@ -20,9 +20,11 @@ Snapstory is a social networking website where users can post articles, leave co
 
 ![](https://i.imgur.com/KRsN0V1.gif)
 + Chat
+> Real-time chat system implemented with Socket.IO.
 
 ![](https://i.imgur.com/YEFaJIF.gif)
 + Search
+> Member data stored in Redis and searched first in Redis when searching for data.
 
 ![](https://i.imgur.com/ORQ8suv.gif)
 ## Backend Architecture
