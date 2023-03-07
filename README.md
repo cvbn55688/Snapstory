@@ -53,3 +53,6 @@ Snapstory is a social networking website where users can post articles, leave co
 + SCSS
 + JavaScript
 + AJAX
+## ![](https://i.imgur.com/iS5u5Xr.png) Contact
++ 何致翰 Zhi-Han Ho
++ Email: qwas5598@gmail.com
