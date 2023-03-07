@@ -6,7 +6,11 @@ Snapstory is a social networking website where users can post articles, leave co
 + Test account: tester@tester.com
 + Password: test0000
 ## Catalog
-[Main Features](Main-Features)
+[Main Features](#Main-Features)
+[Backend Architecture](#Backend-Architecture)
+[Backend Technique](#Backend-Technique)
+[Frontend Technique](#Frontend-Technique)
+[Contact](#Contact)
 ## Main Features
 + Posting
 + Hashtag
