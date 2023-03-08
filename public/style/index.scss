@@ -599,6 +599,18 @@ main {
   }
 }
 
+@media screen and (max-width: 1200px) {
+  main {
+    .article-container {
+      width: 80%;
+      left: 20%;
+    }
+    .right-bar {
+      display: none;
+    }
+  }
+}
+
 @media screen and (max-width: 840px) {
   .show-post-blacksreen-index .post-table {
     .comment-container {
@@ -607,9 +619,6 @@ main {
     .post-image-container {
       display: none;
     }
-  }
-  main .right-bar {
-    display: none;
   }
 }
 

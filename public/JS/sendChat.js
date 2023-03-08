@@ -11,6 +11,7 @@ const sendChatSearchNoData = document.querySelector(".send-chat-no-data");
 const sendChatMessageInput = document.querySelector(".send-chat-meesage input");
 const sendChatMessageSubmit = document.querySelector(".chat-send");
 const sendChatMessageLoading = document.querySelector(".chat-loading");
+const sendChatTitle = document.querySelector(".send-chat-title p");
 const chatUnreadMessage = document.querySelector(".unread-message");
 const socket = io();
 let sharePostData;
@@ -53,10 +54,26 @@ function listenPrivateMessage() {
   }
 }
 
+function clearSendChatTable() {
+  sendChatTargetInput.value = "";
+  sendChatMessageInput.value = "";
+  sendChatSearchPlease.style.display = "block";
+  sendChatTitle.textContent = "發送訊息";
+  let sendChatSearchLi = document.querySelectorAll(".send-chat-search-user li");
+  sendChatSearchLi.forEach((li) => {
+    li.remove();
+  });
+  let sendChatTargetLi = document.querySelectorAll(".send-chat-to-user li");
+  sendChatTargetLi.forEach((li) => {
+    li.remove();
+  });
+}
+
 function openSendChatTable(target) {
   sendChatBlackScreen.style.display = "flex";
   sendChatClose.addEventListener("click", () => {
     sendChatBlackScreen.style.display = "none";
+    clearSendChatTable();
     sharePostData;
   });
   if (target != null) {
@@ -68,6 +85,7 @@ function openSendChatTable(target) {
   function closeBlackScreen(e) {
     if (e.target.classList.contains("show-send-chat-blacksreen")) {
       sendChatBlackScreen.style.display = "none";
+      clearSendChatTable();
       document.removeEventListener("click", closeBlackScreen);
     }
   }
@@ -111,7 +129,7 @@ function createChatSearchLi(userDatas) {
     sendChatSearchUl.appendChild(newChatSearchLi);
 
     let newChatSearchImg = document.createElement("img");
-    newChatSearchImg.src = userData.headImg;
+    newChatSearchImg.src = userData.headImg + `?v=${new Date().getTime()}`;
     newChatSearchLi.appendChild(newChatSearchImg);
 
     let newChatSearchName = document.createElement("span");
@@ -179,16 +197,18 @@ function sendChatMessage(sharePostData) {
           message: sharePostData,
           mesType: "post",
         });
-        uploadChatData(targetID, JSON.stringify(sharePostData), true).then(
-          (data) => {
-            if (data.ok) {
-              li.remove();
-            } else {
-              alert("傳送失敗!請再試一次");
-              location.reload();
+        setTimeout(() => {
+          uploadChatData(targetID, JSON.stringify(sharePostData), true).then(
+            (data) => {
+              if (data.ok) {
+                li.remove();
+              } else {
+                alert("傳送失敗!請再試一次");
+                location.reload();
+              }
             }
-          }
-        );
+          );
+        }, 500);
       }
 
       if (submitValue != "") {
@@ -202,13 +222,12 @@ function sendChatMessage(sharePostData) {
             li.remove();
           } else {
             alert("傳送失敗!請再試一次");
-
             location.reload();
           }
         });
       }
     });
-    alert("傳送成功!!");
+    alert("傳送成功");
     sendChatMessageInput.value = "";
     sendChatBlackScreen.style.display = "none";
     sendChatMessageLoading.style.display = "none";
@@ -218,12 +237,15 @@ function sendChatMessage(sharePostData) {
     }
   } else {
     alert("請選擇至少一位用戶");
+    sendChatMessageLoading.style.display = "none";
+    sendChatMessageSubmit.style.display = "block";
   }
 }
 
 function sharePost(postData) {
   openSendChatTable();
   sharePostData = postData;
+  sendChatTitle.textContent = "發送貼文訊息";
 }
 
 sendChatMessageSubmit.addEventListener("click", () => {
@@ -240,10 +262,6 @@ sendChatMessageSubmit.addEventListener("click", () => {
 // sendChatMessageInput.addEventListener("keypress", (eve) => {
 //   if (eve.key == "Enter") {
 //     console.log(sharePostData);
-
-// sendChatMessage();
-// }
-// });
 
 searchChatUser();
 listenPrivateMessage();

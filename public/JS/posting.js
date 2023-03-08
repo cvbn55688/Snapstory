@@ -90,10 +90,10 @@ function inputLoad(eve) {
     postUndo2.style.display = "flex";
     postNextStep.style.display = "none";
     postNextStep2.style.display = "flex";
-
     postTitle.textContent = "建立新貼文";
     postCutting.style.padding = "20px";
     postCutting.style.height = "330px";
+    postCutting.style.overflow = "unset";
     previewImageContainer.style.height = "330px";
     postMessage.style.display = "flex";
     postMessage.style.animation = "showTable 0.8s forwards";
@@ -130,6 +130,7 @@ function inputLoad(eve) {
     postNextStep2.style.display = "none";
     postCutting.style.padding = "none";
     postCutting.style.height = "580px";
+    postCutting.style.overflow = "hidden";
     previewImageContainer.style.height = "550px";
     postMessage.style.display = "none";
     postHr.style.display = "none";

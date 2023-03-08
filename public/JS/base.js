@@ -351,7 +351,7 @@ function searchBarFunction() {
           }
         });
       }
-    }, 1500)
+    }, 500)
   );
 }
 

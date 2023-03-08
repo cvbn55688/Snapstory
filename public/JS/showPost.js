@@ -22,6 +22,11 @@ function createParticularPost(
       return response.json();
     })
     .then(function (data) {
+      if (data.postData == null) {
+        alert("貼文已被刪除");
+        postBlacksreen.style.display = "none";
+        return;
+      }
       let currentUserID = data.currentUserData.userID;
       data = data.postData;
 

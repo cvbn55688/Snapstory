@@ -584,14 +584,20 @@ main .right-bar ul li:hover {
   background-color: rgba(230, 230, 230, 0.7137254902);
 }
 
+@media screen and (max-width: 1200px) {
+  main .article-container {
+    width: 80%;
+    left: 20%;
+  }
+  main .right-bar {
+    display: none;
+  }
+}
 @media screen and (max-width: 840px) {
   .show-post-blacksreen-index .post-table .comment-container {
     width: 100%;
   }
   .show-post-blacksreen-index .post-table .post-image-container {
-    display: none;
-  }
-  main .right-bar {
     display: none;
   }
 }

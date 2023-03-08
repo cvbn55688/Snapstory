@@ -377,13 +377,13 @@ class model {
     return result;
   }
 
-  async checkUserLike(username, postID) {
+  async checkUserLike(userID, postID) {
     try {
       let result = await Post.findOne({ _id: postID })
         .select({
           likes: {
             $elemMatch: {
-              username: username,
+              userID,
             },
           },
         })
