@@ -332,8 +332,8 @@ class controller {
 
   async checkUserLike(userData, postID) {
     try {
-      let username = userData.name;
-      let result = await Model.checkUserLike(username, postID);
+      let userID = userData.userID;
+      let result = await Model.checkUserLike(userID, postID);
       if (result.ok) {
         return { ok: true, data: result.result, status: 200 };
       } else {
