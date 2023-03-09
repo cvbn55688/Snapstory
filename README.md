@@ -12,24 +12,24 @@
 + [Frontend Technique](#Frontend-Technique)
 + [Contact](#Contact)
 ## Main Features
-+ Posting
-+ Hashtag
-+ Tag
+#### Posting
+#### Hashtag
+#### Tag
 
 ![](https://i.imgur.com/Gpebrk8.gif)
-+ Notification
+#### Notification
 > Real-time notification system implemented with Socket.IO.
 
 ![](https://i.imgur.com/nVJXF47.gif)
-+ Share Post
+#### Share Post
 
 ![](https://i.imgur.com/KRsN0V1.gif)
-+ Chat
-> Real-time chat system implemented with Socket.IO.
+#### Chat
++ Real-time chat system implemented with Socket.IO.
 
 ![](https://i.imgur.com/YEFaJIF.gif)
-+ Search
-> Member data stored in Redis and searched first in cache when searching for data.
+#### Search
++ Member data stored in Redis and searched first in cache when searching for data.
 
 ![](https://i.imgur.com/ORQ8suv.gif)
 ## Backend Architecture
