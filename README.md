@@ -18,7 +18,7 @@
 
 ![](https://i.imgur.com/Gpebrk8.gif)
 #### Notification
-> Real-time notification system implemented with Socket.IO.
++ Real-time notification system implemented with Socket.IO.
 
 ![](https://i.imgur.com/nVJXF47.gif)
 #### Share Post
