@@ -31,6 +31,7 @@
 #### Search
 + Member data stored in Redis and searched first in cache when searching for data
 + Provide a hashtag search function
+
 ![search](https://user-images.githubusercontent.com/109027415/223908354-42ecbf61-887a-426c-bc9a-3454b049318d.gif)
 ## Backend Architecture
 ![](https://i.imgur.com/mCyYdrV.png)
