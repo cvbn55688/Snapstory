@@ -1,5 +1,5 @@
 # [Snapstory](https://zhan-tw.com)
-Snapstory is a social networking website where users can post articles, leave comments, share their daily lives, as well as follow friends, chat with them privately, and interact with them anytime.
+#### Snapstory is a social networking website where users can post articles, leave comments, share their daily lives, as well as follow friends, chat with them privately, and interact with them anytime.
 
 ##    Live Demo
 + Website: https://zhan-tw.com/
