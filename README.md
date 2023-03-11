@@ -53,7 +53,7 @@
 + Domain Name System
 + NGINX
 + SSL (Zero SSL)
-+ <span>Socker.io</span>
++ <span>WebSocket</span>
 ## Frontend Technique
 + HTML
 + SCSS
