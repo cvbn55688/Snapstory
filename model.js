@@ -503,7 +503,7 @@ class model {
           [newHeadImg],
           userID
         );
-        console.log(headImgUrl);
+        // console.log(headImgUrl);
         let headImgAM = envData.awsHeadImgS3 + userID;
         let result = await Member.updateOne(
           { _id: userID },
@@ -707,15 +707,27 @@ class model {
     }
   }
 
-  async getChatData(userID, targetID) {
+  async getChatData(userID, targetID, page, oldestChatID) {
     try {
+      let nextPage = null;
+      page = Number(page);
       let result = await Chat.findOne({ members: { $all: [userID, targetID] } })
-        // .populate("members", ["username", "headImg"])
         .select("messages")
         .populate("messages.sender", "username")
         .populate("messages.receiver", "username")
+        // .slice("messages", [-10 * (page + 1), 10])
         .exec();
-      return { ok: true, result };
+      // if (
+      //   result.messages[0]._id == oldestChatID ||
+      //   result.messages.length != 10
+      // ) {
+      //   nextPage = null;
+      // } else {
+      //   console.log(page + 1);
+      //   nextPage = page + 1;
+      // }
+      // console.log(nextPage);
+      return { ok: true, result, nextPage };
     } catch (error) {
       console.log(error);
       return { ok: false, mes: error };
@@ -808,3 +820,14 @@ class model {
 }
 
 module.exports = model;
+
+// Chat.findOne({
+//   members: { $all: ["63c76d88d55533e391061346", "63c77bd3c3731b2b43ec86b5"] },
+// })
+//   .select("messages")
+//   .sort({ "messages._id": -1 })
+//   .populate("messages.sender", "username")
+//   .populate("messages.receiver", "username")
+//   .then((data) => {
+//     console.log(data);
+//   });

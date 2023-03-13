@@ -14,6 +14,8 @@ let chatTargetID;
 let targetInRoom = false;
 let nowUserID;
 let joinRoom;
+let chatPage = 0;
+let oldestChatID;
 
 newSendChatButton.addEventListener("click", () => {
   openSendChatTable();
@@ -46,7 +48,7 @@ function socketJoinRoom(room, isJoin) {
 }
 
 function getChatMember() {
-  fetch(`/getChatMember`, {
+  fetch(`/api/chat/members`, {
     method: "get",
   })
     .then(function (response) {
@@ -105,20 +107,33 @@ function submitChat() {
 }
 
 function getChatData(targetID) {
-  fetch(`/getChatData?targetID=${targetID}`, {
-    method: "get",
-  })
+  fetch(
+    `/api/chat/room/${targetID}?page=${chatPage}&oldestChatID=${oldestChatID}`,
+    {
+      method: "get",
+    }
+  )
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
       let chatDatas = data.data.messages;
-      let chatLi = document.querySelectorAll(".chat-main-zone ul li");
-      chatLi.forEach((li) => {
-        li.remove();
-      });
+
       createHistoryChatLi(chatDatas, targetID);
+      chatMainZone.scrollTop = chatMainZone.scrollHeight;
+      oldestChatID = chatDatas[0]._id;
+      chatPage = data.nextPage;
     });
+}
+
+function chatDataInfinity() {
+  chatMainZone.addEventListener("scroll", () => {
+    if (chatMainZone.scrollTop == 0 && chatMainZone.scrollHeight > 475) {
+      if (chatPage != null) {
+        getChatData(chatTargetID);
+      }
+    }
+  });
 }
 
 function createChatSelectLi(chatMembers, userID) {
@@ -186,18 +201,24 @@ function createChatSelectLi(chatMembers, userID) {
           socketJoinRoom(joinRoom, false);
         }
         joinRoom = chatMember._id;
+        chatPage = 0;
+        oldestChatID;
         socketJoinRoom(joinRoom, true);
         getChatData(chatTargetID);
         updateUnreadStatus(chatTargetID);
         rediectToPersonalPage(chatTargetImg, chatTargetID);
         rediectToPersonalPage(chatTargetName, chatTargetID);
+        let chatLi = document.querySelectorAll(".chat-main-zone ul li");
+        chatLi.forEach((li) => {
+          li.remove();
+        });
       }
     });
   });
 }
 
 function updateUnreadStatus(targetID) {
-  fetch(`/updateUnreadStatus`, {
+  fetch(`/api/chat/unread`, {
     method: "PUT",
     body: JSON.stringify({
       targetID,
@@ -267,7 +288,7 @@ function createChatLi(message, className, mesType) {
     });
   }
 
-  chatMainZone.scrollTop = chatMainZone.scrollHeight;
+  // chatMainZone.scrollTop = chatMainZone.scrollHeight;
 }
 
 function sendChat(userID, targetID, message) {
@@ -296,3 +317,4 @@ function createHistoryChatLi(chatDatas, targetID) {
 }
 
 getChatMember();
+chatDataInfinity();

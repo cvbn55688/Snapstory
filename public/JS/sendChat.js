@@ -18,7 +18,7 @@ let sharePostData;
 let unread = 0;
 
 function getUnreadMessage() {
-  fetch(`/getUnreadMessage`, {
+  fetch(`/api/chat/unread`, {
     method: "GET",
   })
     .then(function (response) {
@@ -161,7 +161,7 @@ function createSencChatTarget(userData) {
 }
 
 async function uploadChatData(targetID, message, isPost, targetInRoom) {
-  return fetch(`/uploadChatData`, {
+  return fetch(`/api/chat/room/chatData`, {
     method: "POST",
     body: JSON.stringify({
       targetID,

@@ -4,7 +4,7 @@ const jwtDecode = require("jwt-decode");
 const controllerJS = require("./controller");
 const controller = new controllerJS();
 
-router.post("/signup", async (req, res) => {
+router.post("/api/user", async (req, res) => {
   try {
     let signupData = await controller.signup(req.body);
     if (signupData.status == 200) {
@@ -17,7 +17,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.put("/signin", async (req, res) => {
+router.put("/api/user/auth", async (req, res) => {
   try {
     let signinData = await controller.signin(req.body);
     if (signinData.status == 200) {
@@ -34,7 +34,7 @@ router.put("/signin", async (req, res) => {
   }
 });
 
-router.delete("/logout", async (req, res) => {
+router.delete("/api/user/auth", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
@@ -48,7 +48,7 @@ router.delete("/logout", async (req, res) => {
   }
 });
 
-router.get("/getUserFansFollower", async (req, res) => {
+router.get("/api/user/fans-followers", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
@@ -62,7 +62,7 @@ router.get("/getUserFansFollower", async (req, res) => {
   }
 });
 
-router.get("/getData", async (req, res) => {
+router.get("/api/posts", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
@@ -77,12 +77,12 @@ router.get("/getData", async (req, res) => {
   }
 });
 
-router.get("/getParticularPost", async (req, res) => {
+router.get("/api/post/:postID", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
     } else {
-      let postID = req.query.postID;
+      let postID = req.params.postID;
       let userData = jwtDecode(req.cookies.JWTtoken);
       let postData = await controller.getParticularPost(postID, userData);
       res.status(postData.status).json(postData);
@@ -92,7 +92,7 @@ router.get("/getParticularPost", async (req, res) => {
   }
 });
 
-router.get("/checkLogin", async (req, res) => {
+router.get("/api/user/auth", async (req, res) => {
   try {
     let loginCookie = req.cookies.JWTtoken;
     let loginData = await controller.checkLogin(loginCookie);
@@ -102,7 +102,7 @@ router.get("/checkLogin", async (req, res) => {
   }
 });
 
-router.post("/uploadPost", async (req, res) => {
+router.post("/api/post", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
@@ -115,7 +115,7 @@ router.post("/uploadPost", async (req, res) => {
   }
 });
 
-router.patch("/updatePost", async (req, res) => {
+router.patch("/api/post", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
@@ -128,7 +128,7 @@ router.patch("/updatePost", async (req, res) => {
   }
 });
 
-router.delete("/deletePost", async (req, res) => {
+router.delete("/api/post", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, mes: "使用者未登入" });
@@ -141,7 +141,7 @@ router.delete("/deletePost", async (req, res) => {
   }
 });
 
-router.put("/uploadHashtag", async (req, res) => {
+router.post("/api/post/hashtag", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -155,7 +155,7 @@ router.put("/uploadHashtag", async (req, res) => {
   }
 });
 
-router.delete("/deleteHashtag", async (req, res) => {
+router.delete("/api/post/hashtag", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -169,7 +169,7 @@ router.delete("/deleteHashtag", async (req, res) => {
   }
 });
 
-router.post("/likePost", async (req, res) => {
+router.put("/api/post/like", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -186,13 +186,13 @@ router.post("/likePost", async (req, res) => {
   }
 });
 
-router.post("/checkUserLike", async (req, res) => {
+router.get("/api/post/:postID/likes", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
     }
     let userData = jwtDecode(req.cookies.JWTtoken);
-    let postID = req.body.postID;
+    let postID = req.params.postID;
     let result = await controller.checkUserLike(userData, postID);
     res.status(result.status).json(result);
   } catch (error) {
@@ -200,7 +200,7 @@ router.post("/checkUserLike", async (req, res) => {
   }
 });
 
-router.post("/newComment", async (req, res) => {
+router.post("/api/post/comments", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -215,7 +215,7 @@ router.post("/newComment", async (req, res) => {
   }
 });
 
-router.patch("/updateComment", async (req, res) => {
+router.patch("/api/post/comment", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -228,7 +228,7 @@ router.patch("/updateComment", async (req, res) => {
   }
 });
 
-router.get("/getUserPost/:userID", async (req, res) => {
+router.get("/api/user/posts/:userID", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -242,7 +242,7 @@ router.get("/getUserPost/:userID", async (req, res) => {
   }
 });
 
-router.patch("/updateUserData", async (req, res) => {
+router.patch("/api/user/userData", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -259,7 +259,7 @@ router.patch("/updateUserData", async (req, res) => {
   }
 });
 
-router.get("/getTagsPost/:tags", async (req, res) => {
+router.get("/api/:tags", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -273,7 +273,7 @@ router.get("/getTagsPost/:tags", async (req, res) => {
   }
 });
 
-router.put("/followFans", async (req, res) => {
+router.put("/api/user/follower", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -292,7 +292,7 @@ router.put("/followFans", async (req, res) => {
   }
 });
 
-router.get("/userSearch/:searchValue", async (req, res) => {
+router.get("/api/search/user/:searchValue", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -305,7 +305,7 @@ router.get("/userSearch/:searchValue", async (req, res) => {
   }
 });
 
-router.get("/tagSearch/:searchValue", async (req, res) => {
+router.get("/api/search/tag/:searchValue", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -318,7 +318,7 @@ router.get("/tagSearch/:searchValue", async (req, res) => {
   }
 });
 
-router.post("/uploadNotification", async (req, res) => {
+router.post("/api/notification", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -331,7 +331,7 @@ router.post("/uploadNotification", async (req, res) => {
   }
 });
 
-router.get("/getNotification", async (req, res) => {
+router.get("/api/user/notifications", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -345,7 +345,7 @@ router.get("/getNotification", async (req, res) => {
   }
 });
 
-router.post("/changeNotificationStatus", async (req, res) => {
+router.patch("/api/notifications/status", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -361,7 +361,7 @@ router.post("/changeNotificationStatus", async (req, res) => {
   }
 });
 
-router.get("/getChatMember", async (req, res) => {
+router.get("/api/chat/members", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -375,13 +375,17 @@ router.get("/getChatMember", async (req, res) => {
   }
 });
 
-router.get("/getChatData", async (req, res) => {
+router.get("/api/chat/room/:targetID", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
     } else {
       let userData = jwtDecode(req.cookies.JWTtoken);
-      let result = await controller.getChatData(userData, req.query.targetID);
+      let result = await controller.getChatData(
+        userData,
+        req.params.targetID,
+        req.query
+      );
       res.status(result.status).json(result);
     }
   } catch (error) {
@@ -389,7 +393,7 @@ router.get("/getChatData", async (req, res) => {
   }
 });
 
-router.post("/uploadChatData", async (req, res) => {
+router.post("/api/chat/room/chatData", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -403,7 +407,7 @@ router.post("/uploadChatData", async (req, res) => {
   }
 });
 
-router.get("/getUnreadMessage", async (req, res) => {
+router.get("/api/chat/unread", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -417,7 +421,7 @@ router.get("/getUnreadMessage", async (req, res) => {
   }
 });
 
-router.put("/updateUnreadStatus", async (req, res) => {
+router.put("/api/chat/unread", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });

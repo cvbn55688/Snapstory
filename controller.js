@@ -637,12 +637,24 @@ class controller {
     }
   }
 
-  async getChatData(userData, targetID) {
+  async getChatData(userData, targetID, query) {
     try {
       let userID = userData.userID;
-      let result = await Model.getChatData(userID, targetID);
+      let page = query.page;
+      let oldestChatID = query.oldestChatID;
+      let result = await Model.getChatData(
+        userID,
+        targetID,
+        page,
+        oldestChatID
+      );
       if (result.ok) {
-        return { ok: true, data: result.result, status: 200 };
+        return {
+          ok: true,
+          data: result.result,
+          nextPage: result.nextPage,
+          status: 200,
+        };
       } else {
         return { ok: false, data: result.mes, status: 500 };
       }
