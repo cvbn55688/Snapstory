@@ -99,7 +99,7 @@ function socketGetNotice() {
 }
 
 function getNotification() {
-  fetch(`/getNotification`, {
+  fetch(`/api/user/notifications`, {
     method: "GET",
   })
     .then(function (response) {
@@ -181,7 +181,7 @@ function sendNotice(
   };
   socket.emit("notice message", sendData);
 
-  fetch(`/uploadNotification`, {
+  fetch(`/api/notification`, {
     method: "POST",
     body: JSON.stringify({
       func,

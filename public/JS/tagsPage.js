@@ -28,7 +28,7 @@ function loadPostImg(postArray) {
 }
 
 function getTagsData() {
-  fetch(`/gettagsPost/${location.pathname.split("/")[2]}`, {
+  fetch(`/api/${location.pathname.split("/")[2]}`, {
     method: "GET",
   })
     .then(function (response) {

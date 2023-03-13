@@ -19,7 +19,7 @@ const observer = new IntersectionObserver(callback, {
 });
 
 function getData() {
-  fetch(`/getData?page=${page}`, {
+  fetch(`/api/posts?page=${page}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -76,7 +76,7 @@ function createFansFollowerLi(ul, userData) {
 }
 
 function getUserDatas() {
-  fetch(`/getUserFansFollower`, {
+  fetch(`/api/user/fans-followers`, {
     method: "GET",
   })
     .then(function (response) {

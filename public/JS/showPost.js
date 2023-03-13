@@ -11,7 +11,7 @@ function createParticularPost(
   newLikeAmount
 ) {
   postBlacksreen.style.display = "flex";
-  fetch(`/getParticularPost?postID=${postID}`, {
+  fetch(`/api/post/${postID}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -478,7 +478,7 @@ function createComment(
   });
 }
 function deletePost(postID, postImgUrlArr, hashtagArr, currentUserID) {
-  fetch(`/deletePost`, {
+  fetch(`/api/post`, {
     method: "DELETE",
     body: JSON.stringify({
       postID,
@@ -694,7 +694,7 @@ function editPost(
     postHashtag.forEach((hashtag) => {
       postHashtagArr.push(hashtag.innerText.replace("#", ""));
     });
-    fetch(`/updatePost`, {
+    fetch(`/api/post`, {
       method: "PATCH",
       body: JSON.stringify({
         postID,
@@ -790,7 +790,7 @@ function editComment(
 }
 
 function updateComment(func, postID, targerID, editedCommet) {
-  fetch(`/updateComment`, {
+  fetch(`/api/post/comment`, {
     method: "PATCH",
     body: JSON.stringify({
       func,
@@ -829,7 +829,7 @@ function submitComment(
     if (commentInput.value == "") {
       return;
     }
-    fetch(`/newComment`, {
+    fetch(`/api/post/comments`, {
       method: "POST",
       body: JSON.stringify({
         postID: postID,
@@ -901,8 +901,8 @@ function submitComment(
 }
 
 function fetchLikePost(postID, dislike) {
-  fetch(`/likePost`, {
-    method: "POST",
+  fetch(`/api/post/like`, {
+    method: "PUT",
     body: JSON.stringify({
       postID: postID,
       dislike: dislike,
@@ -938,14 +938,8 @@ function fetchLikePost(postID, dislike) {
 function likePost(postID, newHeartPost, likesAmount, newLikeAmountPost) {
   let isLike = 0;
 
-  fetch(`/checkUserLike`, {
-    method: "POST",
-    body: JSON.stringify({
-      postID: postID,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
+  fetch(`/api/post/${postID}/likes`, {
+    method: "GET",
   })
     .then(function (response) {
       return response.json();

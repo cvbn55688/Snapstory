@@ -146,7 +146,7 @@ function inputLoad(eve) {
     postHashtag.forEach((hashtag) => {
       postHashtagArr.push(hashtag.innerText.replace("#", ""));
     });
-    fetch(`/uploadPost`, {
+    fetch(`/api/post`, {
       method: "POST",
       body: JSON.stringify({
         base64ImgArr: imageArr,
@@ -240,8 +240,8 @@ function changePicOrder(value, dots, previousArrow, nextArrow) {
 }
 
 function uploadHashtag(hashtagName, postID) {
-  fetch(`/uploadHashtag`, {
-    method: "PUT",
+  fetch(`/api/post/hashtag`, {
+    method: "POST",
     body: JSON.stringify({
       hashtagName,
       postID,
@@ -259,7 +259,7 @@ function uploadHashtag(hashtagName, postID) {
 }
 
 function deleteHashtag(hashtagName, postID) {
-  fetch(`/deleteHashtag`, {
+  fetch(`/api/post/hashtag`, {
     method: "DELETE",
     body: JSON.stringify({
       hashtagName,

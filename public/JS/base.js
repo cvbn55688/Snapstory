@@ -356,7 +356,7 @@ function searchBarFunction() {
 }
 
 async function searchUser(searchValue) {
-  return fetch(`/userSearch/${searchValue}`, {
+  return fetch(`/api/search/user/${searchValue}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -372,7 +372,7 @@ async function searchUser(searchValue) {
 }
 
 async function searchTags(searchValue) {
-  return fetch(`/tagSearch/${searchValue}`, {
+  return fetch(`/api/search/tag/${searchValue}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -625,8 +625,8 @@ function headerIconFuction() {
       });
 
       if (notificationCount == 0) {
-        fetch(`/changeNotificationStatus`, {
-          method: "POST",
+        fetch(`/api/notifications/status`, {
+          method: "PATCH",
         })
           .then(function (response) {
             return response.json();
@@ -654,7 +654,7 @@ function headerIconFuction() {
 }
 
 async function checkLonin() {
-  return await fetch(`/checkLogin`, {
+  return await fetch(`/api/user/auth`, {
     method: "GET",
   })
     .then(function (response) {

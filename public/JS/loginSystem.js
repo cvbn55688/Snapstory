@@ -17,7 +17,7 @@ const signupSubmitButtonLoading = document.querySelector(".signup-submit img");
 const loginContainer = document.querySelector(".login-container");
 const signupContainer = document.querySelector(".signup-container");
 const passwordLimit = /^[a-zA-Z0-9]+$/;
-fetch(`/checkLogin`, {
+fetch(`/api/user/auth`, {
   method: "GET",
 }).then(function (response) {
   if (response.status == 200) {
@@ -76,7 +76,7 @@ signupSubmitButton.addEventListener("click", () => {
     signupSubmitButtonLoading.style.display = "none";
     return;
   }
-  fetch(`/signup`, {
+  fetch(`/api/user`, {
     method: "POST",
     body: JSON.stringify({
       account: signupAccountInput.value,
@@ -120,7 +120,7 @@ loginSubmitButton.addEventListener("click", () => {
 });
 
 function login(account, password) {
-  fetch(`/signin`, {
+  fetch(`/api/user/auth`, {
     method: "PUT",
     body: JSON.stringify({
       account: account,

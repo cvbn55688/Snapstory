@@ -6,7 +6,7 @@ function getPostLike(postID) {
   likeBlackscreen.style.display = "flex";
 
   // console.log(postID);
-  fetch(`/getParticularPost?postID=${postID}`, {
+  fetch(`/api/post/${postID}`, {
     method: "GET",
   })
     .then(function (response) {

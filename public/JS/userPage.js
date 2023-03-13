@@ -135,7 +135,7 @@ function loadPostImg(postArray, userData) {
 }
 
 function getUserData() {
-  fetch(`/getUserPost/${location.pathname.split("/")[2]}`, {
+  fetch(`/api/user/posts/${location.pathname.split("/")[2]}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -192,7 +192,7 @@ function getUserData() {
                 logoutLoading.src = "/image/loading.gif";
                 logoutButton.appendChild(logoutLoading);
 
-                fetch(`/logout`, {
+                fetch(`/api/user/auth`, {
                   method: "DELETE",
                   body: JSON.stringify({
                     userID: data.userID,
@@ -230,7 +230,7 @@ function getUserData() {
               editLoading.style.display = "block";
               editSubmit.style.display = "none";
 
-              fetch(`/updateUserData`, {
+              fetch(`/api/user/userData`, {
                 method: "PATCH",
                 body: JSON.stringify({
                   userID: data.userID,
@@ -282,7 +282,7 @@ function getUserData() {
     });
 }
 function follow(followedUser, fansAmountText, followTrue) {
-  fetch(`/followFans`, {
+  fetch(`/api/user/follower`, {
     method: "PUT",
     body: JSON.stringify({
       follow: followTrue,

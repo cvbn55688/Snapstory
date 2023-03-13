@@ -568,7 +568,7 @@ function submitCommentIndex(
     if (commentInput.value == "") {
       return;
     }
-    fetch(`/newComment`, {
+    fetch(`/api/post/comments`, {
       method: "POST",
       body: JSON.stringify({
         postID: postID,
@@ -646,8 +646,8 @@ function submitCommentIndex(
 }
 
 function fetchLikePostIndex(postID, dislike, likeUl) {
-  fetch(`/likePost`, {
-    method: "POST",
+  fetch(`/api/post/like`, {
+    method: "PUT",
     body: JSON.stringify({
       postID: postID,
       dislike: dislike,
@@ -693,14 +693,8 @@ function likePostIndex(
   let isLike = 0;
   let touchTime = 0;
 
-  fetch(`/checkUserLike`, {
-    method: "POST",
-    body: JSON.stringify({
-      postID: postID,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
+  fetch(`/api/post/${postID}/likes`, {
+    method: "GET",
   })
     .then(function (response) {
       if (response.status == 400) {
