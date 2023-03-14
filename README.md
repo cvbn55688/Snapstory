@@ -49,6 +49,7 @@
 + EC2
 + S3
 + CloudFront
++ ElastiCache
 #### Networking
 + HTTP & HTTPS
 + Domain Name System
