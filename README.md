@@ -35,7 +35,7 @@
 
 ![search](https://user-images.githubusercontent.com/109027415/223908354-42ecbf61-887a-426c-bc9a-3454b049318d.gif)
 ## Backend Architecture
-![](https://i.imgur.com/mCyYdrV.png)
+![Group 2](https://user-images.githubusercontent.com/109027415/224933492-ce7e3bcb-7cb3-4552-9a4c-3850dd55161b.png)
 
 ## Backend Technique
 #### Deployment
