@@ -259,7 +259,7 @@ router.patch("/api/user/userData", async (req, res) => {
   }
 });
 
-router.get("/api/:tags", async (req, res) => {
+router.get("/api/post/hashtag/:tags", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });
@@ -331,7 +331,7 @@ router.post("/api/notification", async (req, res) => {
   }
 });
 
-router.get("/api/user/notifications", async (req, res) => {
+router.get("/api/notifications/user", async (req, res) => {
   try {
     if (req.cookies.JWTtoken == undefined) {
       res.status(400).json({ ok: false, data: "使用者未登入" });

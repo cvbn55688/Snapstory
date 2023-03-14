@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "swagger-autogen": "node ./swagger.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +24,8 @@
     "nunjucks": "^3.2.3",
     "redis": "^4.6.5",
     "socket.io": "^2.5.0",
+    "swagger-autogen": "^2.23.1",
+    "swagger-ui-express": "^4.6.2",
     "ws": "^8.12.0"
   }
 }
