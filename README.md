@@ -5,6 +5,7 @@
 + Website: https://zhan-tw.com/
 + Test account: tester@tester.com
 + Password: test0000
++ RESTful API: [https://app.swaggerhub.com/apis/QWAS5598/Snapstory/1.0.0#/](https://app.swaggerhub.com/apis/QWAS5598/Snapstory/1.0.0)
 ## Catalog
 + [Main Features](#Main-Features)
 + [Backend Architecture](#Backend-Architecture)
