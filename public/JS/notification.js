@@ -99,7 +99,7 @@ function socketGetNotice() {
 }
 
 function getNotification() {
-  fetch(`/api/user/notifications`, {
+  fetch(`/api/notifications/user`, {
     method: "GET",
   })
     .then(function (response) {

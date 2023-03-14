@@ -27,8 +27,8 @@ function loadPostImg(postArray) {
   });
 }
 
-function getTagsData() {
-  fetch(`/api/${location.pathname.split("/")[2]}`, {
+function getHashtagsData() {
+  fetch(`/api/post/hashtag/${location.pathname.split("/")[2]}`, {
     method: "GET",
   })
     .then(function (response) {
@@ -69,4 +69,4 @@ function getTagsData() {
     });
 }
 
-getTagsData();
+getHashtagsData();
