@@ -43,7 +43,7 @@
 #### Environment
 + Node.js / Express.js
 #### Database
-+ MongoDB Altlas
++ MongoDB Atlas
 + Redis(cache)
 #### Cloud Service (AWS)
 + EC2
