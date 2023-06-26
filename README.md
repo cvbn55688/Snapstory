@@ -2,7 +2,7 @@
 #### Snapstory is a social networking website where users can post articles, leave comments, share their daily lives, as well as follow friends, chat with them privately, and interact with them anytime.
 
 ##    Live Demo
-+ Website: https://zhan-tw.com/
++ Website: https://zhan-tw.com/ (已停止維護)
 + Test account: tester@tester.com
 + Password: test0000
 + RESTful API: [https://app.swaggerhub.com/apis/QWAS5598/Snapstory/1.0.0#/](https://app.swaggerhub.com/apis/QWAS5598/Snapstory/1.0.0)
